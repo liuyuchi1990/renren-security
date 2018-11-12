@@ -6,7 +6,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>renren-admin</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<description>renren-admin</description>
 
 	<properties>

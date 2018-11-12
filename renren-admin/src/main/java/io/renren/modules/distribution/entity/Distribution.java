@@ -1,20 +1,28 @@
 package io.renren.modules.distribution.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 
-public class Distribution {
+/**
+ *
+ *
+ * @author chenshun
+ * @email sunlightcs@gmail.com
+ * @date 2018-11-01 15:55:29
+ */
+@TableName("tb_distribution")
+public class Distribution implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
      *
      */
     @TableId
     private String id;
-    /**
-     * 活动是否开启状态
-     */
-    private Integer activeState;
     /**
      * 是否关注弹出
      */
@@ -51,14 +59,6 @@ public class Distribution {
      * 虚拟人气值设置
      */
     private Integer virtualPopularity;
-    /**
-     * 活动开始时间
-     */
-    private Date activityStartTime;
-    /**
-     * 活动结束时间
-     */
-    private Date activityEndTime;
     /**
      * 音乐
      */
@@ -115,6 +115,44 @@ public class Distribution {
      * 活动规则填写
      */
     private String activityRules;
+    /**
+     * 红包发放规则填写：图片上传
+     */
+    private String RedRules;
+
+    /**
+     * 创建活动说明填写：图片上传
+     */
+    private String activityDestription;
+
+    /**
+     *
+     */
+    private String activityName;
+    /**
+     *
+     */
+    private String activityType;
+    /**
+     *
+     */
+    private Date startTime;
+    /**
+     *
+     */
+    private Date endTime;
+    /**
+     *
+     */
+    private String updateUser;
+    /**
+     *
+     */
+    private Date updateTime;
+    /**
+     *
+     */
+    private Integer activityState;
 
     /**
      * 设置：
@@ -127,18 +165,6 @@ public class Distribution {
      */
     public String getId() {
         return id;
-    }
-    /**
-     * 设置：活动是否开启状态
-     */
-    public void setActiveState(Integer activeState) {
-        this.activeState = activeState;
-    }
-    /**
-     * 获取：活动是否开启状态
-     */
-    public Integer getActiveState() {
-        return activeState;
     }
     /**
      * 设置：是否关注弹出
@@ -247,30 +273,6 @@ public class Distribution {
      */
     public Integer getVirtualPopularity() {
         return virtualPopularity;
-    }
-    /**
-     * 设置：活动开始时间
-     */
-    public void setActivityStartTime(Date activityStartTime) {
-        this.activityStartTime = activityStartTime;
-    }
-    /**
-     * 获取：活动开始时间
-     */
-    public Date getActivityStartTime() {
-        return activityStartTime;
-    }
-    /**
-     * 设置：活动结束时间
-     */
-    public void setActivityEndTime(Date activityEndTime) {
-        this.activityEndTime = activityEndTime;
-    }
-    /**
-     * 获取：活动结束时间
-     */
-    public Date getActivityEndTime() {
-        return activityEndTime;
     }
     /**
      * 设置：音乐
@@ -439,5 +441,105 @@ public class Distribution {
      */
     public String getActivityRules() {
         return activityRules;
+    }
+    /**
+     * 设置：
+     */
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+    /**
+     * 获取：
+     */
+    public String getActivityName() {
+        return activityName;
+    }
+    /**
+     * 设置：
+     */
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+    /**
+     * 获取：
+     */
+    public String getActivityType() {
+        return activityType;
+    }
+    /**
+     * 设置：
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+    /**
+     * 获取：
+     */
+    public Date getStartTime() {
+        return startTime;
+    }
+    /**
+     * 设置：
+     */
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+    /**
+     * 获取：
+     */
+    public Date getEndTime() {
+        return endTime;
+    }
+    /**
+     * 设置：
+     */
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+    /**
+     * 获取：
+     */
+    public String getUpdateUser() {
+        return updateUser;
+    }
+    /**
+     * 设置：
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+    /**
+     * 获取：
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+    /**
+     * 设置：
+     */
+    public void setActivityState(Integer activityState) {
+        this.activityState = activityState;
+    }
+    /**
+     * 获取：
+     */
+    public Integer getActivityState() {
+        return activityState;
+    }
+
+    public String getRedRules() {
+        return RedRules;
+    }
+
+    public void setRedRules(String redRules) {
+        RedRules = redRules;
+    }
+
+    public String getActivityDestription() {
+        return activityDestription;
+    }
+
+    public void setActivityDestription(String activityDestription) {
+        this.activityDestription = activityDestription;
     }
 }

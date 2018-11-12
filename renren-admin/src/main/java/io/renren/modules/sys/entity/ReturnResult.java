@@ -8,7 +8,7 @@ import java.util.Map;
  * 
  * @ClassName: ReturnResult
  * @Description: 统一返回数据格式
- * @author amosshan
+ * @author Richard
  * @date 15 Dec 2017 09:29:53
  *
  */

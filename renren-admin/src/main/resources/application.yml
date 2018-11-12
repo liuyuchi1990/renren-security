@@ -6,7 +6,7 @@ server:
     min-spare-threads: 30
   port: 8080
   servlet:
-    context-path: /renren-admin
+    context-path:
 
 spring:
   profiles:
@@ -78,3 +78,7 @@ logging:
   level.io.renren: debug
   path: logs/
   file: admin.log
+
+root:
+  img:
+    url: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs

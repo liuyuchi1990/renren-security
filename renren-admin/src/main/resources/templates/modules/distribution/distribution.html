@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+</head>
+<body>
+<style type="text/css">
+    .ui-image .u-close-bg, .ui-image .u-close-text { display: block; }
+</style>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">活动状态是否开启</div>
+                <label class="radio-inline">
+                    <input type="radio" name="activityState" value="0"  v-model="distribution.activityState"/> 是
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="activityState" value="1" v-model="distribution.activityState"/> 否
+                </label>
+            </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">是否关注弹出</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="focusOnPop" value="0"  v-model="distribution.focusOnPop"/> 是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="focusOnPop" value="1" v-model="distribution.focusOnPop"/> 否
+                        </label>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">是否关注发红包</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="focusOnRed" value="0" v-model="distribution.focusOnRed"/> 是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="focusOnRed" value="1" v-model="distribution.focusOnRed"/> 否
+                        </label>
+                    </div>
+					 <div class="form-group">
+                        <div class="col-sm-2 control-label"> 是否购买成功后分享得红包</div>
+                         <label class="radio-inline">
+                             <input type="radio" name="shareRedEnvelopes" value="0" v-model="distribution.shareRedEnvelopes"/> 是
+                         </label>
+                         <label class="radio-inline">
+                             <input type="radio" name="shareRedEnvelopes" value="1" v-model="distribution.shareRedEnvelopes"/> 否
+                         </label>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">分销级数</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.distributionSeries" placeholder="分销级数"/>
+                        </div>
+                    </div>
+					 <div class="form-group">
+                        <div class="col-sm-2 control-label">活动主题</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.activityTheme" placeholder="活动主题"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">触发关键词</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.triggerKeywords" placeholder="触发关键词"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">微信描述</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.wechatDescription" placeholder="微信描述"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">缩略图</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.thumbnail" placeholder="缩略图"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">虚拟人气值设置</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.virtualPopularity" placeholder="虚拟人气值设置"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">音乐</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.music" placeholder="音乐"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">音乐自动播放</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.autoPlayMusic" placeholder="音乐自动播放"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">电话</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.phone" placeholder="电话"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">目标量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.targetQuantity" placeholder="目标量"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">产品价格</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.productPrice" placeholder="产品价格"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">不需要付款人数</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.noPaymentNum" placeholder="不需要付款人数"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">推广随机红包最大值</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.maxValue" placeholder="推广随机红包最大值"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">推广随机红包最小值</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.minValue" placeholder="推广随机红包最小值"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">红包名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.redEnvelopesName" placeholder="红包名称"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">红包祝福语</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.redEnvelopesBlessings" placeholder="红包祝福语"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">微信一键关注</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.oneKeyConcern" placeholder="微信一键关注"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">微信关注图片</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.wechatPic" placeholder="微信关注图片"/>
+                        </div>
+                    </div>
+					 <div class="form-group">
+                        <div class="col-sm-2 control-label">模板界面风格</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.templateStyle" placeholder="模板界面风格"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">活动规则填写</div>
+                        <div class="col-sm-10">
+                            <div>
+                                <a id="upload-target" class="btn btn-primary">添加图片并压缩</a>
+                                <a id="start-upload" class="btn btn-primary">开始上传</a>
+                            </div>
+                        </div>
+                        <div id="upload-image-view" class="clearfix"></div>
+                        <div id="log"></div>
+                    </div>
+					 <div class="form-group">
+                        <div class="col-sm-2 control-label">活动名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.activityName" placeholder=""/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">活动类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="distribution.activityType" placeholder=""/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">活动开始时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" id="startTime" class="form-control datepicker" v-model="distribution.startTime" placeholder=""/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">活动结束时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" id="endTime" class="form-control datepicker" v-model="distribution.endTime" placeholder=""/>
+                        </div>
+                    </div>
+					<!--<div class="form-group">-->
+                        <!--<div class="col-sm-2 control-label">修改人</div>-->
+                        <!--<div class="col-sm-10">-->
+                            <!--<input type="text" class="form-control" v-model="distribution.updateUser" placeholder=""/>-->
+                        <!--</div>-->
+                    <!--</div>-->
+					<!--<div class="form-group">-->
+                        <!--<div class="col-sm-2 control-label">修改时间</div>-->
+                        <!--<div class="col-sm-10">-->
+                            <!--<input type="date" class="form-control" v-model="distribution.updateTime" />-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <div class="col-sm-2 control-label">
+                </div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/distribution/distribution.js?_${.now?long}"></script>
+</body>
+</html>
