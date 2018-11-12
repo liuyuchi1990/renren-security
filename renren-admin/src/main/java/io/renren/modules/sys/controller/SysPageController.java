@@ -60,4 +60,9 @@ public class SysPageController {
 		return "404";
 	}
 
+	@RequestMapping("dist/index.html")
+	public String disIndex(){
+		return "dist/view/index";
+	}
+
 }
