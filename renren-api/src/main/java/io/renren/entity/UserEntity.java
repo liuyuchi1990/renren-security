@@ -50,6 +50,9 @@ public class UserEntity implements Serializable {
 	 * 手机号
 	 */
 	private String mobile;
+
+
+	private String openId;
 	/**
 	 * 密码
 	 */
@@ -120,5 +123,13 @@ public class UserEntity implements Serializable {
 	 */
 	public Date getCreateTime() {
 		return createTime;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 }

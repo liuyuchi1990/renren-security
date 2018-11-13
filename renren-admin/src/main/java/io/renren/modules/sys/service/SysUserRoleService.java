@@ -31,12 +31,12 @@ import java.util.List;
  */
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
 	
-	void saveOrUpdate(Long userId, List<Long> roleIdList);
+	void saveOrUpdate(String userId, List<Long> roleIdList);
 	
 	/**
 	 * 根据用户ID，获取角色ID列表
 	 */
-	List<Long> queryRoleIdList(Long userId);
+	List<Long> queryRoleIdList(String userId);
 
 	/**
 	 * 根据角色ID数组，批量删除

@@ -57,7 +57,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	private SysDeptService sysDeptService;
 
 	@Override
-	public List<Long> queryAllMenuId(Long userId) {
+	public List<Long> queryAllMenuId(String userId) {
 		return baseMapper.queryAllMenuId(userId);
 	}
 
@@ -111,7 +111,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
 
 	@Override
-	public boolean updatePassword(Long userId, String password, String newPassword) {
+	public boolean updatePassword(String userId, String password, String newPassword) {
         SysUserEntity userEntity = new SysUserEntity();
         userEntity.setPassword(newPassword);
         return this.update(userEntity,

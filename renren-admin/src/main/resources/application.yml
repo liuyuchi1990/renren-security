@@ -81,4 +81,5 @@ logging:
 
 root:
   img:
-    url: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs
+    url: C://test
+    path: https://wx.sharkmeida.cn/imgs/

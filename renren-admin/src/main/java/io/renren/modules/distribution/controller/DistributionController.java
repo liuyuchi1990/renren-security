@@ -36,7 +36,7 @@ public class DistributionController {
 
     @Value("${root.img.url}")
     String filePath;
-    @Value("${root.img.url}")
+    @Value("${root.img.path}")
     String url;
     /**
      * 列表
@@ -62,7 +62,7 @@ public class DistributionController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @RequestMapping(value = "/save",method=RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:save")
     public R save(@RequestBody Distribution distribution){
         distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -73,7 +73,7 @@ public class DistributionController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @RequestMapping(value = "/update",method=RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:update")
     public R update(@RequestBody Distribution distribution){
         ValidatorUtils.validateEntity(distribution);

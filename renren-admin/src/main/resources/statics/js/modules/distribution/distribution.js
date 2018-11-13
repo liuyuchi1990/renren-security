@@ -81,6 +81,7 @@ var vm = new Vue({
 			var url = vm.distribution.id == null ? "distribution/save" : "distribution/update";
 			vm.distribution.startTime = $('#startTime').val();
             vm.distribution.endTime = $('#endTime').val();
+            vm.distribution.activityRules= $('#activityRules').val();
 			$.ajax({
 				type: "POST",
 			    url: baseURL + url,
@@ -150,7 +151,7 @@ var uploader = new Uploader({
     view: boxView,
 
     //将auto配置为false以手动上传
-    auto: false,
+    auto: true,
 
     allows: ".jpg,.png,.gif,.bmp",
 
@@ -177,6 +178,10 @@ var uploader = new Uploader({
         },
         upload: function (task) {
             //log(task.name + " : 开始上传");
+        },
+		complete:function (task) {
+
+         $("#activityRules").val(task.json.result.data);
         },
         remove: function (task) {
             //log(task.name + " : 已移除！");

@@ -38,7 +38,7 @@ public class SysUserRoleEntity implements Serializable {
 	/**
 	 * 用户ID
 	 */
-	private Long userId;
+	private String userId;
 
 	/**
 	 * 角色ID
@@ -65,7 +65,7 @@ public class SysUserRoleEntity implements Serializable {
 	 * 设置：用户ID
 	 * @param userId 用户ID
 	 */
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -73,7 +73,7 @@ public class SysUserRoleEntity implements Serializable {
 	 * 获取：用户ID
 	 * @return Long
 	 */
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 	

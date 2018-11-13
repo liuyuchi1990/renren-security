@@ -20,11 +20,20 @@ package io.renren.modules.sys.controller;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import io.renren.common.utils.R;
+import io.renren.common.utils.WxUtil;
+import io.renren.modules.sys.entity.ReturnCodeEnum;
+import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.shiro.ShiroUtils;
+import io.swagger.annotations.ApiParam;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,6 +43,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 登录相关
@@ -99,5 +111,57 @@ public class SysLoginController {
 		ShiroUtils.logout();
 		return "redirect:login.html";
 	}
-	
+
+	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
+	@Transactional(rollbackFor = {Exception.class}, readOnly = false)
+	public ReturnResult doLogin(@ApiParam @RequestBody SysUserEntity user) {
+        String passwordmd5 = new Md5Hash("xyj1234567", "2").toString();
+        user.setPassword(passwordmd5);
+        user.setUsername(user.getUsername());
+        Subject subject = SecurityUtils.getSubject();
+        Map<String, Object> map = new HashMap<>();
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), passwordmd5);
+        try {
+            //map = WxUtil.getSessionKeyOropenid(user.getCode());
+            user.setOpenId(map.get("openid").toString());
+            String id = UUID.randomUUID().toString().replaceAll("-", "");
+            user.setUserId(id);
+            //SysUserEntity hasUser = sysUserService.queryByOpenId(map.get("openid").toString());
+//            if (hasUser == null) {
+//                sysUserService.insert(user);
+//                map.put("id", id);
+//            } else {
+//                map.put("id", hasUser.);
+//            }
+
+            subject.login(token);
+            result.setResult(map);
+            return result;
+        } catch (UnknownAccountException e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "账号不存在");
+            result.setResult(map);
+            return result;
+        } catch (IncorrectCredentialsException e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "账号密码错误");
+            result.setResult(map);
+            return result;
+        } catch (AuthenticationException e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "登录异常!请联系管理员!");
+            result.setResult(map);
+            return result;
+        } catch (Exception e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "系统异常!");
+            result.setResult(map);
+            return result;
+        }
+    }
 }

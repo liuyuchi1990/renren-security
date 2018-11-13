@@ -46,7 +46,10 @@ public class SysUserEntity implements Serializable {
 	 * 用户ID
 	 */
 	@TableId
-	private Long userId;
+	private String userId;
+
+
+	private String openId;
 
 	/**
 	 * 用户名
@@ -110,7 +113,7 @@ public class SysUserEntity implements Serializable {
 	 * 设置：
 	 * @param userId 
 	 */
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -118,7 +121,7 @@ public class SysUserEntity implements Serializable {
 	 * 获取：
 	 * @return Long
 	 */
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 	
@@ -248,5 +251,13 @@ public class SysUserEntity implements Serializable {
 
 	public void setDeptName(String deptName) {
 		this.deptName = deptName;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 }

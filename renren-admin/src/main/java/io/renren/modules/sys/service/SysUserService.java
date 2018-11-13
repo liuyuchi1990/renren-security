@@ -38,7 +38,7 @@ public interface SysUserService extends IService<SysUserEntity> {
 	/**
 	 * 查询用户的所有菜单ID
 	 */
-	List<Long> queryAllMenuId(Long userId);
+	List<Long> queryAllMenuId(String userId);
 	
 	/**
 	 * 保存用户
@@ -56,5 +56,5 @@ public interface SysUserService extends IService<SysUserEntity> {
 	 * @param password     原密码
 	 * @param newPassword  新密码
 	 */
-	boolean updatePassword(Long userId, String password, String newPassword);
+	boolean updatePassword(String userId, String password, String newPassword);
 }

@@ -52,7 +52,7 @@ public class ShiroUtils {
 		return (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
 	}
 
-	public static Long getUserId() {
+	public static String getUserId() {
 		return getUserEntity().getUserId();
 	}
 	
