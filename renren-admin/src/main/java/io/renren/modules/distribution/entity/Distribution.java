@@ -118,7 +118,7 @@ public class Distribution implements Serializable {
     /**
      * 红包发放规则填写：图片上传
      */
-    private String RedRules;
+    private String redRules;
 
     /**
      * 创建活动说明填写：图片上传
@@ -136,11 +136,11 @@ public class Distribution implements Serializable {
     /**
      *
      */
-    private Date startTime;
+    private String startTime;
     /**
      *
      */
-    private Date endTime;
+    private String endTime;
     /**
      *
      */
@@ -469,25 +469,25 @@ public class Distribution implements Serializable {
     /**
      * 设置：
      */
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
     /**
      * 获取：
      */
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
     /**
      * 设置：
      */
-    public void setEndTime(Date endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
     /**
      * 获取：
      */
-    public Date getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
     /**
@@ -528,11 +528,11 @@ public class Distribution implements Serializable {
     }
 
     public String getRedRules() {
-        return RedRules;
+        return redRules;
     }
 
     public void setRedRules(String redRules) {
-        RedRules = redRules;
+        redRules = redRules;
     }
 
     public String getActivityDestription() {
