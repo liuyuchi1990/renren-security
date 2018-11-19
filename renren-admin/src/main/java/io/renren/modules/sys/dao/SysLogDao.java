@@ -20,6 +20,9 @@ package io.renren.modules.sys.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import io.renren.modules.sys.entity.SysLogEntity;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 系统日志
  * 
@@ -28,5 +31,14 @@ import io.renren.modules.sys.entity.SysLogEntity;
  * @date 2017-03-08 10:40:56
  */
 public interface SysLogDao extends BaseMapper<SysLogEntity> {
-	
+    List<Map<String,String>> queryAllChannel();
+
+    List<Map<String,String>> queryAllBanner();
+
+    List<Map<String,String>> queryAllActivity();
+
+    List<Map<String,String>> queryAllBusiness();
+
+    List<Map<String,String>> queryAllContact();
+
 }

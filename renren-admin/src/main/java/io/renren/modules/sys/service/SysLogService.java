@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.service.IService;
 import io.renren.common.utils.PageUtils;
 import io.renren.modules.sys.entity.SysLogEntity;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -34,5 +35,15 @@ import java.util.Map;
 public interface SysLogService extends IService<SysLogEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<Map<String,String>> queryAllChannel();
+
+    List<Map<String,String>> queryAllBanner();
+
+     List<Map<String,String>> queryAllActivity();
+
+     List<Map<String,String>> queryAllBusiness();
+
+     List<Map<String,String>> queryAllContact();
 
 }

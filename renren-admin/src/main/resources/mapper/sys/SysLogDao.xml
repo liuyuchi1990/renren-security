@@ -2,5 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="io.renren.modules.sys.dao.SysLogDao">
+    <select id="queryAllChannel" resultType="java.util.Map">
+        select * from tb_img where type =1
+    </select>
 
+    <select id="queryAllBanner" resultType="java.util.Map">
+        select * from tb_img where type =2
+    </select>
+
+    <select id="queryAllActivity" resultType="java.util.Map">
+        select * from tb_img where type =3
+    </select>
+
+    <select id="queryAllBusiness" resultType="java.util.Map">
+        select * from tb_img where type =4
+    </select>
+
+    <select id="queryAllContact" resultType="java.util.Map">
+        select * from tb_img where type =5
+    </select>
 </mapper>

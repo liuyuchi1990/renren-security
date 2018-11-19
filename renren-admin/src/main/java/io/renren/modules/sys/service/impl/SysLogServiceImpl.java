@@ -21,18 +21,22 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
+import io.renren.modules.distribution.dao.DistributionDao;
 import io.renren.modules.sys.dao.SysLogDao;
 import io.renren.modules.sys.entity.SysLogEntity;
 import io.renren.modules.sys.service.SysLogService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
 @Service("sysLogService")
 public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> implements SysLogService {
-
+    @Autowired
+    private SysLogDao sysLogDao;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         String key = (String)params.get("key");
@@ -44,4 +48,24 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> impl
 
         return new PageUtils(page);
     }
+
+    public List<Map<String,String>> queryAllChannel(){
+        return sysLogDao.queryAllChannel();
+    };
+
+    public List<Map<String,String>> queryAllBanner(){
+        return sysLogDao.queryAllBanner();
+    };
+
+    public List<Map<String,String>> queryAllActivity(){
+        return sysLogDao.queryAllActivity();
+    };
+
+    public List<Map<String,String>> queryAllBusiness(){
+        return sysLogDao.queryAllBusiness();
+    };
+
+    public List<Map<String,String>> queryAllContact(){
+        return sysLogDao.queryAllContact();
+    };
 }
