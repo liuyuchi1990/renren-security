@@ -41,6 +41,10 @@ $(function () {
 });
 
 $(function () {
+	$("#upload-target").on("click",function(){
+        $(this).next().trigger("click")
+	})
+
     $(".datepicker").datetimepicker({
         autoclose: true,//选中之后自动隐藏日期选择框
         clearBtn: true,//清除按钮
@@ -56,7 +60,9 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		distribution: {}
+		distribution: {
+            activityRules : [],
+		}
 	},
 	methods: {
 		query: function () {
@@ -65,7 +71,9 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.distribution = {};
+			vm.distribution = {
+                activityRules : [],
+			};
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -81,12 +89,16 @@ var vm = new Vue({
 			var url = vm.distribution.id == null ? "distribution/save" : "distribution/update";
 			vm.distribution.startTime = $('#startTime').val();
             vm.distribution.endTime = $('#endTime').val();
-            vm.distribution.activityRules= $('#activityRules').val();
+
+            var data = Object.assign({},vm.distribution);
+            if(vm.distribution.activityRules){
+                data.activityRules = JSON.stringify(vm.distribution.activityRules);
+			}
 			$.ajax({
 				type: "POST",
 			    url: baseURL + url,
                 contentType: "application/json",
-			    data: JSON.stringify(vm.distribution),
+			    data: data,
 			    success: function(r){
 			    	if(r.code === 0){
 						alert('操作成功', function(index){
@@ -124,6 +136,11 @@ var vm = new Vue({
 		},
 		getInfo: function(id){
 			$.get(baseURL + "distribution/info/"+id, function(r){
+				if(r.distribution.activityRules){
+                    r.distribution.activityRules = JSON.parse(r.distribution.activityRules);
+				}else{
+                    r.distribution.activityRules = [];
+				}
                 vm.distribution = r.distribution;
             });
 		},
@@ -133,65 +150,27 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        uploadActivityRules : function(e){
+			var file = e.target.files[0];
+            myUpload(baseURL + 'distribution/upload',file,function(data){
+                vm.distribution.activityRules = vm.distribution.activityRules || [];
+                vm.distribution.activityRules.push({
+                    "type":"uploadImg",
+                    "img": data
+				})
+                e.target.value = "";
+			},function(){
+                e.target.value = "";
+			});
+		},
+        delActivityRulesUpload : function (index) {
+            vm.distribution.activityRules = vm.distribution.activityRules || [];
+            vm.distribution.activityRules.splice(index,1);
+        }
 	}
 });
 
 function log(msg) {
     document.getElementById("log").innerHTML += (msg != undefined ? msg : "") + "<br />";
 }
-
-var Uploader = Q.Uploader,
-    formatSize = Q.formatSize,
-    boxView = document.getElementById("upload-image-view");
-
-var uploader = new Uploader({
-    url: baseURL +"/distribution/upload",
-    target: document.getElementById("upload-target"),
-    view: boxView,
-
-    //将auto配置为false以手动上传
-    auto: true,
-
-    allows: ".jpg,.png,.gif,.bmp",
-
-    //图片缩放
-    scale: {
-        //要缩放的图片格式
-        types: ".jpg",
-        //最大图片大小(width|height)
-        maxWidth: 1024
-    },
-
-    on: {
-        //添加之前触发
-        add: function (task) {
-            if (task.disabled) return alert("允许上传的文件格式为：" + this.ops.allows);
-        },
-        //图片预览后触发
-        preview: function (data) {
-            //log(data.task.name + " : " + data.src);
-        },
-        //图片压缩后触发,如果图片或浏览器不支持压缩,则不触发
-        scale: function (data) {
-            //log(data.task.name + " : 已压缩！");
-        },
-        upload: function (task) {
-            //log(task.name + " : 开始上传");
-        },
-		complete:function (task) {
-
-         $("#activityRules").val(task.json.result.data);
-        },
-        remove: function (task) {
-            //log(task.name + " : 已移除！");
-        }
-    }
-});
-
-//将auto配置为false以手动上传
-//uploader.start();
-
-document.getElementById("start-upload").onclick = function () {
-    uploader.start();
-};

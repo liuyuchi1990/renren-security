@@ -52,3 +52,17 @@ tbody > tr > th {font-weight: normal; }
 .form-horizontal{
 	width:550px;padding-top:20px;
 }
+
+.upload-imgs>div{
+    width: 100px;
+    height: 100px;
+    position: relative;
+    margin-top: 5px;
+}
+
+.upload-imgs>div i{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+}

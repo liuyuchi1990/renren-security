@@ -208,14 +208,19 @@
                 <div class="col-sm-2 control-label">活动规则填写</div>
                 <div class="col-sm-10">
                     <div>
-                        <a id="upload-target" class="btn btn-primary">添加图片并压缩</a>
-                        <a id="start-upload" class="btn btn-primary">开始上传</a>
+                        <a id="upload-target" class="btn btn-primary btn">
+                            开始上传
+                        </a>
+                        <input id="activityRulesUpload" class="hide" type="file" accept="image/png,image/gif,image/jpeg" @change="uploadActivityRules" />
                     </div>
-                    <input type="text" id="activityRules" class="form-control" v-model="distribution.activityRules"
-                           placeholder=""/>
+
+                    <div class="upload-imgs">
+                        <div v-for="(item,index) in distribution.activityRules">
+                            <i class="fa fa-close fa-lg" @click="delActivityRulesUpload(index)"></i>
+                            <img :src="item.img" width="100" height="100" />
+                        </div>
+                    </div>
                 </div>
-                <div id="upload-image-view" class="clearfix"></div>
-                <div id="log"></div>
             </div>
 
             <!--<div class="form-group">-->

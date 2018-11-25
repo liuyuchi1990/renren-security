@@ -79,3 +79,27 @@ function getSelectedRows() {
 function isBlank(value) {
     return !value || !/\S/.test(value)
 }
+
+function myUpload(url,file,done,fail){
+    var formData = new FormData();
+    formData.append("upfile",file);
+
+    $.ajax({
+        url : 'https://wx.sharkmeida.cn/distribution/upload',
+        type : 'post',
+        data : formData,
+        processData:false,
+        contentType:false,
+    }).done(function(res){
+		if(res.msg == 'success'){
+            done && done(res.result.data);
+		}else{
+			alert('上传失败1');
+            fail && fail();
+		}
+	}).fail(function(){
+        alert('上传失败2');
+        fail && fail();
+	})
+
+}
