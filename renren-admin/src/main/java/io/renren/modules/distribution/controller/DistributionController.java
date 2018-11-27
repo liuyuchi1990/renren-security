@@ -63,8 +63,8 @@ public class DistributionController {
      * 保存
      */
     @RequestMapping(value = "/save",method=RequestMethod.POST)
-    @ResponseBody
-    public R save(Distribution distribution){
+    //@RequiresPermissions("sys:distribution:save")
+    public R save(@RequestBody Distribution distribution){
         distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distributionService.insertDistribution(distribution);
         return R.ok();
@@ -74,13 +74,12 @@ public class DistributionController {
      * 修改
      */
     @RequestMapping(value = "/update",method=RequestMethod.POST)
-    @ResponseBody
-    public R update(Distribution distribution){
+    //@RequiresPermissions("sys:distribution:update")
+    public R update(@RequestBody Distribution distribution){
         ValidatorUtils.validateEntity(distribution);
         distributionService.updateById(distribution);//全部更新
         return R.ok();
     }
-
 
     /**
      * 删除

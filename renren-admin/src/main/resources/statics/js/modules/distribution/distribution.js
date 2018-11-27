@@ -98,7 +98,7 @@ var vm = new Vue({
 				type: "POST",
 			    url: baseURL + url,
                 contentType: "application/json",
-			    data: data,
+			    data: JSON.stringify(data),
 			    success: function(r){
 			    	if(r.code === 0){
 						alert('操作成功', function(index){
