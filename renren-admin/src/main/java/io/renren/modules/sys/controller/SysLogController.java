@@ -115,7 +115,7 @@ public class SysLogController {
 			bus.setName(map.get("name").toString());
 			bus.setBanner_url(map.get("img_path").toString());
 			businessList.add(bus);
-		}cons
+		}
 		data.put("channel",channelList);
 		data.put("banner",bannerList);
 		data.put("newGoodsList",goodActitiyList);
