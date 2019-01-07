@@ -145,7 +145,6 @@ public class WxUtil {
                 sb.append("</" + name + ">");
             }
         }
-
         return sb.toString();
     }
 }
