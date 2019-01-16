@@ -1,20 +1,14 @@
 package io.renren.modules.sys.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.goku.coreui.order.model.Order;
-import com.goku.coreui.order.model.OrderInfo;
-import com.goku.coreui.order.service.OrderService;
-import com.goku.coreui.sys.config.Constants;
-import com.goku.coreui.sys.model.PayInfo;
-import com.goku.coreui.sys.model.ReturnCodeEnum;
-import com.goku.coreui.sys.model.ReturnResult;
-import com.goku.coreui.sys.service.SysUserService;
-import com.goku.coreui.sys.util.*;
 import io.renren.common.config.Constants;
 import io.renren.common.utils.*;
+import io.renren.modules.order.model.Order;
+import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.PayInfo;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +40,7 @@ public class WxPayController {
     @RequestMapping(value = "/prepay", method = RequestMethod.POST)
     @ResponseBody
     public ReturnResult prePay(@RequestParam(required = true) String user_id,
-                               @RequestParam(required = true) String orderId,
+                               @RequestParam(required = true ) String orderId,
                                @RequestParam(required = true) Double total_fee,
                                HttpServletRequest request)throws Exception {
 
@@ -65,7 +59,7 @@ public class WxPayController {
         String openId = mp.get("open_id").toString();
         Order od = orderService.queryById(orderId);
         //判断订单状态是否正常
-        if (StringUtils.isBlank(openId)||("5".equals(od.getOrder_status()))) {
+        if (StringUtils.isBlank(openId)||("5".equals(od.getOrderStatus()))) {
             result = false;
             info = "订单超时";
         } else {
@@ -173,7 +167,7 @@ public class WxPayController {
         payInfo.setDevice_info("WEB");
         payInfo.setNonce_str(randomNonceStr);
         payInfo.setSign_type("MD5");  //默认即为MD5
-        payInfo.setBody("猩愿机");
+        payInfo.setBody("小飞象");
         payInfo.setAttach("4luluteam");
         payInfo.setOut_trade_no(orderId);
         //微信价格最小单位分 转换为整数
@@ -258,20 +252,18 @@ public class WxPayController {
                 String outTradeNo = map.get("out_trade_no");
                 log.info("微信回调返回商户订单号：" + outTradeNo);
                 //访问DB
-                OrderInfo orderInfo = new OrderInfo();
-                Order order = orderService.queryById(outTradeNo);
+                Order order = new Order();
+                order = orderService.queryById(outTradeNo);
                 //修改支付状态
-                orderInfo.setOrder_status("3");
-                orderInfo.setPay_type("0");
-                orderInfo.setOrder_id(outTradeNo);
+                order.setOrderStatus("3");
 
 
                 int rs = 1;
-                if("1".equals(order.getOrder_status())) {
-                    rs = orderService.edit(orderInfo);
+                if("1".equals(order.getOrderStatus())) {
+                    rs = orderService.edit(order);
                 }
                 //判断 是否更新成功
-                if ((rs > 0)||("1".equals(order.getOrder_status()))) {
+                if ((rs > 0)||("1".equals(order.getOrderStatus()))) {
                     log.info("微信回调  订单号：" + outTradeNo + ",修改状态成功");
                     //封装 返回值
                     StringBuffer buffer = new StringBuffer();

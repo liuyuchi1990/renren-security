@@ -2,9 +2,17 @@ package io.renren.common.config;
 
 public class Constants {
     /**
-     * 微信APPID
+     * 微信小程序APPID
      */
     public static final String APPID = "wx6a09ed4a9b5b3970";
+
+    /**
+     * 微信公众号APPID
+     */
+    public static final String PAPPID = "wxd8ea2d8f88363b1f";
+
+
+    public static final String SIGN = "HJJI8970OKMNHY726YTGHJI908YHNBGT";
 
     /**
      * 微信SERCRET
@@ -29,7 +37,7 @@ public class Constants {
 
     public static final String APP_KEY = "xyj185568014781qaz2wsx3edc4rfv5t";
 
-    public static final String MCH_ID = "1511521411";  //商户号
+    public static final String MCH_ID = "1513253941";  //商户号
 
     public static final String URL_UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 

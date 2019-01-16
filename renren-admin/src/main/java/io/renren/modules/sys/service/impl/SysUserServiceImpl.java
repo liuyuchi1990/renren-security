@@ -118,4 +118,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
                 new EntityWrapper<SysUserEntity>().eq("user_id", userId).eq("password", password));
     }
 
+    public Map<String,Object> queryById(String userId){
+		return baseMapper.queryById(userId);
+	}
 }

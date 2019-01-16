@@ -51,6 +51,11 @@ public interface SysUserService extends IService<SysUserEntity> {
 	void update(SysUserEntity user);
 
 	/**
+	 * 修改用户
+	 */
+	Map<String,Object> queryById(String userId);
+
+	/**
 	 * 修改密码
 	 * @param userId       用户ID
 	 * @param password     原密码

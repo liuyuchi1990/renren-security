@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import io.renren.modules.sys.entity.SysUserEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 系统用户
@@ -40,5 +41,7 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
 	 * 查询用户的所有菜单ID
 	 */
 	List<Long> queryAllMenuId(String userId);
+
+	Map<String,Object> queryById(String userId);
 
 }

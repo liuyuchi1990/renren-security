@@ -23,4 +23,8 @@ public class TimeUtils {
     public static Date minusDay(Date date, int day) {
         return addDay(date, -day);
     }
+
+    public static void main(){
+
+    }
 }
