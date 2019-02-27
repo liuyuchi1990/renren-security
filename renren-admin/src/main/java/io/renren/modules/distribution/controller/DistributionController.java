@@ -1,10 +1,17 @@
 package io.renren.modules.distribution.controller;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.renren.common.utils.MD5;
 import io.renren.common.utils.UploadUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.distribution.entity.Distribution;
@@ -13,12 +20,14 @@ import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 import org.springframework.web.multipart.MultipartFile;
+
 
 
 /**
@@ -64,6 +73,7 @@ public class DistributionController {
      */
     @RequestMapping(value = "/save",method=RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:save")
+    @ResponseBody
     public R save(@RequestBody Distribution distribution){
         distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distributionService.insertDistribution(distribution);
@@ -75,6 +85,7 @@ public class DistributionController {
      */
     @RequestMapping(value = "/update",method=RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:update")
+    @ResponseBody
     public R update(@RequestBody Distribution distribution){
         ValidatorUtils.validateEntity(distribution);
         distributionService.updateById(distribution);//全部更新
@@ -90,6 +101,20 @@ public class DistributionController {
         distributionService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+
+    @RequestMapping("/send")
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult send() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, DocumentException, IOException {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        Map<String,String> mp = MD5.sendRedPack();
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        map.put("data", mp);
+        result.setResult(map);
+        return result;
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)

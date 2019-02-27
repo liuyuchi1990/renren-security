@@ -9,6 +9,7 @@ import io.renren.modules.sys.entity.PayInfo;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
 import io.renren.modules.sys.service.SysUserService;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -37,6 +39,26 @@ public class WxPayController {
     @Autowired
     SysUserService sysUserService;
 
+    @RequestMapping(value = "/getServer",method=RequestMethod.GET)
+    public void login(HttpServletRequest request,HttpServletResponse response) {
+        System.out.println("success");
+        String signature = request.getParameter("signature");
+        String timestamp = request.getParameter("timestamp");
+        String nonce = request.getParameter("nonce");
+        String echostr = request.getParameter("echostr");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+            if (CheckUtil.checkSignature(signature, timestamp, nonce)) {
+                out.write(echostr);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            out.close();
+        }
+    }
     @RequestMapping(value = "/prepay", method = RequestMethod.POST)
     @ResponseBody
     public ReturnResult prePay(@RequestParam(required = true) String user_id,
@@ -288,19 +310,85 @@ public class WxPayController {
     private String byteToStr(byte[] byteArray) {
         String strDigest = "";
         for (int i = 0; i < byteArray.length; i++) {
-            strDigest += this.byteToHexStr(byteArray[i]);
+            strDigest += WxUtil.byteToHexStr(byteArray[i]);
         }
         return strDigest;
     }
-    private String byteToHexStr(byte bytes) {
-        char[] Digit = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
-        char[] tempArr = new char[2];
-        tempArr[0] = Digit[(bytes >>> 4) & 0X0F];
-        tempArr[1] = Digit[bytes & 0X0F];
 
-        String s = new String(tempArr);
-        return s;
+    @RequestMapping(value = "/initwxjs", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult init(@RequestParam(required = true) String url,
+                             HttpServletRequest request){
+        ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        //ServletContext servletContext = ServletContextUtil.getServletContext();
+        String accessToken = WxUtil.getWxPlatFormAccessToken();
+        String jsapi_ticket = WxUtil.getAccessTicket(accessToken);
+        Map<String, Object> map = new HashedMap();
+        Map<String, String> ret = sign(jsapi_ticket, url);
+        System.out.println("currurl = "+ url);
+
+        // 注意 URL 一定要动态获取，不能 hardcode
+//		for (Map.Entry entry : ret.entrySet()) {
+//			System.out.println(entry.getKey() + ", " + entry.getValue());
+//		}
+        System.out.println("signature =" + ret.get("signature"));
+        map.put("data",ret);
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        rs.setResult(map);
+        return rs;
     }
+
+    public Map<String, String> sign(String jsapi_ticket, String url) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String nonce_str = create_nonce_str();
+        String timestamp = create_timestamp();
+        String string1;
+        String signature = "";
+
+        // 注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + jsapi_ticket +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        System.out.println(string1);
+
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string1.getBytes("UTF-8"));
+            signature = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        ret.put("url", url);
+        ret.put("appId",Constants.PTAPPID);
+        ret.put("jsapi_ticket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        return ret;
+    }
+
+    private static String byteToHex(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash) {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+    }
+
+    private static String create_nonce_str() {
+        return UUID.randomUUID().toString();
+    }
+
+    private static String create_timestamp() {
+        return Long.toString(System.currentTimeMillis() / 1000);
+    }
+
 }

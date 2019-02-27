@@ -11,13 +11,20 @@ public class Constants {
      */
     public static final String PAPPID = "wxd8ea2d8f88363b1f";
 
+    public static final String PTAPPID = "wx2517d7a8920ab213";
+
 
     public static final String SIGN = "HJJI8970OKMNHY726YTGHJI908YHNBGT";
 
     /**
-     * 微信SERCRET
+     * 微信小程序SERCRET
      */
     public static final String SERCRET = "7e7a01e5f83330ad0362b4acefe71ffc";
+
+    /**
+     * 微信公众号SERCRET
+     */
+    public static final String PSERCRET = "03d04cb32236f9a95d4656863310b317";
 
     /**
      * 微信单次货物购买积分

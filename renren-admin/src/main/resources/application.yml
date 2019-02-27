@@ -83,3 +83,4 @@ root:
   img:
     url: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs
     path: https://wx.sharkmeida.cn/imgs/
+    cert: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/cert

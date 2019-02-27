@@ -38,7 +38,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * 功能：MD5签名处理核心文件，不需要修改
@@ -190,7 +190,7 @@ public class MD5 {
      * @throws KeyManagementException
      * @throws DocumentException
      */
-    public  static void sendRedPack() throws KeyStoreException, NoSuchAlgorithmException, IOException,
+    public  static Map<String, String> sendRedPack() throws KeyStoreException, NoSuchAlgorithmException, IOException,
             KeyManagementException, UnrecoverableKeyException, DocumentException, CertificateException {
         // 获取uuid作为随机字符串  UUIDHexGeneratorutil
         String nonceStr = RandomUtils.generateMixString(32);
@@ -211,7 +211,7 @@ public class MD5 {
         sendRedPackPo.setTotal_amount(totalAmount);
         sendRedPackPo.setTotal_num("1");
         sendRedPackPo.setWishing("恭喜发财");//红包祝福语
-        sendRedPackPo.setClient_ip("180.109.150.92"); //调用接口的机器Ip地址
+        sendRedPackPo.setClient_ip("47.99.212.44"); //调用接口的机器Ip地址
         sendRedPackPo.setAct_name("新年快乐");//活动名称
         sendRedPackPo.setRemark("新年快乐");//备注信息
 
@@ -248,7 +248,7 @@ public class MD5 {
         Map<String, String> map = new HashMap<String, String>();
 
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        FileInputStream instream = new FileInputStream(new File("C:\\Users\\rliu9\\test\\cert\\apiclient_cert.p12")); //此处为证书所放的绝对路径
+        FileInputStream instream = new FileInputStream(new File("/usr/local/tomcat/apache-tomcat-8.0.53/webapps/cert/apiclient_cert.p12")); //此处为证书所放的绝对路径
         try {
             keyStore.load(instream, mch_id.toCharArray());
         } finally {
@@ -330,8 +330,10 @@ public class MD5 {
         /**
          * 根据以上返回码进行业务逻辑处理
          */
+        return map;
     }
     public static void main(String[] args) throws Exception {
-        sendRedPack();
+        Map<String,String> map = sendRedPack();
+        System.out.println(map.toString());
     }
 }
