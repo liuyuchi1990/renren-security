@@ -99,9 +99,8 @@ VALUES
 		<if test="watcher!= null">
 			watcher =  concat(concat(#{watcher,jdbcType=VARCHAR},','),IFNULL(watcher,'')),
 		</if>
-		<if test="visits!= null">
+
 			visits = visits + 1
-		</if>
 		</set>
 		where id = #{id,jdbcType=VARCHAR}
 	</update>
