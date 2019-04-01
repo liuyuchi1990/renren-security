@@ -25,5 +25,11 @@ public interface DistributionDao extends BaseMapper<Distribution> {
     Distribution queryById(@Param("id") String id);
 
     int insertDistribution (Distribution insertDistribution);
-	
+
+    int release(String id);
+
+    int rollback(String id);
+
+
+    int addWatcher (Distribution insertDistribution);
 }

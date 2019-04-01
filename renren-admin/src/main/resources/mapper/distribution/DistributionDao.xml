@@ -72,7 +72,37 @@ VALUES
 		SYSDATE()
 	)
     </insert>
-	<select id="queryById" parameterType="java.lang.String" resultType="io.renren.modules.distribution.entity.Distribution">
+    <select id="queryById" parameterType="java.lang.String"
+            resultType="io.renren.modules.distribution.entity.Distribution">
 		select * from tb_distribution where id = #{id}
 	</select>
+
+    <update id="rollback" parameterType="java.lang.String">
+        update tb_distribution
+        <set>
+            target_quantity = target_quantity + 1,
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="release" parameterType="java.lang.String">
+        update tb_distribution
+        <set>
+            target_quantity = target_quantity - 1,
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+	<update id="addWatcher" parameterType="io.renren.modules.distribution.entity.Distribution">
+		update tb_distribution
+		<set>
+		<if test="watcher!= null">
+			watcher =  concat(concat(#{watcher,jdbcType=VARCHAR},','),IFNULL(watcher,'')),
+		</if>
+		<if test="visits!= null">
+			visits = visits + 1
+		</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
 </mapper>

@@ -1,13 +1,17 @@
 package io.renren.modules.sys.controller;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.renren.common.config.Constants;
 import io.renren.common.utils.*;
 import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderInfo;
 import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.PayInfo;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
@@ -76,9 +80,9 @@ public class WxPayController {
         log.error("\n======================================================");
         log.error("code: " + user_id);
 
-        Map<String,Object> mp = sysUserService.queryById(user_id);
+        SysUserEntity user = sysUserService.queryById(user_id);
 
-        String openId = mp.get("open_id").toString();
+        String openId = user.getOpenId();
         Order od = orderService.queryById(orderId);
         //判断订单状态是否正常
         if (StringUtils.isBlank(openId)||("5".equals(od.getOrderStatus()))) {
@@ -94,7 +98,7 @@ public class WxPayController {
             log.error("openId: " + openId + ", clientIP: " + clientIP);
 
             String randomNonceStr = RandomUtils.generateMixString(32);
-            String prepayId = unifiedOrder(openId, clientIP, randomNonceStr, orderId,total_fee);
+            String prepayId = WxUtil.unifiedOrder(openId, clientIP, randomNonceStr, orderId,total_fee);
 
             log.error("prepayId: " + prepayId);
 
@@ -107,7 +111,7 @@ public class WxPayController {
                 map.put("package", "prepay_id="+prepayId);
                 map.put("nonceStr", randomNonceStr);
                 map.put("timestamp",System.currentTimeMillis()/1000+"");
-                map.put("paySign",getSecondSign(prepayId,System.currentTimeMillis()/1000+"",randomNonceStr));
+                map.put("paySign",WxUtil.getSecondSign(prepayId,System.currentTimeMillis()/1000+"",randomNonceStr));
             }
         }
 
@@ -124,131 +128,6 @@ public class WxPayController {
         }
         rs.setResult(map);
         return rs;
-    }
-
-
-    /**
-     * 调用统一下单接口
-     *
-     * @param openId
-     */
-    private String unifiedOrder(String openId, String clientIP, String randomNonceStr, String orderId,double total_fee) {
-
-        try {
-
-            String url = Constants.URL_UNIFIED_ORDER;
-
-            PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr,orderId,total_fee);
-            String md5 = getSign(payInfo);
-            payInfo.setSign(md5);
-            log.error("md5 value: " + md5);
-
-            String xml = CommonUtil.payInfoToXML(payInfo);
-            xml = xml.replace("__", "_").replace("<![CDATA[1]]>", "1");
-            //xml = xml.replace("__", "_").replace("<![CDATA[", "").replace("]]>", "");
-            log.error(xml);
-
-            StringBuffer buffer = HttpUtil.httpsRequest(url, "POST", xml);
-            log.error("unifiedOrder request return body: \n" + buffer.toString());
-            Map<String, String> result = CommonUtil.parseXml(buffer.toString());
-
-
-            String return_code = result.get("return_code");
-            if (StringUtils.isNotBlank(return_code) && return_code.equals("SUCCESS")) {
-
-                String return_msg = result.get("return_msg");
-                if (StringUtils.isNotBlank(return_msg) && !return_msg.equals("OK")) {
-                    //log.error("统一下单错误！");
-                    return "";
-                }
-
-                String prepay_Id = result.get("prepay_id");
-                return prepay_Id;
-
-            } else {
-                return "";
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private PayInfo createPayInfo(String openId, String clientIP, String randomNonceStr,String orderId,double total_fee) {
-
-        Date date = new Date();
-        String timeStart = TimeUtils.getFormatTime(date, Constants.TIME_FORMAT);
-        String timeExpire = TimeUtils.getFormatTime(TimeUtils.addDay(date, Constants.TIME_EXPIRE), Constants.TIME_FORMAT);
-
-        String randomOrderId = CommonUtil.getRandomOrderId();
-
-        PayInfo payInfo = new PayInfo();
-        payInfo.setAppid(Constants.APPID);
-        payInfo.setMch_id(Constants.MCH_ID);
-        payInfo.setDevice_info("WEB");
-        payInfo.setNonce_str(randomNonceStr);
-        payInfo.setSign_type("MD5");  //默认即为MD5
-        payInfo.setBody("小飞象");
-        payInfo.setAttach("4luluteam");
-        payInfo.setOut_trade_no(orderId);
-        //微信价格最小单位分 转换为整数
-        DecimalFormat df = new DecimalFormat("#######.##");
-        total_fee = total_fee * 100;
-        total_fee = Math.ceil(total_fee);
-        String price = df.format(total_fee);
-        payInfo.setTotal_fee(Integer.parseInt(price));
-        payInfo.setSpbill_create_ip(clientIP);
-        payInfo.setTime_start(timeStart);
-        payInfo.setTime_expire(timeExpire);
-        payInfo.setNotify_url(Constants.URL_NOTIFY);
-        payInfo.setTrade_type("JSAPI");
-        payInfo.setLimit_pay("no_credit");
-        payInfo.setOpenid(openId);
-        return payInfo;
-    }
-
-    private String getSign(PayInfo payInfo) throws Exception {
-        StringBuffer sb = new StringBuffer();
-        sb.append("appid=" + payInfo.getAppid())
-                .append("&attach=" + payInfo.getAttach())
-                .append("&body=" + payInfo.getBody())
-                .append("&device_info=" + payInfo.getDevice_info())
-                .append("&limit_pay=" + payInfo.getLimit_pay())
-                .append("&mch_id=" + payInfo.getMch_id())
-                .append("&nonce_str=" + payInfo.getNonce_str())
-                .append("&notify_url=" + payInfo.getNotify_url())
-                .append("&openid=" + payInfo.getOpenid())
-                .append("&out_trade_no=" + payInfo.getOut_trade_no())
-                .append("&sign_type=" + payInfo.getSign_type())
-                .append("&spbill_create_ip=" + payInfo.getSpbill_create_ip())
-                .append("&time_expire=" + payInfo.getTime_expire())
-                .append("&time_start=" + payInfo.getTime_start())
-                .append("&total_fee=" + payInfo.getTotal_fee())
-                .append("&trade_type=" + payInfo.getTrade_type())
-                .append("&key=" + Constants.APP_KEY);
-
-        log.error("排序后的拼接参数：" + sb.toString());
-
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.reset();
-        md5.update(sb.toString().toString().getBytes("UTF-8"));
-        return byteToStr(md5.digest()).toUpperCase();
-    }
-
-    private String getSecondSign(String prepay_id,String time,String noncestr) throws Exception {
-        StringBuffer sb = new StringBuffer();
-        sb.append("appId=" + Constants.APPID)
-                .append("&nonceStr=" + noncestr)
-                .append("&package=prepay_id=" + prepay_id)
-                .append("&signType=MD5&timeStamp=" + time)
-                .append("&key=" + Constants.APP_KEY);
-        log.error("排序后的拼接参数：" + sb.toString());
-
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.reset();
-        md5.update(sb.toString().toString().getBytes("UTF-8"));
-        return byteToStr(md5.digest()).toUpperCase();
     }
 
     @RequestMapping(value = "/payCallback", method = RequestMethod.POST)
@@ -274,15 +153,17 @@ public class WxPayController {
                 String outTradeNo = map.get("out_trade_no");
                 log.info("微信回调返回商户订单号：" + outTradeNo);
                 //访问DB
-                Order order = new Order();
-                order = orderService.queryById(outTradeNo);
+                OrderInfo orderInfo = new OrderInfo();
+                Order order = orderService.queryById(outTradeNo);
                 //修改支付状态
-                order.setOrderStatus("3");
+                orderInfo.setOrder_status("3");
+                orderInfo.setPay_type("0");
+                orderInfo.setOrder_id(outTradeNo);
 
 
                 int rs = 1;
                 if("1".equals(order.getOrderStatus())) {
-                    rs = orderService.edit(order);
+                    rs = orderService.edit(orderInfo);
                 }
                 //判断 是否更新成功
                 if ((rs > 0)||("1".equals(order.getOrderStatus()))) {
@@ -307,14 +188,6 @@ public class WxPayController {
         }
     }
 
-    private String byteToStr(byte[] byteArray) {
-        String strDigest = "";
-        for (int i = 0; i < byteArray.length; i++) {
-            strDigest += WxUtil.byteToHexStr(byteArray[i]);
-        }
-        return strDigest;
-    }
-
     @RequestMapping(value = "/initwxjs", method = RequestMethod.POST)
     @ResponseBody
     public ReturnResult init(@RequestParam(required = true) String url,
@@ -324,13 +197,9 @@ public class WxPayController {
         String accessToken = WxUtil.getWxPlatFormAccessToken();
         String jsapi_ticket = WxUtil.getAccessTicket(accessToken);
         Map<String, Object> map = new HashedMap();
-        Map<String, String> ret = sign(jsapi_ticket, url);
+        Map<String, String> ret = WxUtil.sign(jsapi_ticket, url);
         System.out.println("currurl = "+ url);
 
-        // 注意 URL 一定要动态获取，不能 hardcode
-//		for (Map.Entry entry : ret.entrySet()) {
-//			System.out.println(entry.getKey() + ", " + entry.getValue());
-//		}
         System.out.println("signature =" + ret.get("signature"));
         map.put("data",ret);
         map.put("status", "success");
@@ -339,56 +208,84 @@ public class WxPayController {
         return rs;
     }
 
-    public Map<String, String> sign(String jsapi_ticket, String url) {
-        Map<String, String> ret = new HashMap<String, String>();
-        String nonce_str = create_nonce_str();
-        String timestamp = create_timestamp();
-        String string1;
-        String signature = "";
+    @RequestMapping("/getUserInfo")
+    public ReturnResult getUserInfo(@RequestParam(name="code",required=false)String code,
+                         @RequestParam(name="state")String state) {
 
-        // 注意这里参数名必须全部小写，且必须有序
-        string1 = "jsapi_ticket=" + jsapi_ticket +
-                "&noncestr=" + nonce_str +
-                "&timestamp=" + timestamp +
-                "&url=" + url;
-        System.out.println(string1);
+        ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        Map<String, Object> ret = new HashedMap();
+        System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + state);
+        SysUserEntity user = new SysUserEntity();
 
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(string1.getBytes("UTF-8"));
-            signature = byteToHex(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        //通过code换取网页授权web_access_token
+        if (code != null || !(code.equals(""))) {
+            String CODE = code;
+            String WebAccessToken = "";
+            String openId = "";
+            //替换字符串，获得请求URL
+            String token = UserInfoUtil.getWebAccess(Constants.PTAPPID, Constants.PSERCRET, CODE);
+            System.out.println("----------------------------token为：" + token);
+            //通过https方式请求获得web_access_token
+            JSONObject jsonObject = WxUtil.httpRequest(token, "GET", null);
+            System.out.println("jsonObject------" + jsonObject);
+            if (null != jsonObject) {
+                try {
+
+                    WebAccessToken = jsonObject.getString("access_token");
+                    openId = jsonObject.getString("openid");
+                    System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
+
+                    //-----------------------拉取用户信息...替换字符串，获得请求URL
+                    String userMessage = UserInfoUtil.getUserMessage(WebAccessToken, openId);
+                    System.out.println(" userMessage===" + userMessage);
+                    //通过https方式请求获得用户信息响应
+                    JSONObject userMessageJsonObject = WxUtil.httpRequest(userMessage, "GET", null);
+
+                    System.out.println("userMessagejsonObject------" + userMessageJsonObject);
+
+                    if (userMessageJsonObject != null) {
+                        try {
+                            //用户昵称
+                             SysUserEntity utmp = sysUserService.queryByOpenId(userMessageJsonObject.getString("openid"));
+                            //获取成果，存入数据库
+                            if(utmp==null){
+                                user.setUsername(userMessageJsonObject.getString("nickname"));
+                                user.setNickname(userMessageJsonObject.getString("nickname"));
+                                //用户性别
+                                user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
+                                user.setSex(Integer.parseInt(userMessageJsonObject.getString("sex")));
+                                user.setProvince(userMessageJsonObject.getString("province"));
+                                user.setSubscribetime(userMessageJsonObject.getString("subscribetime"));
+                                user.setCity(userMessageJsonObject.getString("city"));
+                                user.setHeadimgurl(userMessageJsonObject.getString("headimgurl"));
+                                user.setPassword("123456");
+                                //用户唯一标识
+                                user.setOpenId(userMessageJsonObject.getString("openid"));
+                                user.setUnionid(userMessageJsonObject.getString("unionid"));
+                                sysUserService.insertUser(user);
+                            }else{
+                                user = utmp;
+                            }
+
+                        } catch (JSONException e) {
+                            System.out.println("获取userName失败");
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    WebAccessToken = null;// 获取code失败
+                    System.out.println("获取WebAccessToken失败");
+                }
+            }
         }
-
-        ret.put("url", url);
-        ret.put("appId",Constants.PTAPPID);
-        ret.put("jsapi_ticket", jsapi_ticket);
-        ret.put("nonceStr", nonce_str);
-        ret.put("timestamp", timestamp);
-        ret.put("signature", signature);
-        return ret;
+        ret.put("user",user);
+        ret.put("code",code);
+        map.put("data",ret);
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        rs.setResult(map);
+        return rs;
     }
-
-    private static String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
-    }
-
-    private static String create_nonce_str() {
-        return UUID.randomUUID().toString();
-    }
-
-    private static String create_timestamp() {
-        return Long.toString(System.currentTimeMillis() / 1000);
-    }
-
 }

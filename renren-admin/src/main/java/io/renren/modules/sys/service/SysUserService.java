@@ -50,10 +50,6 @@ public interface SysUserService extends IService<SysUserEntity> {
 	 */
 	void update(SysUserEntity user);
 
-	/**
-	 * 修改用户
-	 */
-	Map<String,Object> queryById(String userId);
 
 	/**
 	 * 修改密码
@@ -62,4 +58,12 @@ public interface SysUserService extends IService<SysUserEntity> {
 	 * @param newPassword  新密码
 	 */
 	boolean updatePassword(String userId, String password, String newPassword);
+
+	void insertUser(SysUserEntity user);
+
+	SysUserEntity queryById(String id);
+
+	SysUserEntity queryByOpenId(String id);
+
+	List<SysUserEntity>  queryForUsers(String[] ids);
 }

@@ -154,6 +154,9 @@ public class Distribution implements Serializable {
      */
     private Integer activityState;
 
+    private String watcher;
+    //访问数
+    private Integer visits;
     /**
      * 设置：
      */
@@ -541,5 +544,21 @@ public class Distribution implements Serializable {
 
     public void setActivityDestription(String activityDestription) {
         this.activityDestription = activityDestription;
+    }
+
+    public String getWatcher() {
+        return watcher;
+    }
+
+    public void setWatcher(String watcher) {
+        this.watcher = watcher;
+    }
+
+    public Integer getVisits() {
+        return visits;
+    }
+
+    public void setVisits(Integer visits) {
+        this.visits = visits;
     }
 }

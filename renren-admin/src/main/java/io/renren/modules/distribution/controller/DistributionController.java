@@ -6,10 +6,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import io.renren.common.utils.MD5;
 import io.renren.common.utils.UploadUtils;
@@ -18,6 +15,8 @@ import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.dom4j.DocumentException;
@@ -43,6 +42,9 @@ public class DistributionController {
     @Autowired
     private DistributionService distributionService;
 
+    @Autowired
+    private SysUserService sysUserService;
+
     @Value("${root.img.url}")
     String filePath;
     @Value("${root.img.path}")
@@ -64,6 +66,20 @@ public class DistributionController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") String id){
+        Distribution distribution = distributionService.queryById(id);
+        List<SysUserEntity> users = new ArrayList<>();
+        if((!"".equals(distribution.getWatcher()))&&(distribution.getWatcher()!=null)){
+            String[] idList = distribution.getWatcher().split(",");
+            users =  sysUserService.queryForUsers(idList);
+        }
+        return R.ok().put("distribution", distribution).put("user",users);
+    }
+
+    /**
+     * 信息
+     */
+    @RequestMapping("/info")
+    public R infoAuth(@PathVariable("id") String id){
         Distribution distribution = distributionService.queryById(id);
         return R.ok().put("distribution", distribution);
     }
@@ -110,6 +126,20 @@ public class DistributionController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Map<String,String> mp = MD5.sendRedPack();
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        map.put("data", mp);
+        result.setResult(map);
+        return result;
+    }
+
+
+    @RequestMapping(value ="/addWatcher" ,method=RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult addWatcher(@RequestBody Distribution distribution)  {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        int mp = distributionService.addWatcher(distribution);
         map.put("status", "success");
         map.put("msg", "send ok");
         map.put("data", mp);

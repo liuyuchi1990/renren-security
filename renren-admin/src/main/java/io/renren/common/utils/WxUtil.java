@@ -4,10 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import io.renren.common.config.Constants;
+import io.renren.modules.sys.controller.WxPayController;
+import io.renren.modules.sys.entity.PayInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -19,9 +23,11 @@ import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class WxUtil {
+    private static Logger log = LoggerFactory.getLogger(WxPayController.class);
     public static String getWxAppAccessToken() {
         Map<String, String> requestUrlParam = new HashMap<String, String>();
         requestUrlParam.put("appid", Constants.APPID);  //开发者设置中的appId
@@ -47,7 +53,6 @@ public class WxUtil {
     }
 
     public static String getAccessTicket(String Accesstkoken) {
-
         String requestUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + Accesstkoken + "&type=jsapi";
         JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
         String ticket = "";
@@ -98,30 +103,7 @@ public class WxUtil {
         return sb.toString();
     }
 
-    /**
-     * IpUtils工具类方法
-     * 获取真实的ip地址
-     *
-     * @param request
-     * @return
-     */
-    public static String getIpAddr(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
-            //多次反向代理后会有多个ip值，第一个ip才是真实ip
-            int index = ip.indexOf(",");
-            if (index != -1) {
-                return ip.substring(0, index);
-            } else {
-                return ip;
-            }
-        }
-        ip = request.getHeader("X-Real-IP");
-        if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
-            return ip;
-        }
-        return request.getRemoteAddr();
-    }
+
 
     /**
      * 解析xml,返回第一级元素键值对。如果第一级元素有子节点，则此节点的值是子节点的xml数据。
@@ -191,34 +173,6 @@ public class WxUtil {
             }
         }
         return sb.toString();
-    }
-
-    private String signature(String jsapi_ticket, String timestamp, String noncestr, String url) {
-        jsapi_ticket = "jsapi_ticket=" + jsapi_ticket;
-        timestamp = "timestamp=" + timestamp;
-        noncestr = "noncestr=" + noncestr;
-        url = "url=" + url;
-        String[] arr = new String[]{jsapi_ticket, timestamp, noncestr, url}; // 将token、timestamp、nonce,url参数进行字典序排序
-        Arrays.sort(arr);
-        StringBuilder content = new StringBuilder();
-        for (int i = 0; i < arr.length; i++) {
-            content.append(arr[i]);
-            if (i != arr.length - 1) {
-                content.append("&");
-            }
-        }
-        MessageDigest md = null;
-        String tmpStr = null;
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-            // 将三个参数字符串拼接成一个字符串进行sha1加密
-            byte[] digest = md.digest(content.toString().getBytes());
-            tmpStr = byteToStr(digest);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        content = null;
-        return tmpStr;
     }
 
 
@@ -309,24 +263,178 @@ public class WxUtil {
         return strDigest;
     }
 
-    class ShareAccess_Token {
-        private String access_token;
-        private String expires_in;
+    /**
+     * 调用统一下单接口
+     *
+     * @param openId
+     */
+    public static String unifiedOrder(String openId, String clientIP, String randomNonceStr, String orderId,double total_fee) {
 
-        public String getAccess_token() {
-            return access_token;
+        try {
+
+            String url = Constants.URL_UNIFIED_ORDER;
+
+            PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr,orderId,total_fee);
+            String md5 = getSign(payInfo);
+            payInfo.setSign(md5);
+            log.error("md5 value: " + md5);
+
+            String xml = CommonUtil.payInfoToXML(payInfo);
+            xml = xml.replace("__", "_").replace("<![CDATA[1]]>", "1");
+            //xml = xml.replace("__", "_").replace("<![CDATA[", "").replace("]]>", "");
+            log.error(xml);
+
+            StringBuffer buffer = HttpUtil.httpsRequest(url, "POST", xml);
+            log.error("unifiedOrder request return body: \n" + buffer.toString());
+            Map<String, String> result = CommonUtil.parseXml(buffer.toString());
+
+
+            String return_code = result.get("return_code");
+            if (StringUtils.isNotBlank(return_code) && return_code.equals("SUCCESS")) {
+
+                String return_msg = result.get("return_msg");
+                if (StringUtils.isNotBlank(return_msg) && !return_msg.equals("OK")) {
+                    //log.error("统一下单错误！");
+                    return "";
+                }
+
+                String prepay_Id = result.get("prepay_id");
+                return prepay_Id;
+
+            } else {
+                return "";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static PayInfo createPayInfo(String openId, String clientIP, String randomNonceStr,String orderId,double total_fee) {
+        Date date = new Date();
+        String timeStart = TimeUtils.getFormatTime(date, Constants.TIME_FORMAT);
+        String timeExpire = TimeUtils.getFormatTime(TimeUtils.addDay(date, Constants.TIME_EXPIRE), Constants.TIME_FORMAT);
+
+        String randomOrderId = CommonUtil.getRandomOrderId();
+
+        PayInfo payInfo = new PayInfo();
+        payInfo.setAppid(Constants.PTAPPID);
+        payInfo.setMch_id(Constants.PMCH_ID);
+        payInfo.setDevice_info("WEB");
+        payInfo.setNonce_str(randomNonceStr);
+        payInfo.setSign_type("MD5");  //默认即为MD5
+        payInfo.setBody("小飞象");
+        payInfo.setAttach("4luluteam");
+        payInfo.setOut_trade_no(orderId);
+        //微信价格最小单位分 转换为整数
+        DecimalFormat df = new DecimalFormat("#######.##");
+        total_fee = total_fee * 100;
+        total_fee = Math.ceil(total_fee);
+        String price = df.format(total_fee);
+        payInfo.setTotal_fee(Integer.parseInt(price));
+        payInfo.setSpbill_create_ip(clientIP);
+        payInfo.setTime_start(timeStart);
+        payInfo.setTime_expire(timeExpire);
+        payInfo.setNotify_url(Constants.URL_NOTIFY);
+        payInfo.setTrade_type("JSAPI");
+        payInfo.setLimit_pay("no_credit");
+        payInfo.setOpenid(openId);
+        return payInfo;
+    }
+
+    public static String getSign(PayInfo payInfo) throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append("appid=" + payInfo.getAppid())
+                .append("&attach=" + payInfo.getAttach())
+                .append("&body=" + payInfo.getBody())
+                .append("&device_info=" + payInfo.getDevice_info())
+                .append("&limit_pay=" + payInfo.getLimit_pay())
+                .append("&mch_id=" + payInfo.getMch_id())
+                .append("&nonce_str=" + payInfo.getNonce_str())
+                .append("&notify_url=" + payInfo.getNotify_url())
+                .append("&openid=" + payInfo.getOpenid())
+                .append("&out_trade_no=" + payInfo.getOut_trade_no())
+                .append("&sign_type=" + payInfo.getSign_type())
+                .append("&spbill_create_ip=" + payInfo.getSpbill_create_ip())
+                .append("&time_expire=" + payInfo.getTime_expire())
+                .append("&time_start=" + payInfo.getTime_start())
+                .append("&total_fee=" + payInfo.getTotal_fee())
+                .append("&trade_type=" + payInfo.getTrade_type())
+                .append("&key=" + Constants.PSIGN);
+
+        log.error("排序后的拼接参数：" + sb.toString());
+
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        md5.reset();
+        md5.update(sb.toString().toString().getBytes("UTF-8"));
+        return byteToStr(md5.digest()).toUpperCase();
+    }
+
+    public static String getSecondSign(String prepay_id,String time,String noncestr) throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append("appId=" + Constants.APPID)
+                .append("&nonceStr=" + noncestr)
+                .append("&package=prepay_id=" + prepay_id)
+                .append("&signType=MD5&timeStamp=" + time)
+                .append("&key=" + Constants.APP_KEY);
+        log.error("排序后的拼接参数：" + sb.toString());
+
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        md5.reset();
+        md5.update(sb.toString().toString().getBytes("UTF-8"));
+        return byteToStr(md5.digest()).toUpperCase();
+    }
+
+    public static Map<String, String> sign(String jsapi_ticket, String url) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String nonce_str = create_nonce_str();
+        String timestamp = create_timestamp();
+        String string1;
+        String signature = "";
+
+        // 注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + jsapi_ticket +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        System.out.println(string1);
+
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string1.getBytes("UTF-8"));
+            signature = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
-        public void setAccess_token(String accessToken) {
-            access_token = accessToken;
-        }
+        ret.put("url", url);
+        ret.put("appId",Constants.PTAPPID);
+        ret.put("jsapi_ticket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        return ret;
+    }
 
-        public String getExpires_in() {
-            return expires_in;
+    private static String byteToHex(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash) {
+            formatter.format("%02x", b);
         }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+    }
 
-        public void setExpires_in(String expiresIn) {
-            expires_in = expiresIn;
-        }
+    private static String create_nonce_str() {
+        return UUID.randomUUID().toString();
+    }
+
+    private static String create_timestamp() {
+        return Long.toString(System.currentTimeMillis() / 1000);
     }
 }

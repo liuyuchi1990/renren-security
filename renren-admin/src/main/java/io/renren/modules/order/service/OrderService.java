@@ -3,6 +3,7 @@ package io.renren.modules.order.service;
 
 import io.renren.modules.order.dao.OrderDao;
 import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class OrderService {
         return orderDao.insert(order);
     }
 
-    public int edit(Order order) {
+    public int edit(OrderInfo order) {
         return orderDao.edit(order);
     }
 

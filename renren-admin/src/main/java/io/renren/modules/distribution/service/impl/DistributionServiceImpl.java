@@ -45,4 +45,15 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         return distributionDao.insertDistribution(distribution);
     }
 
+    public int release(String id) {
+        return distributionDao.release(id);
+    }
+
+    public int rollback(String id) {
+        return distributionDao.rollback(id);
+    }
+
+    public int addWatcher(Distribution distribution) {
+        return distributionDao.addWatcher(distribution);
+    }
 }

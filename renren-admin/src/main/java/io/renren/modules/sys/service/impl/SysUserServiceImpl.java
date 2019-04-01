@@ -55,6 +55,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	private SysUserRoleService sysUserRoleService;
 	@Autowired
 	private SysDeptService sysDeptService;
+	@Autowired
+	private SysUserDao sysUserDao;
 
 	@Override
 	public List<Long> queryAllMenuId(String userId) {
@@ -69,14 +71,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 		Page<SysUserEntity> page = this.selectPage(
 			new Query<SysUserEntity>(params).getPage(),
 			new EntityWrapper<SysUserEntity>()
-				.like(StringUtils.isNotBlank(username),"username", username)
-				.addFilterIfNeed(params.get(Constant.SQL_FILTER) != null, (String)params.get(Constant.SQL_FILTER))
+//				.like(StringUtils.isNotBlank(username),"username", username)
+//				.addFilterIfNeed(params.get(Constant.SQL_FILTER) != null, (String)params.get(Constant.SQL_FILTER))
 		);
-
-		for(SysUserEntity sysUserEntity : page.getRecords()){
-			SysDeptEntity sysDeptEntity = sysDeptService.selectById(sysUserEntity.getDeptId());
-			sysUserEntity.setDeptName(sysDeptEntity.getName());
-		}
+//
+//		for(SysUserEntity sysUserEntity : page.getRecords()){
+//			SysDeptEntity sysDeptEntity = sysDeptService.selectById(sysUserEntity.getDeptId());
+//			sysUserEntity.setDeptName(sysDeptEntity.getName());
+//		}
 
 		return new PageUtils(page);
 	}
@@ -93,6 +95,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 		
 		//保存用户与角色关系
 		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void insertUser(SysUserEntity user) {
+		user.setCreateTime(new Date());
+		//sha256加密
+		String salt = RandomStringUtils.randomAlphanumeric(20);
+		user.setSalt(salt);
+		user.setPassword(ShiroUtils.sha256(user.getPassword(), user.getSalt()));
+		sysUserDao.insertUser(user);
+
+		//保存用户与角色关系
+		//sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
 	}
 
 	@Override
@@ -118,7 +134,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
                 new EntityWrapper<SysUserEntity>().eq("user_id", userId).eq("password", password));
     }
 
-    public Map<String,Object> queryById(String userId){
+    public SysUserEntity queryById(String userId){
 		return baseMapper.queryById(userId);
+	}
+
+	public SysUserEntity queryByOpenId(String userId){
+		return baseMapper.queryByOpenId(userId);
+	}
+
+	public List<SysUserEntity>  queryForUsers(String[] ids){
+		return sysUserDao.queryForUsers(ids);
 	}
 }

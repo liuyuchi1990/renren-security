@@ -18,4 +18,65 @@
 		where ur.user_id = #{userId}
 	</select>
 
+
+	<select id="queryById" parameterType="java.lang.String" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		select * from sys_user where user_id = #{id}
+	</select>
+
+	<select id="queryByOpenId" parameterType="java.lang.String" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		select * from sys_user where open_id = #{id}
+	</select>
+
+	<insert id="insertUser" parameterType="io.renren.modules.sys.entity.SysUserEntity">
+		INSERT INTO sys_user (
+user_id,
+username,
+password,
+salt,
+email,
+mobile,
+status,
+open_id,
+language,
+nickname,
+headimgurl,
+province,
+subscribetime,
+city,
+sex,
+unionid,
+create_time
+)
+VALUES
+(
+#{userId,jdbcType=VARCHAR},
+#{username,jdbcType=VARCHAR},
+#{password,jdbcType=VARCHAR},
+#{salt,jdbcType=VARCHAR},
+#{email,jdbcType=VARCHAR},
+#{mobile,jdbcType=VARCHAR},
+#{status,jdbcType=INTEGER},
+#{openId,jdbcType=VARCHAR},
+#{language,jdbcType=VARCHAR},
+#{nickname,jdbcType=VARCHAR},
+#{headimgurl,jdbcType=VARCHAR},
+#{province,jdbcType=VARCHAR},
+#{subscribetime,jdbcType=VARCHAR},
+#{city,jdbcType=VARCHAR},
+#{sex,jdbcType=VARCHAR},
+#{unionid,jdbcType=VARCHAR},
+		SYSDATE()
+		)
+	</insert>
+
+
+	<select id="queryForUsers" resultType="io.renren.modules.sys.entity.SysUserEntity">
+	SELECT
+     *
+	from sys_user
+	WHERE user_id IN
+	<foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+		#{id}
+	</foreach>
+	</select>
 </mapper>

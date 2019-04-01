@@ -42,6 +42,11 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
 	 */
 	List<Long> queryAllMenuId(String userId);
 
-	Map<String,Object> queryById(String userId);
+	SysUserEntity queryById(String id);
 
+	SysUserEntity queryByOpenId(String id);
+
+	void insertUser (SysUserEntity user);
+
+	List<SysUserEntity>  queryForUsers(String[] ids);
 }

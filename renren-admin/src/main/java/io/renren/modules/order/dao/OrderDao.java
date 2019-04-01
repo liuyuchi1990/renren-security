@@ -1,6 +1,7 @@
 package io.renren.modules.order.dao;
 
 import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.Map;
 public interface OrderDao {
     int insert(Order order);
 
-    int edit(Order order);
+    int edit(OrderInfo order);
 
     int delete(String[] ids);
 

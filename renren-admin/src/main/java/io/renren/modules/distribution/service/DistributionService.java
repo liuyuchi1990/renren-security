@@ -29,6 +29,12 @@ public interface DistributionService extends IService<Distribution> {
 
     int insertDistribution(Distribution distribution);
 
+    int release(String id);
+
+    int rollback(String id);
+
+    int addWatcher(Distribution distributio);
+
     Distribution queryById (String id);
 }
 

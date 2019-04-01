@@ -1,78 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="io.renren.modules.distribution.dao.DistributionDao">
+<mapper namespace="io.renren.modules.order.dao.OrderDao">
 
-    <insert id="insertDistribution" parameterType="io.renren.modules.distribution.entity.Distribution">
-    INSERT INTO tb_distribution (
-	id,
-	focus_on_pop,
-	focus_on_red,
-	share_red_envelopes,
-	distribution_series,
-	activity_theme,
-	trigger_keywords,
-	wechat_description,
-	thumbnail,
-	virtual_popularity,
-	music,
-	auto_play_music,
-	phone,
-	target_quantity,
-	product_price,
-	no_payment_num,
-	max_value,
-	min_value,
-	red_envelopes_name,
-	red_envelopes_blessings,
-	one_key_concern,
-	wechat_pic,
-	template_style,
-	activity_rules,
-	activity_name,
-	activity_type,
-	start_time,
-	end_time,
-	update_user,
-	activity_state,
-	update_time
-)
-VALUES
-	(
-		#{id,jdbcType=VARCHAR},
-		#{focusOnPop,jdbcType=INTEGER},
-		#{focusOnRed,jdbcType=INTEGER},
-		#{shareRedEnvelopes,jdbcType=INTEGER},
-		#{distributionSeries,jdbcType=INTEGER},
-		#{activityTheme,jdbcType=VARCHAR},
-		#{triggerKeywords,jdbcType=VARCHAR},
-		#{wechatDescription,jdbcType=VARCHAR},
-		#{thumbnail,jdbcType=VARCHAR},
-		#{virtualPopularity,jdbcType=INTEGER},
-		#{music,jdbcType=VARCHAR},
-		#{autoPlayMusic,jdbcType=INTEGER},
-		#{phone,jdbcType=VARCHAR},
-		#{targetQuantity,jdbcType=VARCHAR},
-		#{productPrice,jdbcType=VARCHAR},
-		#{noPaymentNum,jdbcType=VARCHAR},
-		#{maxValue,jdbcType=VARCHAR},
-		#{minValue,jdbcType=VARCHAR},
-		#{redEnvelopesName,jdbcType=VARCHAR},
-		#{redEnvelopesBlessings,jdbcType=VARCHAR},
-		#{oneKeyConcern,jdbcType=VARCHAR},
-		#{wechatPic,jdbcType=VARCHAR},
-		#{templateStyle,jdbcType=VARCHAR},
-		#{activityRules,jdbcType=VARCHAR},
-		#{activityName,jdbcType=VARCHAR},
-		#{activityType,jdbcType=VARCHAR},
-		#{startTime,jdbcType=VARCHAR},
-		#{endTime,jdbcType=VARCHAR},
-		#{updateUser,jdbcType=VARCHAR},
-		#{activityState,jdbcType=VARCHAR},
-		SYSDATE()
-	)
+    <insert id="insert" parameterType="io.renren.modules.order.model.Order">
+        insert into tb_order (order_id,activity_id,user_id,create_time,total_price,order_status)
+        value(
+          #{orderId,jdbcType=VARCHAR},
+          #{activityId,jdbcType=VARCHAR},
+          #{user_id,jdbcType=VARCHAR},
+          SYSDATE(),
+          #{total_price,jdbcType=VARCHAR},
+          #{orderStatus,jdbcType=VARCHAR}
+          )
     </insert>
-	<select id="queryById" parameterType="java.lang.String" resultType="io.renren.modules.distribution.entity.Distribution">
-		select * from tb_distribution where id = #{id}
+	<select id="queryById" parameterType="java.lang.String" resultType="io.renren.modules.order.model.Order">
+		select * from tb_order where order_id = #{order_id}
 	</select>
+
+
+	<select id="getOrderByUserId" parameterType="java.lang.String" resultType="io.renren.modules.order.model.Order">
+		select
+		t.*
+		from tb_order t
+		where t.user_id = #{user_id,jdbcType=VARCHAR}
+	</select>
+
+
+	<update id="edit" parameterType="io.renren.modules.order.model.OrderInfo">
+		update tb_order
+		<set>
+			<if test="order_status != null">
+				order_status = #{order_status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where order_id = #{order_id,jdbcType=VARCHAR}
+	</update>
 </mapper>

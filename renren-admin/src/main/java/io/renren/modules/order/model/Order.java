@@ -11,11 +11,9 @@ public class Order {
 
     private String activityId;
 
-    private String deviceName;
-
-    private String deviceAddress;
-
     private String user_id;
+
+    private String total_price;
 
     private Date updateTime;
 
@@ -40,21 +38,6 @@ public class Order {
         this.activityId = activityId;
     }
 
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public String getDeviceAddress() {
-        return deviceAddress;
-    }
-
-    public void setDeviceAddress(String deviceAddress) {
-        this.deviceAddress = deviceAddress;
-    }
 
     public String getUser_id() {
         return user_id;
@@ -86,5 +69,13 @@ public class Order {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getTotal_price() {
+        return total_price;
+    }
+
+    public void setTotal_price(String total_price) {
+        this.total_price = total_price;
     }
 }

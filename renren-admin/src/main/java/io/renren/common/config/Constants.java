@@ -16,6 +16,8 @@ public class Constants {
 
     public static final String SIGN = "HJJI8970OKMNHY726YTGHJI908YHNBGT";
 
+    public static final String PSIGN = "fc1b9700e07c9e385cc0a0d101185980";
+
     /**
      * 微信小程序SERCRET
      */
@@ -45,6 +47,8 @@ public class Constants {
     public static final String APP_KEY = "xyj185568014781qaz2wsx3edc4rfv5t";
 
     public static final String MCH_ID = "1513253941";  //商户号
+
+    public static final String PMCH_ID = "1511521411";  //商户号
 
     public static final String URL_UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
