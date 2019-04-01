@@ -35,7 +35,7 @@ public class SysPageController {
 		return "modules/" + module + "/" + url;
 	}
 
-	@RequestMapping(value = {"/", "index.html"})
+	@RequestMapping("index.html")
 	public String index(){
 		return "index";
 	}
@@ -45,7 +45,7 @@ public class SysPageController {
 		return "index1";
 	}
 
-	@RequestMapping("login.html")
+	@RequestMapping(value = {"/","login.html" })
 	public String login(){
 		return "login";
 	}
