@@ -17,6 +17,8 @@
 package io.renren.modules.sys.controller;
 
 import io.renren.common.utils.Rs;
+import io.renren.modules.distribution.entity.Distribution;
+import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.sys.entity.*;
 import io.renren.modules.sys.service.SysLogService;
 import io.renren.common.utils.PageUtils;
@@ -44,6 +46,9 @@ import java.util.*;
 public class SysLogController {
 	@Autowired
 	private SysLogService sysLogService;
+
+	@Autowired
+	private DistributionService distributionService;
 	
 	/**
 	 * 列表
@@ -65,10 +70,11 @@ public class SysLogController {
 		List<GoodActivity> goodActitiyList = new ArrayList<>();
 		List<Business> businessList = new ArrayList<>();
 		Map<String,List> data = new HashMap<>();
+		Map<String,Object> param = new HashMap<>();
 		List<Map<String,String>> channelLst = sysLogService.queryAllChannel();
 		List<Map<String,String>> bannerLst = sysLogService.queryAllBanner();
 		List<Map<String,String>> businessLst = sysLogService.queryAllBusiness();
-		List<Map<String,String>> activityLst = sysLogService.queryAllActivity();
+		List<Distribution> activityLst = distributionService.queryList(param);
 		List<Map<String,String>> contactLst = sysLogService.queryAllContact();
 		for(Map<String,String> map: channelLst){
 			Channel channel = new Channel();
@@ -93,12 +99,12 @@ public class SysLogController {
 			banner.setEnabled("1");
 			bannerList.add(banner);
 		}
-		for(Map<String,String> map: activityLst){
+		for(Distribution map: activityLst){
 			GoodActivity  ga = new GoodActivity();
-			ga.setId(map.get("id").toString());
-			ga.setName(map.get("name").toString());
-			ga.setList_pic_url(map.get("img_path").toString());
-			ga.setRetail_price("2");
+			ga.setId(map.getId());
+			ga.setName(map.getActivityName());
+			ga.setList_pic_url(map.getThumbnail());
+			ga.setRetail_price(map.getProductPrice().toString());
 			ga.setHave_pay_num("1");
 			goodActitiyList.add(ga);
 		}

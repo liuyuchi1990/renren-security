@@ -23,7 +23,7 @@ import java.util.Map;
 @Service
 public interface DistributionService extends IService<Distribution> {
 
-
+    List<Distribution> queryList(Map<String, Object> params);
 
     PageUtils queryPage(Map<String, Object> params);
 

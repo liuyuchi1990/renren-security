@@ -191,9 +191,10 @@ public class WxPayController {
     @RequestMapping(value = "/initwxjs", method = RequestMethod.POST)
     @ResponseBody
     public ReturnResult init(@RequestParam(required = true) String url,
-                             HttpServletRequest request){
+                             HttpServletRequest request) throws UnsupportedEncodingException {
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         //ServletContext servletContext = ServletContextUtil.getServletContext();
+        url = java.net.URLDecoder.decode(url,"UTF-8").replace("&amp;","&");
         String accessToken = WxUtil.getWxPlatFormAccessToken();
         String jsapi_ticket = WxUtil.getAccessTicket(accessToken);
         Map<String, Object> map = new HashedMap();

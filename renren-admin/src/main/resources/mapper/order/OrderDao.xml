@@ -18,6 +18,12 @@
 		select * from tb_order where order_id = #{order_id}
 	</select>
 
+	<select id="queryByActivtyId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select tb.*,u.username,u.headimgurl from tb_order tb
+  left join sys_user u on u.user_id=tb.user_id
+  where tb.activity_id = #{activityId}
+	</select>
+
 
 	<select id="getOrderByUserId" parameterType="java.lang.String" resultType="io.renren.modules.order.model.Order">
 		select

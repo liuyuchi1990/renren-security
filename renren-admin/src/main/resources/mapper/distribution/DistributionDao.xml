@@ -77,6 +77,11 @@ VALUES
 		select * from tb_distribution where id = #{id}
 	</select>
 
+	<select id="queryList" parameterType="java.util.HashMap"
+			resultType="io.renren.modules.distribution.entity.Distribution">
+		select * from tb_distribution
+	</select>
+
     <update id="rollback" parameterType="java.lang.String">
         update tb_distribution
         <set>

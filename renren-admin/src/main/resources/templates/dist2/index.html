@@ -1,10 +1,30 @@
 <!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"><title>app</title>
-    <link href="${request.contextPath}/statics/dist2/static/css/app.818ef92badde55e8295208626689eb1b.css" rel=stylesheet>
+    <link href="${request.contextPath}/statics/dist2/static/css/app.e07c9d05c245868e0b707fdc0b31bf58.css" rel=stylesheet>
 </head><body><div id=app-box></div><script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/manifest.fab45c431d4ebe24f125.js"></script>
 <script>
     var script = document.createElement('script');
     script.src = "https://res.wx.qq.com/open/js/jweixin-1.4.0.js";
     document.body.appendChild(script);
 </script>
-<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/vendor.a3c9e95a8dbe54276ab5.js"></script>
-<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/app.dc4587d49e741c2fe514.js"></script></body></html>
+<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/vendor.fb12032ac192375c6fdd.js"></script>
+<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/app.d9fda20b8d1e10fd7b19.js"></script></body>
+<script>(function (doc, win) {
+    var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function () {
+            var clientWidth = docEl.clientWidth;
+            if (!clientWidth) return;
+            // if (clientWidth<=320){
+            //     docEl.style.fontSize = '50px';
+            // }
+            // else if(clientWidth>=640){
+            //     docEl.style.fontSize = '100px';
+            // }
+            // else{
+            docEl.style.fontSize = (clientWidth / 10) + 'px';
+            //}
+        };
+    if (!doc.addEventListener) return;
+    win.addEventListener(resizeEvt, recalc, false);
+    doc.addEventListener('DOMContentLoaded', recalc, false);
+})(document, window);</script></html>

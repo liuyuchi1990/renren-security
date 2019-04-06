@@ -26,6 +26,8 @@ public interface OrderDao {
 
     List<Map<String, Object>> getOrderByUserId(String user_id);
 
+    List<Map<String, Object>> queryByActivtyId(String activityId);
+
     Map<String, Object> queryByDeviceId(String device_id);
 
     Map<String, Object> queryForLane(String device_id);

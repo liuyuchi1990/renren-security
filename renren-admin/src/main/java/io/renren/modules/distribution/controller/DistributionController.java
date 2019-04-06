@@ -8,11 +8,12 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.*;
 
-import io.renren.common.utils.MD5;
-import io.renren.common.utils.UploadUtils;
+import io.renren.common.utils.*;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
+import io.renren.modules.order.model.Order;
+import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
 import io.renren.modules.sys.entity.SysUserEntity;
@@ -23,15 +24,10 @@ import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import io.renren.common.utils.PageUtils;
-import io.renren.common.utils.R;
 import org.springframework.web.multipart.MultipartFile;
 
 
-
 /**
- *
- *
  * @author richard
  * @email sunlightcs@gmail.com
  * @date 2018-10-26 14:49:43
@@ -45,16 +41,24 @@ public class DistributionController {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private OrderService orderService;
+
     @Value("${root.img.url}")
     String filePath;
     @Value("${root.img.path}")
     String url;
+    @Value("${qr.distribution}")
+    String qrDistributionUrl;
+    @Value("${qr.distributionImgPath}")
+    String qrDistributionImgUrl;
+
     /**
      * 列表
      */
     @RequestMapping("/list")
     //@RequiresPermissions("sys:distribution:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = distributionService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -65,21 +69,22 @@ public class DistributionController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") String id){
+    public R info(@PathVariable("id") String id) {
         Distribution distribution = distributionService.queryById(id);
         List<SysUserEntity> users = new ArrayList<>();
-        if((!"".equals(distribution.getWatcher()))&&(distribution.getWatcher()!=null)){
+        if ((!"".equals(distribution.getWatcher())) && (distribution.getWatcher() != null)) {
             String[] idList = distribution.getWatcher().split(",");
-            users =  sysUserService.queryForUsers(idList);
+            users = sysUserService.queryForUsers(idList);
         }
-        return R.ok().put("distribution", distribution).put("user",users);
+        List<Map<String, Object>> orders = orderService.queryByActivtyId(id);
+        return R.ok().put("distribution", distribution).put("user", users).put("order", orders);
     }
 
     /**
      * 信息
      */
     @RequestMapping("/info")
-    public R infoAuth(@PathVariable("id") String id){
+    public R infoAuth(@PathVariable("id") String id) {
         Distribution distribution = distributionService.queryById(id);
         return R.ok().put("distribution", distribution);
     }
@@ -87,22 +92,39 @@ public class DistributionController {
     /**
      * 保存
      */
-    @RequestMapping(value = "/save",method=RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
-    public R save(@RequestBody Distribution distribution){
+    public R save(@RequestBody Distribution distribution) {
         distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distributionService.insertDistribution(distribution);
+        String path = qrDistributionUrl.replace("id=","id="+distribution.getId());
+        QRCodeUtils.createQRCode(path, qrDistributionImgUrl);
+        return R.ok();
+    }
+
+    /**
+     * 保存
+     */
+    @RequestMapping(value = "/copy", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:save")
+    @ResponseBody
+    public R copy(@RequestBody Distribution distribution) {
+        Distribution ds = distributionService.queryById(distribution.getId());
+        ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        distributionService.insertDistribution(ds);
+        String path = qrDistributionUrl.replace("id=","id="+ds.getId());
+        QRCodeUtils.createQRCode(path, qrDistributionImgUrl);
         return R.ok();
     }
 
     /**
      * 修改
      */
-    @RequestMapping(value = "/update",method=RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:update")
     @ResponseBody
-    public R update(@RequestBody Distribution distribution){
+    public R update(@RequestBody Distribution distribution) {
         ValidatorUtils.validateEntity(distribution);
         distributionService.updateById(distribution);//全部更新
         return R.ok();
@@ -113,7 +135,7 @@ public class DistributionController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("sys:distribution:delete")
-    public R delete(@RequestBody String[] ids){
+    public R delete(@RequestBody String[] ids) {
         distributionService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
@@ -125,7 +147,7 @@ public class DistributionController {
     public ReturnResult send() throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, DocumentException, IOException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
-        Map<String,String> mp = MD5.sendRedPack();
+        Map<String, String> mp = MD5.sendRedPack();
         map.put("status", "success");
         map.put("msg", "send ok");
         map.put("data", mp);
@@ -134,9 +156,9 @@ public class DistributionController {
     }
 
 
-    @RequestMapping(value ="/addWatcher" ,method=RequestMethod.POST)
+    @RequestMapping(value = "/addWatcher", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:delete")
-    public ReturnResult addWatcher(@RequestBody Distribution distribution)  {
+    public ReturnResult addWatcher(@RequestBody Distribution distribution) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         int mp = distributionService.addWatcher(distribution);
