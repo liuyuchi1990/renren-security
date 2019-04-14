@@ -24,7 +24,9 @@ public interface OrderDao {
 
     int minusUserIntegral(Order order);
 
-    List<Map<String, Object>> getOrderByUserId(String user_id);
+    List<Map<String, Object>> getOrderByUserId(Order order);
+
+    List<Map<String, Object>> getOrderByFromUserId(Order order);
 
     List<Map<String, Object>> queryByActivtyId(String activityId);
 

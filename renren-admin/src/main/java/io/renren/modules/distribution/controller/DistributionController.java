@@ -95,11 +95,11 @@ public class DistributionController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
-    public R save(@RequestBody Distribution distribution) {
+    public R save(@RequestBody Distribution distribution) throws Exception {
         distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distributionService.insertDistribution(distribution);
-        String path = qrDistributionUrl.replace("id=","id="+distribution.getId());
-        QRCodeUtils.createQRCode(path, qrDistributionImgUrl);
+        String text = qrDistributionUrl.replace("ids=","id="+distribution.getId());
+        QRCodeUtils.encode(text,null, qrDistributionImgUrl, distribution.getId(), true );
         return R.ok();
     }
 
@@ -109,12 +109,12 @@ public class DistributionController {
     @RequestMapping(value = "/copy", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
-    public R copy(@RequestBody Distribution distribution) {
+    public R copy(@RequestBody Distribution distribution) throws Exception {
         Distribution ds = distributionService.queryById(distribution.getId());
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distributionService.insertDistribution(ds);
-        String path = qrDistributionUrl.replace("id=","id="+ds.getId());
-        QRCodeUtils.createQRCode(path, qrDistributionImgUrl);
+        String text = qrDistributionUrl.replace("id=","id="+ds.getId());
+        QRCodeUtils.encode(text,null, qrDistributionImgUrl, ds.getId(), true );
         return R.ok();
     }
 

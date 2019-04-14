@@ -13,7 +13,11 @@ public class Order {
 
     private String user_id;
 
+    private String from_user;
+
     private String total_price;
+
+    private String red_packets;
 
     private Date updateTime;
 
@@ -77,5 +81,21 @@ public class Order {
 
     public void setTotal_price(String total_price) {
         this.total_price = total_price;
+    }
+
+    public String getFrom_user() {
+        return from_user;
+    }
+
+    public void setFrom_user(String from_user) {
+        this.from_user = from_user;
+    }
+
+    public String getRed_packets() {
+        return red_packets;
+    }
+
+    public void setRed_packets(String red_packets) {
+        this.red_packets = red_packets;
     }
 }

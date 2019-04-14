@@ -86,5 +86,5 @@ root:
     cert: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/cert
 
 qr:
-  distribution: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2517d7a8920ab213&redirect_uri=https://wx.sharkmeida.cn/dist2/index.html?id=&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
-  distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/distribution/qr
+  distribution: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2517d7a8920ab213&redirect_uri=https://wx.sharkmeida.cn/dist2/index.html?ids=&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
+  distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/distribution/qr

@@ -45,8 +45,12 @@ public class OrderService {
         return orderDao.queryByActivtyId(activityId);
     }
 
-    public List<Map<String, Object>> getOrderByUserId(String user_id) {
-        return orderDao.getOrderByUserId(user_id);
+    public List<Map<String, Object>> getOrderByUserId(Order order) {
+        return orderDao.getOrderByUserId(order);
+    }
+
+    public List<Map<String, Object>> getOrderByFromUserId(Order order) {
+        return orderDao.getOrderByFromUserId(order);
     }
 
     public Map<String, Object> queryByDeviceId(String device_id) {

@@ -373,11 +373,11 @@ public class WxUtil {
 
     public static String getSecondSign(String prepay_id,String time,String noncestr) throws Exception {
         StringBuffer sb = new StringBuffer();
-        sb.append("appId=" + Constants.APPID)
+        sb.append("appId=" + Constants.PTAPPID)
                 .append("&nonceStr=" + noncestr)
                 .append("&package=prepay_id=" + prepay_id)
                 .append("&signType=MD5&timeStamp=" + time)
-                .append("&key=" + Constants.APP_KEY);
+                .append("&key=" + Constants.PSIGN);
         log.error("排序后的拼接参数：" + sb.toString());
 
         MessageDigest md5 = MessageDigest.getInstance("MD5");

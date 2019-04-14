@@ -52,7 +52,7 @@ public class Constants {
 
     public static final String URL_UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
-    public static final String DOMAIN = "https://wx.sharkmeida.com";
+    public static final String DOMAIN = "https://wx.sharkmeida.cn";
 
     public static final String URL_NOTIFY = Constants.DOMAIN + "/api/wxpay/payCallback";
 

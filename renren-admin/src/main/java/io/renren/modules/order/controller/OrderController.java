@@ -265,22 +265,39 @@ public class OrderController {
 //        return result;
 //    }
 //
-//    @RequestMapping(value = "/getOrderByUserId", method = RequestMethod.GET)
-//    @ResponseBody
-//    public ReturnResult getOrderByUserId(@RequestParam(required = true) String user_id) {
-//        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
-//        Map<String, Object> map = new HashMap<>();
-//        try {
-//            List<Map<String, Object>> res = orderService.getOrderByUserId(user_id);
-//            map.put("data", res);
-//            map.put("price",Constants.PRICE);
-//            result.setResult(map);
-//        } catch (Exception e) {
-//            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
-//            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
-//            map.put("status", "失败");
-//            result.setResult(map);
-//        }
-//        return result;
-//    }
+    @RequestMapping(value = "/getOrderByFromUserId", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult getOrderByFromUserId(@ApiParam @RequestBody(required = false) Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Map<String, Object>> res = orderService.getOrderByFromUserId(order);
+            map.put("data", res);
+            result.setResult(map);
+        } catch (Exception e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/getOrderByUserIdAndActivityId", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult getOrderByUserIdAndActivityId(@RequestBody(required = false) Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Map<String, Object>> res = orderService.getOrderByUserId(order);
+            map.put("data", res);
+            result.setResult(map);
+        } catch (Exception e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return result;
+    }
 }
