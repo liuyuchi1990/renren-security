@@ -537,7 +537,7 @@ public class Distribution implements Serializable {
     }
 
     public void setRedRules(String redRules) {
-        redRules = redRules;
+        this.redRules = redRules;
     }
 
     public String getActivityDestription() {
