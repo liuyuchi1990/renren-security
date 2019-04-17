@@ -5,6 +5,7 @@ public class GoodActivity {
     private String name;
     private String list_pic_url;
     private String retail_price;
+    private String qr;
     private String have_pay_num;
 
     public String getId() {
@@ -45,5 +46,13 @@ public class GoodActivity {
 
     public void setHave_pay_num(String have_pay_num) {
         this.have_pay_num = have_pay_num;
+    }
+
+    public String getQr() {
+        return qr;
+    }
+
+    public void setQr(String qr) {
+        this.qr = qr;
     }
 }

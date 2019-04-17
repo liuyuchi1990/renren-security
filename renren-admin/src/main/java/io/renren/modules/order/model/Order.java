@@ -13,11 +13,17 @@ public class Order {
 
     private String user_id;
 
+    private String user_name;
+
     private String from_user;
 
     private String total_price;
 
+    private String mobile;
+
     private String red_packets;
+
+    private String user_type;
 
     private Date updateTime;
 
@@ -97,5 +103,29 @@ public class Order {
 
     public void setRed_packets(String red_packets) {
         this.red_packets = red_packets;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(String user_type) {
+        this.user_type = user_type;
     }
 }

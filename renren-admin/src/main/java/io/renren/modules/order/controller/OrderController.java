@@ -9,6 +9,8 @@ import io.renren.modules.order.model.OrderMessage;
 import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,6 +34,9 @@ public class OrderController {
 //    BreadcrumbUtil breadcrumbUtil;
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    SysUserService sysUserService;
 
     @Autowired
     DistributionService distributionService;
@@ -97,6 +102,7 @@ public class OrderController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         final DelayQueue<OrderMessage> delayQueue = new DelayQueue<OrderMessage>();
         long time = System.currentTimeMillis();
+        SysUserEntity user = new SysUserEntity();
         Distribution ds = distributionService.queryById(order.getActivityId());
         //判断是否活动还有名额
         if (ds.getTargetQuantity()!=0) {
@@ -104,7 +110,11 @@ public class OrderController {
             order.setOrderStatus("1");
             order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
             //order.setTotal_price(order.getCargo_lane().split(",").length * Constants.PRICE);
+            user.setUserId(order.getUser_id());
+            user.setMobile(order.getMobile());
+            user.setUsername(order.getUser_name());
             int rs = orderService.insert(order);
+            sysUserService.updateUser(user);
             int rs2 = distributionService.release(order.getActivityId());
             if (rs > 0 && rs2 > 0) {
                 map.put("status", "成功");

@@ -79,7 +79,7 @@ VALUES
 
 	<select id="queryList" parameterType="java.util.HashMap"
 			resultType="io.renren.modules.distribution.entity.Distribution">
-		select * from tb_distribution
+		select t.*, CONCAT(CONCAT("https://wx.sharkmeida.cn/imgs/distribution/qr/",id),'.jpg') qrImg  from tb_distribution t
 	</select>
 
     <update id="rollback" parameterType="java.lang.String">

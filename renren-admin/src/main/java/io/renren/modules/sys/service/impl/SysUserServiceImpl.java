@@ -125,6 +125,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
 	}
 
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void updateUser(SysUserEntity user) {
+		this.updateById(user);
+	}
+
 
 	@Override
 	public boolean updatePassword(String userId, String password, String newPassword) {

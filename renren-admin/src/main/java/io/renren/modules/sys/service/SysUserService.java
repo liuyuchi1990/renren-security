@@ -61,6 +61,8 @@ public interface SysUserService extends IService<SysUserEntity> {
 
 	void insertUser(SysUserEntity user);
 
+	void updateUser(SysUserEntity user);
+
 	SysUserEntity queryById(String id);
 
 	SysUserEntity queryByOpenId(String id);

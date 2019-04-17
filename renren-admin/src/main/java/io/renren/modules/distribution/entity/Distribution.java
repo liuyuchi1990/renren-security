@@ -79,6 +79,8 @@ public class Distribution implements Serializable {
      * 产品价格
      */
     private BigDecimal productPrice;
+
+    private String qrImg;
     /**
      * 不需要付款人数
      */
@@ -560,5 +562,13 @@ public class Distribution implements Serializable {
 
     public void setVisits(Integer visits) {
         this.visits = visits;
+    }
+
+    public String getQrImg() {
+        return qrImg;
+    }
+
+    public void setQrImg(String qrImg) {
+        this.qrImg = qrImg;
     }
 }

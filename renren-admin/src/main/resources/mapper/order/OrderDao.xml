@@ -27,18 +27,20 @@
 	</select>
 
 
-	<select id="getOrderByUserId" parameterType="io.renren.modules.order.model.Order" resultType="io.renren.modules.order.model.Order">
+	<select id="getOrderByUserId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
 		select
-		t.*
+		t.*,u.headimgurl
 		from tb_order t
+		left join sys_user u on u.user_id=t.user_id
 		where t.user_id = #{user_id,jdbcType=VARCHAR} and t.activity_id=#{activityId,jdbcType=VARCHAR}
 	</select>
 
 
-	<select id="getOrderByFromUserId" parameterType="io.renren.modules.order.model.Order" resultType="io.renren.modules.order.model.Order">
+	<select id="getOrderByFromUserId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
 		select
-		t.*
+		t.*,u.headimgurl
 		from tb_order t
+		left join sys_user u on u.user_id=t.from_user
 		where t.from_user = #{from_user,jdbcType=VARCHAR} and t.activity_id=#{activityId,jdbcType=VARCHAR}
 	</select>
 

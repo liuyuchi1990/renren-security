@@ -96,10 +96,15 @@ public class DistributionController {
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
     public R save(@RequestBody Distribution distribution) throws Exception {
-        distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        distributionService.insertDistribution(distribution);
-        String text = qrDistributionUrl.replace("ids=","id="+distribution.getId());
-        QRCodeUtils.encode(text,null, qrDistributionImgUrl, distribution.getId(), true );
+        if("".equals(distribution.getId())){
+            distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+            distributionService.insertDistribution(distribution);
+            String text = qrDistributionUrl.replace("id=","id="+distribution.getId());
+            QRCodeUtils.encode(text,null, qrDistributionImgUrl, distribution.getId(), true );
+        }else{
+            ValidatorUtils.validateEntity(distribution);
+            distributionService.updateById(distribution);//全部更新
+        }
         return R.ok();
     }
 

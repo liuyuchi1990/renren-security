@@ -106,6 +106,7 @@ public class SysLogController {
 			ga.setList_pic_url(map.getThumbnail());
 			ga.setRetail_price(map.getProductPrice().toString());
 			ga.setHave_pay_num("1");
+			ga.setQr(map.getQrImg());
 			goodActitiyList.add(ga);
 		}
 		for(Map<String,String> map: contactLst){
