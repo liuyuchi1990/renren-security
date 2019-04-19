@@ -36,6 +36,7 @@
 	end_time,
 	update_user,
 	activity_state,
+	head_image,
 	update_time
 )
 VALUES
@@ -71,6 +72,7 @@ VALUES
 		#{endTime,jdbcType=VARCHAR},
 		#{updateUser,jdbcType=VARCHAR},
 		#{activityState,jdbcType=VARCHAR},
+		#{headImage,jdbcType=VARCHAR},
 		SYSDATE()
 	)
     </insert>

@@ -159,6 +159,8 @@ public class Distribution implements Serializable {
     private String watcher;
     //访问数
     private Integer visits;
+
+    private String headImage;
     /**
      * 设置：
      */
@@ -570,5 +572,13 @@ public class Distribution implements Serializable {
 
     public void setQrImg(String qrImg) {
         this.qrImg = qrImg;
+    }
+
+    public String getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(String headImage) {
+        this.headImage = headImage;
     }
 }
