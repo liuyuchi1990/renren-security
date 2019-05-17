@@ -310,4 +310,22 @@ public class OrderController {
         }
         return result;
     }
+
+    @RequestMapping(value = "/getOrderByActivityId", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult getOrderByActivityId(@RequestBody(required = false) Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<Map<String, Object>> res = orderService.queryByActivtyId(order.getActivityId());
+            map.put("data", res);
+            result.setResult(map);
+        } catch (Exception e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return result;
+    }
 }

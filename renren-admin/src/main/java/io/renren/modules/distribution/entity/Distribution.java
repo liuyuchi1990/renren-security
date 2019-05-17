@@ -161,6 +161,10 @@ public class Distribution implements Serializable {
     private Integer visits;
 
     private String headImage;
+
+    private String orderNum;
+
+    private String totalPrice;
     /**
      * 设置：
      */
@@ -580,5 +584,21 @@ public class Distribution implements Serializable {
 
     public void setHeadImage(String headImage) {
         this.headImage = headImage;
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

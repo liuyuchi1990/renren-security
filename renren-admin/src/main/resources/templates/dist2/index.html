@@ -1,30 +1,45 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0"><title>app</title>
-    <link href="${request.contextPath}/statics/dist2/static/css/app.44ad6d23146f3be7b20d95ed38dc7621.css" rel=stylesheet>
-</head><body><div id=app-box></div><script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/manifest.fab45c431d4ebe24f125.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <title>
+        app</title>
+    <link href="${request.contextPath}/statics/dist2/static/css/app.5b2c94fa5978359076cdd2b8c3101c73.css" rel=stylesheet>
+</head>
+<body>
+<div id=app-box>
+</div>
+<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/manifest.fab45c431d4ebe24f125.js">
+</script>
+<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/vendor.b78b998e970561ce4989.js">
+</script>
+<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/app.fa0dad9b86e32f5664ba.js">
+</script>
+</body>
+<script>
+    (function (doc, win) {
+        var docEl = doc.documentElement,
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+            recalc = function () {
+                var clientWidth = docEl.clientWidth;
+                if (!clientWidth) return;
+                // if (clientWidth<=320){
+                //     docEl.style.fontSize = '50px';
+                // }
+                // else if(clientWidth>=640){
+                //     docEl.style.fontSize = '100px';
+                // }
+                // else{
+                docEl.style.fontSize = (clientWidth / 10) + 'px';
+                //}
+            };
+        if (!doc.addEventListener) return;
+        win.addEventListener(resizeEvt, recalc, false);
+        doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);</script>
 <script>
     var script = document.createElement('script');
     script.src = "https://res.wx.qq.com/open/js/jweixin-1.4.0.js";
-    document.body.appendChild(script);
-</script>
-<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/vendor.fb12032ac192375c6fdd.js"></script>
-<script type=text/javascript src="${request.contextPath}/statics/dist2/static/js/app.ac2f9127c3466389a1fb.js"></script></body>
-<script>(function (doc, win) {
-    var docEl = doc.documentElement,
-        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-        recalc = function () {
-            var clientWidth = docEl.clientWidth;
-            if (!clientWidth) return;
-            // if (clientWidth<=320){
-            //     docEl.style.fontSize = '50px';
-            // }
-            // else if(clientWidth>=640){
-            //     docEl.style.fontSize = '100px';
-            // }
-            // else{
-            docEl.style.fontSize = (clientWidth / 10) + 'px';
-            //}
-        };
-    if (!doc.addEventListener) return;
-    win.addEventListener(resizeEvt, recalc, false);
-    doc.addEventListener('DOMContentLoaded', recalc, false);
-})(document, window);</script></html>
+    document.body.appendChild(script);</script>
+</html>

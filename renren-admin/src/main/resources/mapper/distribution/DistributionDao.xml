@@ -34,6 +34,7 @@
 	activity_type,
 	start_time,
 	end_time,
+	qr_img,
 	update_user,
 	activity_state,
 	head_image,
@@ -70,6 +71,7 @@ VALUES
 		#{activityType,jdbcType=VARCHAR},
 		#{startTime,jdbcType=VARCHAR},
 		#{endTime,jdbcType=VARCHAR},
+		#{qrImg,jdbcType=VARCHAR},
 		#{updateUser,jdbcType=VARCHAR},
 		#{activityState,jdbcType=VARCHAR},
 		#{headImage,jdbcType=VARCHAR},
@@ -83,7 +85,10 @@ VALUES
 
 	<select id="queryList" parameterType="java.util.HashMap"
 			resultType="io.renren.modules.distribution.entity.Distribution">
-		select t.*, CONCAT(CONCAT("https://wx.sharkmeida.cn/imgs/distribution/qr/",id),'.jpg') qrImg  from tb_distribution t
+		select t.*,count(1) order_num,ifnull(sum(ord.total_price),0) total_price from tb_distribution t
+		left join tb_order ord on ord.activity_id = t.id
+		group by t.id
+		order by t.update_time desc
 	</select>
 
     <update id="rollback" parameterType="java.lang.String">

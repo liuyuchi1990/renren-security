@@ -104,8 +104,11 @@ public class SysLogController {
 			ga.setId(map.getId());
 			ga.setName(map.getActivityName());
 			ga.setList_pic_url(map.getThumbnail());
-			ga.setRetail_price(map.getProductPrice().toString());
+			ga.setRetail_price(map.getTotalPrice());
+			ga.setEnd_date(map.getEndTime());
+			ga.setOrder_num(map.getOrderNum());
 			ga.setHave_pay_num("1");
+			ga.setProduct_num(map.getTargetQuantity().toString());
 			ga.setQr(map.getQrImg());
 			goodActitiyList.add(ga);
 		}

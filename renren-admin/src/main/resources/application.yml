@@ -88,3 +88,4 @@ root:
 qr:
   distribution: https://wx.sharkmeida.cn/dist2/redirect.html?id=
   distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/distribution/qr
+  httpurl: https://wx.sharkmeida.cn/imgs/distribution/qr/

@@ -7,6 +7,9 @@ public class GoodActivity {
     private String retail_price;
     private String qr;
     private String have_pay_num;
+    private String end_date;
+    private String order_num;
+    private String product_num;
 
     public String getId() {
         return id;
@@ -54,5 +57,29 @@ public class GoodActivity {
 
     public void setQr(String qr) {
         this.qr = qr;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getOrder_num() {
+        return order_num;
+    }
+
+    public void setOrder_num(String order_num) {
+        this.order_num = order_num;
+    }
+
+    public String getProduct_num() {
+        return product_num;
+    }
+
+    public void setProduct_num(String product_num) {
+        this.product_num = product_num;
     }
 }

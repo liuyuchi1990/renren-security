@@ -52,6 +52,8 @@ public class DistributionController {
     String qrDistributionUrl;
     @Value("${qr.distributionImgPath}")
     String qrDistributionImgUrl;
+    @Value("${qr.httpurl}")
+    String httpurl;
 
     /**
      * 列表
@@ -96,12 +98,13 @@ public class DistributionController {
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
     public R save(@RequestBody Distribution distribution) throws Exception {
-        if("".equals(distribution.getId())){
+        if ("".equals(distribution.getId())) {
             distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+            distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
             distributionService.insertDistribution(distribution);
-            String text = qrDistributionUrl.replace("id=","id="+distribution.getId());
-            QRCodeUtils.encode(text,null, qrDistributionImgUrl, distribution.getId(), true );
-        }else{
+            String text = qrDistributionUrl.replace("id=", "id=" + distribution.getId());
+            QRCodeUtils.encode(text, null, qrDistributionImgUrl, distribution.getId(), true);
+        } else {
             ValidatorUtils.validateEntity(distribution);
             distributionService.updateById(distribution);//全部更新
         }
@@ -117,9 +120,10 @@ public class DistributionController {
     public R copy(@RequestBody Distribution distribution) throws Exception {
         Distribution ds = distributionService.queryById(distribution.getId());
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
         distributionService.insertDistribution(ds);
-        String text = qrDistributionUrl.replace("id=","id="+ds.getId());
-        QRCodeUtils.encode(text,null, qrDistributionImgUrl, ds.getId(), true );
+        String text = qrDistributionUrl.replace("id=", "id=" + ds.getId());
+        QRCodeUtils.encode(text, null, qrDistributionImgUrl, ds.getId(), true);
         return R.ok();
     }
 
