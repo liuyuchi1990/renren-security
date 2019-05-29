@@ -36,6 +36,10 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         return distributionDao.queryList(params);
     }
 
+    public List<Distribution> queryListByPage(Map<String, Object> params) {
+        return distributionDao.queryListByPage(params);
+    }
+
     public Distribution queryById(String id) {
         return distributionDao.queryById(id);
     }

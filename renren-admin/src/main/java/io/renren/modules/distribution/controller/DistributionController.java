@@ -14,6 +14,7 @@ import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.order.model.Order;
 import io.renren.modules.order.service.OrderService;
+import io.renren.modules.sys.entity.GoodActivity;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
 import io.renren.modules.sys.entity.SysUserEntity;
@@ -66,6 +67,47 @@ public class DistributionController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/listByPage")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult listByPage(@RequestBody Map<String, Object> params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Distribution> activityLst = distributionService.queryListByPage(params);
+        Map<String, Object> mp = new HashedMap();
+        List<GoodActivity> goodActitiyList = new ArrayList<>();
+        for(Distribution map: activityLst){
+            GoodActivity ga = new GoodActivity();
+            ga.setId(map.getId());
+            ga.setList_pic_url(map.getThumbnail());
+            ga.setName(map.getActivityName());
+            ga.setRetail_price(map.getTotalPrice());
+            ga.setEnd_date(map.getEndTime());
+            ga.setOrder_num(map.getOrderNum());
+            ga.setHave_pay_num("1");
+            ga.setProduct_num(map.getTargetQuantity().toString());
+            ga.setQr(map.getQrImg());
+            goodActitiyList.add(ga);
+        }
+        mp.put("data",goodActitiyList);
+        result.setResult(mp);
+        return result;
+    }
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/queryAll")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryAll(@RequestBody Map<String, Object> params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Distribution> activityLst = distributionService.queryList(params);
+        Map<String, Object> map = new HashedMap();
+        map.put("data",activityLst);
+        result.setResult(map);
+        return result;
+    }
 
     /**
      * 信息

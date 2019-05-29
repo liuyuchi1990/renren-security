@@ -40,10 +40,18 @@ public interface SysLogService extends IService<SysLogEntity> {
 
     List<Map<String,String>> queryAllBanner();
 
-     List<Map<String,String>> queryAllActivity();
+     List<Map<String,String>> queryAllActivity(Map<String,Object> map);
 
-     List<Map<String,String>> queryAllBusiness();
+     List<Map<String,String>> queryAllBusiness(Map<String,Object> map);
 
-     List<Map<String,String>> queryAllContact();
+    List<Map<String,String>> queryAllContact();
+
+    List<Map<String,String>> queryAllVedio();
+
+    int insertApp(Map<String,Object> map);
+
+    int  queryMaxSort (String type);
+
+    int deleteApp(String id);
 
 }

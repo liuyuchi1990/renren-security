@@ -3,22 +3,49 @@
 
 <mapper namespace="io.renren.modules.sys.dao.SysLogDao">
     <select id="queryAllChannel" resultType="java.util.Map">
-        select * from tb_img where type =1
+        select * from tb_img where type =1 order by sort
     </select>
 
     <select id="queryAllBanner" resultType="java.util.Map">
-        select * from tb_img where type =2
+        select * from tb_img where type =2 order by sort
     </select>
 
     <select id="queryAllActivity" resultType="java.util.Map">
-        select * from tb_img where type =3
+        select * from tb_img where type =3 order by sort
     </select>
 
     <select id="queryAllBusiness" resultType="java.util.Map">
-        select * from tb_img where type =4
+        select * from tb_img where type =4 order by sort limit #{pageNum},#{pageSize}
     </select>
 
     <select id="queryAllContact" resultType="java.util.Map">
-        select * from tb_img where type =5
+        select * from tb_img where type =5 order by sort
     </select>
+
+    <select id="queryAllVedio" resultType="java.util.Map">
+        select * from tb_img where type =6 order by sort
+    </select>
+
+    <insert id="insertApp" parameterType="java.util.Map">
+        insert into tb_img (
+        id,
+        name,
+        img_path,
+        type,
+        sort,
+        update_time
+        )VALUES
+	(#{id,jdbcType=VARCHAR},
+	#{name,jdbcType=VARCHAR},
+	#{img_path,jdbcType=VARCHAR},
+	#{type,jdbcType=VARCHAR},
+	#{pageNum,jdbcType=INTEGER},
+	SYSDATE()
+	)
+
+    </insert>
+
+    <delete id="deleteApp" parameterType="java.lang.String">
+        delete from tb_img where id = #{id,jdbcType=VARCHAR}
+    </delete>
 </mapper>

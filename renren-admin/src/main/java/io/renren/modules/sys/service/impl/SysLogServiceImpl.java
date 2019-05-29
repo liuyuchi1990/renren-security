@@ -57,15 +57,31 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> impl
         return sysLogDao.queryAllBanner();
     };
 
-    public List<Map<String,String>> queryAllActivity(){
+    public List<Map<String,String>> queryAllActivity(Map<String,Object> map){
         return sysLogDao.queryAllActivity();
     };
 
-    public List<Map<String,String>> queryAllBusiness(){
-        return sysLogDao.queryAllBusiness();
+    public List<Map<String,String>> queryAllBusiness(Map<String,Object> map){
+        return sysLogDao.queryAllBusiness(map);
     };
 
     public List<Map<String,String>> queryAllContact(){
         return sysLogDao.queryAllContact();
+    };
+
+    public List<Map<String,String>> queryAllVedio(){
+        return sysLogDao.queryAllVedio();
+    };
+
+    public int insertApp(Map<String,Object> map){
+        return sysLogDao.insertApp(map);
+    };
+
+    public int  queryMaxSort (String type){
+        return sysLogDao.queryMaxSort(type);
+    };
+
+    public int deleteApp(String id){
+        return sysLogDao.deleteApp(id);
     };
 }

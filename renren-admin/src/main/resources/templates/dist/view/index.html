@@ -1,16 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>首页</title>
-    <link href="${request.contextPath}/statics/dist/resource/mobiscroll/css/mobiscroll.custom.min.css" rel="stylesheet" />
-    <link href="${request.contextPath}/statics/dist/css/index.css" rel="stylesheet"></head>
+    <meta charset=utf-8>
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=0">
+    <meta name=format-detection content="telephone=yes">
+    <title>
+        app</title>
+    <link href="${request.contextPath}/statics/dist/css/app.ab5047ec83e91ca70e3adf92e8ecaaf1.css" rel=stylesheet>
+</head>
 <body>
-<div id="root"></div>
-<script src="${request.contextPath}/statics/dist/resource/polyfill/polyfill.min.js"></script>
-<script src="${request.contextPath}/statics/dist/resource/common/jsProptypeExtend.js"></script>
-<script src="${request.contextPath}/statics/dist/resource/jquery/jquery.min.js"></script>
-<script src="${request.contextPath}/statics/dist/resource/mobiscroll/js/mobiscroll.custom.min.js"></script>
-<script type="text/javascript" src="${request.contextPath}/statics/dist/js/index.js"></script></body>
+<div id=app-box>
+</div>
+<script type=text/javascript src="${request.contextPath}/statics/dist/js/manifest.fab45c431d4ebe24f125.js">
+</script>
+<script type=text/javascript src="${request.contextPath}/statics/dist/js/vendor.f1d4f0c38c63d2a7ac6f.js">
+</script>
+<script type=text/javascript src="${request.contextPath}/statics/dist/js/app.415f75f6eec84dbcbb6b.js">
+</script>
+</body>
+<script>
+    (function (doc, win) {
+        var docEl = doc.documentElement,
+            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+            recalc = function () {
+                var clientWidth = docEl.clientWidth;
+                if (!clientWidth) return;
+                // if (clientWidth<=320){
+                //     docEl.style.fontSize = '50px';
+                // }
+                // else if(clientWidth>=640){
+                //     docEl.style.fontSize = '100px';
+                // }
+                // else{
+                docEl.style.fontSize = (clientWidth / 10) + 'px';
+                //}
+            };
+        if (!doc.addEventListener) return;
+        win.addEventListener(resizeEvt, recalc, false);
+        doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);</script>
+<script>
+    var script = document.createElement('script');
+    script.src = "https://res.wx.qq.com/open/js/jweixin-1.2.0.js";
+    document.body.appendChild(script);</script>
 </html>

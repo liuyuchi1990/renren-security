@@ -43,10 +43,9 @@ public class CourseController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("sys:course:info")
+    //@RequiresPermissions("sys:course:info")
     public R info(@PathVariable("id") String id){
         CourseEntity course = courseService.selectById(id);
-
         return R.ok().put("course", course);
     }
 
@@ -55,7 +54,7 @@ public class CourseController {
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public R save(@RequestBody CourseEntity course){
-        if ("".equals(course.getId())) {
+        if ("".equals(course.getId())||course.getId()==null) {
             course.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             courseService.insert(course);
         }else{
@@ -72,7 +71,6 @@ public class CourseController {
     public R update(@RequestBody CourseEntity course){
         ValidatorUtils.validateEntity(course);
         courseService.updateAllColumnById(course);//全部更新
-        
         return R.ok();
     }
 

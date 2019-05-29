@@ -22,6 +22,8 @@ public interface DistributionDao extends BaseMapper<Distribution> {
 
     List<Distribution> queryList(Map<String, Object> params);
 
+    List<Distribution> queryListByPage(Map<String, Object> params);
+
     Distribution queryById(@Param("id") String id);
 
     int insertDistribution (Distribution insertDistribution);

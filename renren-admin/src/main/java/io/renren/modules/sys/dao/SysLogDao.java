@@ -37,8 +37,15 @@ public interface SysLogDao extends BaseMapper<SysLogEntity> {
 
     List<Map<String,String>> queryAllActivity();
 
-    List<Map<String,String>> queryAllBusiness();
+    List<Map<String,String>> queryAllBusiness(Map<String,Object> map);
 
     List<Map<String,String>> queryAllContact();
 
+    List<Map<String,String>> queryAllVedio();
+
+    int  queryMaxSort (String type);
+
+    int insertApp(Map<String,Object> map);
+
+    int deleteApp(String id);
 }

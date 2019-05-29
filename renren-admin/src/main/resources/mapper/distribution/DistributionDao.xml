@@ -91,6 +91,15 @@ VALUES
 		order by t.update_time desc
 	</select>
 
+	<select id="queryListByPage" parameterType="java.util.HashMap"
+			resultType="io.renren.modules.distribution.entity.Distribution">
+		select t.*,count(1) order_num,ifnull(sum(ord.total_price),0) total_price from tb_distribution t
+		left join tb_order ord on ord.activity_id = t.id
+		group by t.id
+		order by t.update_time desc
+		limit #{pageNum},#{pageSize}
+	</select>
+
     <update id="rollback" parameterType="java.lang.String">
         update tb_distribution
         <set>

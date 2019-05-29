@@ -33,7 +33,7 @@ public class CourseEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private Integer couserType;
+	private Integer courseType;
 	/**
 	 * 
 	 */
@@ -80,12 +80,12 @@ public class CourseEntity implements Serializable {
 		return createUser;
 	}
 
-	public Integer getCouserType() {
-		return couserType;
+	public Integer getCourseType() {
+		return courseType;
 	}
 
-	public void setCouserType(Integer couserType) {
-		this.couserType = couserType;
+	public void setCourseType(Integer courseType) {
+		this.courseType = courseType;
 	}
 
 	/**
