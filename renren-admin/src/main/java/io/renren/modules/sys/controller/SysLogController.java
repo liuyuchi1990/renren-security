@@ -183,19 +183,24 @@ public class SysLogController {
     public ReturnResult updateAppForPic(@RequestBody Map<String, Object> params) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         String type = params.get("type").toString();
-        int maxSort = sysLogService.queryMaxSort(type);
-        params.put("id",UUID.randomUUID().toString().replaceAll("-", ""));
-        params.put("sort", maxSort + 1);
-        Map<String, Object> map = new HashedMap();
-        sysLogService.insertApp(params);
-        result.setResult(map);
+        if(params.get("id")==null){
+            int maxSort = sysLogService.queryMaxSort(type);
+            params.put("id",UUID.randomUUID().toString().replaceAll("-", ""));
+            params.put("sort", maxSort + 1);
+            params.replace("name","");
+            sysLogService.insertApp(params);
+        }else{
+            sysLogService.updateApp(params);
+        }
+        result.setResult(params);
         return result;
     }
 
     @RequestMapping("/deleteAppForPic")
     //@RequiresPermissions("sys:distribution:list")
     @ResponseBody
-    public ReturnResult deleteAppForPic(@RequestBody String id) {
+    public ReturnResult deleteAppForPic(@RequestBody Map<String, Object> params) {
+        String id = params.get("id").toString();
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         sysLogService.deleteApp(id);
         return result;

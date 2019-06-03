@@ -84,4 +84,8 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> impl
     public int deleteApp(String id){
         return sysLogDao.deleteApp(id);
     };
+
+    public int updateApp(Map<String,Object> map){
+        return sysLogDao.updateApp(map);
+    };;
 }

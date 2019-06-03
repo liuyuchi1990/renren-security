@@ -54,4 +54,6 @@ public interface SysLogService extends IService<SysLogEntity> {
 
     int deleteApp(String id);
 
+    int updateApp(Map<String,Object> map);
+
 }

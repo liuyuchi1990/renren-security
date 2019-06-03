@@ -47,5 +47,7 @@ public interface SysLogDao extends BaseMapper<SysLogEntity> {
 
     int insertApp(Map<String,Object> map);
 
+    int updateApp(Map<String,Object> map);
+
     int deleteApp(String id);
 }

@@ -26,12 +26,17 @@
         select * from tb_img where type =6 order by sort
     </select>
 
+    <select id="queryMaxSort" resultType="java.lang.Integer">
+        select ifnull(Max(sort),0) from tb_img where type = #{type,jdbcType=VARCHAR}
+    </select>
+
     <insert id="insertApp" parameterType="java.util.Map">
         insert into tb_img (
         id,
         name,
         img_path,
         type,
+        url,
         sort,
         update_time
         )VALUES
@@ -39,11 +44,20 @@
 	#{name,jdbcType=VARCHAR},
 	#{img_path,jdbcType=VARCHAR},
 	#{type,jdbcType=VARCHAR},
-	#{pageNum,jdbcType=INTEGER},
+	'1',
+	#{sort,jdbcType=INTEGER},
 	SYSDATE()
 	)
 
     </insert>
+
+    <update id="updateApp" parameterType="java.util.Map">
+        update tb_img
+        <set>
+            name = #{name,jdbcType=VARCHAR}
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 
     <delete id="deleteApp" parameterType="java.lang.String">
         delete from tb_img where id = #{id,jdbcType=VARCHAR}
