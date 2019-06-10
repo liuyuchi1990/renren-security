@@ -54,7 +54,9 @@
     <update id="updateApp" parameterType="java.util.Map">
         update tb_img
         <set>
-            name = #{name,jdbcType=VARCHAR}
+            name = #{name,jdbcType=VARCHAR},
+
+            url = #{url,jdbcType=VARCHAR}
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>

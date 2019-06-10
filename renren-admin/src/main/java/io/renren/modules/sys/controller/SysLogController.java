@@ -16,7 +16,10 @@
 
 package io.renren.modules.sys.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import io.renren.common.utils.Rs;
+import io.renren.modules.course.entity.CourseEntity;
+import io.renren.modules.course.service.CourseService;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.sys.entity.*;
@@ -44,6 +47,9 @@ import java.util.*;
 public class SysLogController {
     @Autowired
     private SysLogService sysLogService;
+
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private DistributionService distributionService;
@@ -76,6 +82,7 @@ public class SysLogController {
         List<Map<String, String>> businessLst = sysLogService.queryAllBusiness(param);
         List<Distribution> activityLst = distributionService.queryListByPage(param);
         List<Map<String, String>> contactLst = sysLogService.queryAllContact();
+        List<Map<String, String>> vedioLst = sysLogService.queryAllVedio();
         for (Map<String, String> map : channelLst) {
             Channel channel = new Channel();
             channel.setId(map.get("id").toString());
@@ -131,6 +138,7 @@ public class SysLogController {
         data.put("newGoodsList", goodActitiyList);
         data.put("categoryList", businessList);
         data.put("contactList", contactList);
+        data.put("videos", vedioLst);
         return Rs.ok().put("data", data);
     }
 
@@ -183,13 +191,25 @@ public class SysLogController {
     public ReturnResult updateAppForPic(@RequestBody Map<String, Object> params) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         String type = params.get("type").toString();
+        CourseEntity cs = new CourseEntity();
+        JSONObject jsonObj = new JSONObject();
         if(params.get("id")==null){
             int maxSort = sysLogService.queryMaxSort(type);
             params.put("id",UUID.randomUUID().toString().replaceAll("-", ""));
             params.put("sort", maxSort + 1);
             params.replace("name","");
+            cs.setId(params.get("id").toString());
+            cs.setCourseType(1);
+            jsonObj.put("page1Title","name");
+            cs.setCourseContent(jsonObj.toJSONString());
             sysLogService.insertApp(params);
+            courseService.insertAllColumn(cs);
         }else{
+            jsonObj.put("page1Title",params.get("name").toString());
+            cs.setId(params.get("id").toString());
+            params.replace("url",params.get("url").toString().replace("id=","id="+ params.get("id").toString()));
+            cs.setCourseContent(jsonObj.toJSONString());
+            courseService.updateAllColumnById(cs);
             sysLogService.updateApp(params);
         }
         result.setResult(params);

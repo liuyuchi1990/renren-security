@@ -56,7 +56,7 @@ public class CourseController {
     public R save(@RequestBody CourseEntity course){
         if ("".equals(course.getId())||course.getId()==null) {
             course.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-            courseService.insert(course);
+            courseService.insertAllColumn(course);
         }else{
             ValidatorUtils.validateEntity(course);
             courseService.updateAllColumnById(course);//全部更新
