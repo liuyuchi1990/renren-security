@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.gather.dao.GatherDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.gather.entity.GatherEntity" id="gatherMap">
+        <result property="id" column="id"/>
+        <result property="activityName" column="activity_name"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="priceNum" column="price_num"/>
+        <result property="targetNum" column="target_num"/>
+        <result property="restrictTime" column="restrict_time"/>
+        <result property="priceDescription" column="price_description"/>
+        <result property="activityRule" column="activity_rule"/>
+        <result property="priceInfo" column="price_info"/>
+        <result property="companyDescription" column="company_description"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="discount" column="discount"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="qrImg" column="qr_img"/>
+        <result property="gift" column="gift"/>
+        <result property="headImage" column="head_image"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+
+</mapper>
