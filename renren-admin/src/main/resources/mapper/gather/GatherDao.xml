@@ -25,7 +25,13 @@
         <result property="gift" column="gift"/>
         <result property="headImage" column="head_image"/>
         <result property="phone" column="phone"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
     </resultMap>
+
+    <insert id="insertPrizeLog" parameterType="io.renren.modules.gather.entity.PrizeEntity">
+        insert into
+    </insert>
 
 
 </mapper>

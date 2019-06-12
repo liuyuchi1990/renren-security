@@ -60,7 +60,7 @@ public class GatherController {
         }else{
             gatherService.updateAllColumnById(gather);//全部更新
         }
-        return R.ok();
+        return R.ok().put("gather", gather);
     }
 
     /**

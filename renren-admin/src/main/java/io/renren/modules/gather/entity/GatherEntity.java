@@ -2,6 +2,7 @@ package io.renren.modules.gather.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,7 +21,7 @@ public class GatherEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@TableId
+	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
 	/**
 	 * 
@@ -96,6 +97,11 @@ public class GatherEntity implements Serializable {
 	private String phone;
 
 	private String gift;
+
+	private String longitude;//经度
+
+	private String latitude;//纬度
+
 
 	/**
 	 * 设置：
@@ -332,5 +338,21 @@ public class GatherEntity implements Serializable {
 
 	public void setGift(String gift) {
 		this.gift = gift;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
 }
