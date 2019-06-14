@@ -8,10 +8,11 @@ public class PrizeEntity implements Serializable {
     private String activityId;
     private Date createTime;
     private Date updateTime;
-    private String like;
+    private String likes;
     private String userId;
     private Date completeTime;
     private String state;
+    private String prizeNum;
 
     public String getId() {
         return id;
@@ -45,12 +46,12 @@ public class PrizeEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getLike() {
-        return like;
+    public String getlikes() {
+        return likes;
     }
 
-    public void setLike(String like) {
-        this.like = like;
+    public void setlikes(String likes) {
+        this.likes = likes;
     }
 
     public String getUserId() {
@@ -75,5 +76,13 @@ public class PrizeEntity implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getPrizeNum() {
+        return prizeNum;
+    }
+
+    public void setPrizeNum(String prizeNum) {
+        this.prizeNum = prizeNum;
     }
 }

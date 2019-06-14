@@ -3,7 +3,7 @@
 
 <mapper namespace="io.renren.modules.gather.dao.GatherDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.modules.gather.entity.GatherEntity" id="gatherMap">
         <result property="id" column="id"/>
         <result property="activityName" column="activity_name"/>
@@ -30,8 +30,55 @@
     </resultMap>
 
     <insert id="insertPrizeLog" parameterType="io.renren.modules.gather.entity.PrizeEntity">
-        insert into
+    INSERT INTO tb_prize_log(id,
+    activity_id,
+    likes,
+    user_id,
+    complete_time,
+    state,
+    prize_num,
+    create_time)
+    VALUES(
+    #{id,jdbcType=VARCHAR},
+    #{activityId,jdbcType=VARCHAR},
+    #{likes,jdbcType=VARCHAR},
+    #{userId,jdbcType=VARCHAR},
+    #{completeTime,jdbcType=VARCHAR},
+    #{state,jdbcType=VARCHAR},
+    #{prizeNum,jdbcType=VARCHAR},
+    SYSDATE()
+    )
+</insert>
+
+    <insert id="insertLikeLog" parameterType="io.renren.modules.gather.entity.PrizeEntity">
+        INSERT INTO tb_like_log(id,
+        user_id,
+        create_time)
+        VALUES(
+        #{id,jdbcType=VARCHAR},
+        #{userId,jdbcType=VARCHAR},
+        SYSDATE()
+        )
     </insert>
 
+    <update id="updatePrizeLog" parameterType="io.renren.modules.gather.entity.PrizeEntity">
+        update tb_prize_log
+        <set>
+            concat(concat(#{likes,jdbcType=VARCHAR},','),IFNULL(likes,'')),
+            update_time = SYSDATE()
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 
+    <select id="queryLike" parameterType="java.lang.String"  resultType="java.util.Map">
+        select t.*,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username from tb_prize_log t
+		left join sys_user u on u.user_id=t.user_id
+        where activity_id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryPrizeLog" parameterType="java.lang.String"  resultType="java.util.Map">
+        select t.*,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username from tb_prize_log t
+        left join sys_user u on u.user_id=t.user_id
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 </mapper>

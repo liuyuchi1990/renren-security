@@ -88,7 +88,10 @@ root:
 qr:
   distribution: https://wx.sharkmeida.cn/dist2/redirect.html?id=
   distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/distribution/qr
+  gather: https://wx.sharkmeida.cn/dist/redirect.html?id=
+  gatherImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/gather/qr
   httpurl: https://wx.sharkmeida.cn/imgs/distribution/qr/
+  httpgatherurl: https://wx.sharkmeida.cn/imgs/gather/qr/
 
 course:
   path: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/course/
