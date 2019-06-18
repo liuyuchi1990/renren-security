@@ -1,9 +1,11 @@
 package io.renren.modules.gather.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
@@ -13,10 +15,13 @@ import io.renren.modules.gather.entity.PrizeEntity;
 import io.renren.modules.gather.service.GatherService;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserService;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import io.renren.common.utils.PageUtils;
@@ -36,6 +41,10 @@ import io.renren.common.utils.R;
 public class GatherController {
     @Autowired
     private GatherService gatherService;
+
+    @Autowired
+    SysUserService sysUserService;
+
 
     @Value("${qr.gather}")
     String qrGatherUrl;
@@ -71,11 +80,12 @@ public class GatherController {
         if ("".equals(gather.getId())||gather.getId()==null) {
             gather.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             gather.setQrImg(httpgatherurl + gather.getId() + ".jpg");
+            gather.setPrizeLeft(gather.getPriceNum());
             gatherService.insertAllColumn(gather);
             String text = qrGatherUrl.replace("id=", "id=" + gather.getId());
             QRCodeUtils.encode(text, null, qrGatherImgUrl, gather.getId(), true);
         }else{
-            gatherService.updateAllColumnById(gather);//全部更新
+            gatherService.updateById(gather);//全部更新
         }
         return R.ok().put("gather", gather);
     }
@@ -102,31 +112,59 @@ public class GatherController {
     @RequestMapping("/update")
     public R update(@RequestBody GatherEntity gather){
         ValidatorUtils.validateEntity(gather);
-        gatherService.updateAllColumnById(gather);//全部更新
+        gatherService.updateById(gather);//全部更新
         return R.ok();
     }
 
     @RequestMapping(value = "/like", method = RequestMethod.POST)
+    @Transactional
     //@RequiresPermissions("sys:distribution:delete")
-    public ReturnResult like(@RequestBody PrizeEntity pz) {
+    public ReturnResult like(@RequestBody PrizeEntity pz) throws ParseException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
-        int mp = gatherService.updatePrizeLog(pz);
-        int mp2 = gatherService.insertLikeLog(pz);
+        Map<String, Object> pList = gatherService.queryLikeTime(pz);
+        String create_time = pList.get("create_time").toString().replace(".0","");
+        Long prize_time = Long.parseLong(pList.get("prize_time").toString());
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime toDate= LocalDateTime.now();
+        LocalDateTime ldt = LocalDateTime.parse(create_time,df);
+        long hours = ChronoUnit.HOURS.between(ldt,toDate);
+        if(prize_time<hours) {
+            pz.setCompleteTime(new Date());
+            int mp = gatherService.updatePrizeLog(pz);
+            int mp2 = gatherService.insertLikeLog(pz);
+            Map<String, Object> p = gatherService.queryPrizeLog(pz.getId());
+            int arr = p.get("likes").toString().split(",").length;
+            if(arr== Integer.parseInt(pz.getPrizeNum())){
+                pz.setCompleteTime(new Date());
+                gatherService.updatePrizeLog(pz);
+                gatherService.releasePrize(pz.getActivityId());
+            }
+            map.put("data", mp);
+        }else{
+           String mp = "请超过"+prize_time+"小时后再投票，谢谢";
+            map.put("data",mp);
+        }
         map.put("status", "success");
         map.put("msg", "send ok");
-        map.put("data", mp);
+
         result.setResult(map);
         return result;
     }
 
     @RequestMapping(value = "/makeLike", method = RequestMethod.POST)
+    @Transactional
     //@RequiresPermissions("sys:distribution:delete")
     public ReturnResult makeLike(@RequestBody PrizeEntity pz) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        SysUserEntity user = new SysUserEntity();
         Map<String, Object> map = new HashedMap();
         pz.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         int mp = gatherService.insertPrizeLog(pz);
+        user.setUsername(pz.getUserName());
+        user.setUserId(pz.getUserId());
+        user.setMobile(pz.getMobile());
+        sysUserService.updateUser(user);
         map.put("status", "success");
         map.put("msg", "send ok");
         map.put("data", pz);
@@ -139,7 +177,6 @@ public class GatherController {
     public ReturnResult queryLike(@RequestBody PrizeEntity pz) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
-        pz.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         List<Map<String, Object>> mp = gatherService.queryLike(pz.getActivityId());
         map.put("status", "success");
         map.put("msg", "send ok");
@@ -153,8 +190,7 @@ public class GatherController {
     public ReturnResult queryPrizeLog(@RequestBody PrizeEntity pz) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
-        pz.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        List<Map<String, Object>> mp = gatherService.queryPrizeLog(pz.getId());
+        Map<String, Object> mp = gatherService.queryPrizeLog(pz.getId());
         map.put("status", "success");
         map.put("msg", "send ok");
         map.put("data", mp);

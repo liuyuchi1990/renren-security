@@ -102,6 +102,12 @@ public class GatherEntity implements Serializable {
 
 	private String latitude;//纬度
 
+	private Integer prizeLeft;
+
+	private String footImage;
+
+	private String bgImage;
+
 
 	/**
 	 * 设置：
@@ -354,5 +360,29 @@ public class GatherEntity implements Serializable {
 
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
+	}
+
+	public Integer getPrizeLeft() {
+		return prizeLeft;
+	}
+
+	public void setPrizeLeft(Integer prizeLeft) {
+		this.prizeLeft = prizeLeft;
+	}
+
+	public String getFootImage() {
+		return footImage;
+	}
+
+	public void setFootImage(String footImage) {
+		this.footImage = footImage;
+	}
+
+	public String getBgImage() {
+		return bgImage;
+	}
+
+	public void setBgImage(String bgImage) {
+		this.bgImage = bgImage;
 	}
 }

@@ -13,6 +13,9 @@ public class PrizeEntity implements Serializable {
     private Date completeTime;
     private String state;
     private String prizeNum;
+    private String prizeTime;
+    private String userName;
+    private String mobile;
 
     public String getId() {
         return id;
@@ -46,14 +49,6 @@ public class PrizeEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getlikes() {
-        return likes;
-    }
-
-    public void setlikes(String likes) {
-        this.likes = likes;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -84,5 +79,37 @@ public class PrizeEntity implements Serializable {
 
     public void setPrizeNum(String prizeNum) {
         this.prizeNum = prizeNum;
+    }
+
+    public String getPrizeTime() {
+        return prizeTime;
+    }
+
+    public void setPrizeTime(String prizeTime) {
+        this.prizeTime = prizeTime;
+    }
+
+    public String getLikes() {
+        return likes;
+    }
+
+    public void setLikes(String likes) {
+        this.likes = likes;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 }

@@ -27,6 +27,10 @@ public interface GatherService extends IService<GatherEntity> {
 
     List<Map<String, Object>> queryLike(String id);
 
-    List<Map<String, Object>> queryPrizeLog(String id);
+    Map<String, Object> queryPrizeLog(String id);
+
+    Map<String, Object> queryLikeTime(PrizeEntity pz);
+
+    int releasePrize(String id);
 }
 

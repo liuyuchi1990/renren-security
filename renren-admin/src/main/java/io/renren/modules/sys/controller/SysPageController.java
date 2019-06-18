@@ -65,6 +65,11 @@ public class SysPageController {
 		return "dist/view/index";
 	}
 
+	@RequestMapping("dist/redirect.html")
+	public String disRedirect(){
+		return "dist/view/redirect";
+	}
+
 	@RequestMapping("dist2/redirect.html")
 	public String dis2Redirect(){
 		return "dist2/redirect";

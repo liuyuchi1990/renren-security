@@ -21,7 +21,7 @@ import java.util.Map;
 public class GatherServiceImpl extends ServiceImpl<GatherDao, GatherEntity> implements GatherService {
 
     @Autowired
-    private GatherService gatherService;
+    private GatherDao gatherDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -33,22 +33,31 @@ public class GatherServiceImpl extends ServiceImpl<GatherDao, GatherEntity> impl
         return new PageUtils(page);
     }
 
-    public int insertPrizeLog(PrizeEntity pz){
-        return gatherService.insertPrizeLog(pz);
+    public int insertPrizeLog(PrizeEntity pz) {
+        return gatherDao.insertPrizeLog(pz);
     }
 
-    public int updatePrizeLog(PrizeEntity pz){
-        return gatherService.updatePrizeLog(pz);
+    public int updatePrizeLog(PrizeEntity pz) {
+        return gatherDao.updatePrizeLog(pz);
     }
 
-    public     int insertLikeLog(PrizeEntity pz){
-        return gatherService.insertLikeLog(pz);
+    public int insertLikeLog(PrizeEntity pz) {
+        return gatherDao.insertLikeLog(pz);
     }
 
-    public List<Map<String, Object>> queryLike(String id){
-        return gatherService.queryLike(id);
+    public List<Map<String, Object>> queryLike(String id) {
+        return gatherDao.queryLike(id);
     }
-    public List<Map<String, Object>> queryPrizeLog(String id){
-        return gatherService.queryPrizeLog(id);
+
+    public Map<String, Object> queryPrizeLog(String id) {
+        return gatherDao.queryPrizeLog(id);
+    }
+
+    public Map<String, Object> queryLikeTime(PrizeEntity pz) {
+        return gatherDao.queryLikeTime(pz);
+    }
+
+    public int releasePrize(String id) {
+        return gatherDao.releasePrize(id);
     }
 }
