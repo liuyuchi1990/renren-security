@@ -29,5 +29,7 @@ public interface GatherDao extends BaseMapper<GatherEntity> {
     Map<String, Object> queryLikeTime(PrizeEntity pz);
 
     int releasePrize(String id);
+
+    List<Map<String, Object>> queryList (Map<String, Object> param);
 	
 }

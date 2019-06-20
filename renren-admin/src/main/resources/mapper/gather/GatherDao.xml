@@ -75,29 +75,35 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <select id="queryLike" parameterType="java.lang.String"  resultType="java.util.Map">
+    <select id="queryLike" parameterType="java.lang.String" resultType="java.util.Map">
         select t.*,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username from tb_prize_log t
 		left join sys_user u on u.user_id=t.user_id
         where activity_id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="queryPrizeLog" parameterType="java.lang.String"  resultType="java.util.Map">
+    <select id="queryList" parameterType="java.util.Map" resultType="java.util.Map">
+        select tg.*,count(1) from tb_gather tg
+        left join tb_prize_log tp on tg.id=tp.activity_id
+        group by tg.id
+    </select>
+
+    <select id="queryPrizeLog" parameterType="java.lang.String" resultType="java.util.Map">
         select t.*,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username from tb_prize_log t
         left join sys_user u on u.user_id=t.user_id
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="queryLikeTime" parameterType="io.renren.modules.gather.entity.PrizeEntity"  resultType="java.util.Map">
-        select max(t.create_time) create_time,tl.prize_time from tb_like_log t
-        left join tb_prize_log tl on t.id = tl.id
-        left join sys_user u on u.user_id=t.user_id
-        where u.user_id = #{likes,jdbcType=VARCHAR} and t.id = #{id,jdbcType=VARCHAR}
+    <select id="queryLikeTime" parameterType="io.renren.modules.gather.entity.PrizeEntity" resultType="java.util.Map">
+        select max(t.create_time) create_time,tl.prize_time from tb_prize_log tl
+        left join tb_like_log  t on t.id = tl.id
+        left join sys_user u on u.user_id=tl.user_id
+        where t.user_id = #{likes,jdbcType=VARCHAR} and tl.id = #{id,jdbcType=VARCHAR}
     </select>
 
     <update id="releasePrize" parameterType="java.lang.String">
         update tb_gather
         <set>
-              prize_left = prize_left - 1
+            prize_left = prize_left - 1
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>

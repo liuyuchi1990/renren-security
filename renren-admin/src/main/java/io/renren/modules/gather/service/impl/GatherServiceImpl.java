@@ -60,4 +60,8 @@ public class GatherServiceImpl extends ServiceImpl<GatherDao, GatherEntity> impl
     public int releasePrize(String id) {
         return gatherDao.releasePrize(id);
     }
+
+    public List<Map<String, Object>> queryList (Map<String, Object> param){
+        return gatherDao.queryList(param);
+    }
 }

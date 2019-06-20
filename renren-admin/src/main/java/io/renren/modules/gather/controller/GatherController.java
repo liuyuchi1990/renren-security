@@ -2,6 +2,7 @@ package io.renren.modules.gather.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -73,6 +74,20 @@ public class GatherController {
     }
 
     /**
+     * 列表
+     */
+    @RequestMapping("/queryAll")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryAll(@RequestBody Map<String, Object> params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Map<String, Object>> activityLst = gatherService.queryList(params);
+        Map<String, Object> map = new HashedMap();
+        map.put("data",activityLst);
+        result.setResult(map);
+        return result;
+    }
+
+    /**
      * 保存
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -123,19 +138,23 @@ public class GatherController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Map<String, Object> pList = gatherService.queryLikeTime(pz);
-        String create_time = pList.get("create_time").toString().replace(".0","");
+        long hours = 0;
         Long prize_time = Long.parseLong(pList.get("prize_time").toString());
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime toDate= LocalDateTime.now();
-        LocalDateTime ldt = LocalDateTime.parse(create_time,df);
-        long hours = ChronoUnit.HOURS.between(ldt,toDate);
-        if(prize_time<hours) {
+        String create_time = pList.get("create_time")==null?null: pList.get("create_time").toString().replace(".0","");
+        if(pList.get("create_time")!=null){
+            LocalDateTime ldt = LocalDateTime.parse(create_time,df);
+            hours = ChronoUnit.HOURS.between(ldt,toDate);
+        }
+
+        if(create_time==null||prize_time<hours) {
             pz.setCompleteTime(new Date());
             int mp = gatherService.updatePrizeLog(pz);
             int mp2 = gatherService.insertLikeLog(pz);
             Map<String, Object> p = gatherService.queryPrizeLog(pz.getId());
-            int arr = p.get("likes").toString().split(",").length;
-            if(arr== Integer.parseInt(pz.getPrizeNum())){
+            int arr = p.get("likes")==null?0:p.get("likes").toString().split(",").length;
+            if(create_time!=null&&arr== Integer.parseInt(pz.getPrizeNum())){
                 pz.setCompleteTime(new Date());
                 gatherService.updatePrizeLog(pz);
                 gatherService.releasePrize(pz.getActivityId());
