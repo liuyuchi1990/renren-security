@@ -2,17 +2,15 @@ package io.renren.modules.bargin.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
+import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.renren.modules.bargin.entity.BarginEntity;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 import io.renren.modules.bargin.service.BarginService;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
@@ -31,6 +29,13 @@ import io.renren.common.utils.R;
 public class BarginController {
     @Autowired
     private BarginService barginService;
+
+    @Value("${qr.bargin}")
+    String qrGatherUrl;
+    @Value("${qr.barginImgPath}")
+    String qrGatherImgUrl;
+    @Value("${qr.httpbarginurl}")
+    String httpbarginurl;
 
     /**
      * 列表
@@ -56,10 +61,34 @@ public class BarginController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
-    public R save(@RequestBody BarginEntity bargin){
-        barginService.insert(bargin);
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public R save(@RequestBody BarginEntity bargin) throws Exception {
+        if ("".equals(bargin.getId())||bargin.getId()==null) {
+            bargin.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+            bargin.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
+            bargin.setPrizeLeft(bargin.getPrizeNum());
+            barginService.insertAllColumn(bargin);
+            String text = qrGatherUrl.replace("id=", "id=" + bargin.getId());
+            QRCodeUtils.encode(text, null, qrGatherImgUrl, bargin.getId(), true);
+        }else{
+            barginService.updateById(bargin);//全部更新
+        }
+        return R.ok().put("bargin", bargin);
+    }
 
+    /**
+     * 保存
+     */
+    @RequestMapping(value = "/copy", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:save")
+    @ResponseBody
+    public R copy(@RequestBody BarginEntity bargin) throws Exception {
+        BarginEntity ga = barginService.selectById(bargin.getId());
+        ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        ga.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
+        barginService.insertAllColumn(ga);
+        String text = qrGatherUrl.replace("id=", "id=" + ga.getId());
+        QRCodeUtils.encode(text, null, qrGatherImgUrl, ga.getId(), true);
         return R.ok();
     }
 

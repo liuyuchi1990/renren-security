@@ -2,6 +2,7 @@ package io.renren.modules.bargin.entity;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
@@ -21,7 +22,7 @@ public class BarginEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@TableId
+	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
 	/**
 	 * 
