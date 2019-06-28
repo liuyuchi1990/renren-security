@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.groupon.dao.GrouponDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.groupon.entity.GrouponEntity" id="grouponMap">
+        <result property="id" column="id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="commodityDescription" column="commodity_description"/>
+        <result property="originalPrice" column="original_price"/>
+        <result property="companyDescription" column="company_description"/>
+        <result property="phone" column="phone"/>
+        <result property="discount" column="discount"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="activityName" column="activity_name"/>
+        <result property="footImage" column="foot_image"/>
+        <result property="bgImage" column="bg_image"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="headImage" column="head_image"/>
+        <result property="createTime" column="create_time"/>
+        <result property="qrImg" column="qr_img"/>
+        <result property="thumbnail" column="thumbnail"/>
+    </resultMap>
+
+
+</mapper>
