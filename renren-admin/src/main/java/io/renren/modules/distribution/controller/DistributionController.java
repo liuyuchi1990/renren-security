@@ -24,6 +24,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -137,6 +138,7 @@ public class DistributionController {
      * 保存
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @Transactional
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
     public R save(@RequestBody Distribution distribution) throws Exception {

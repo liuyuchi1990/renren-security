@@ -92,9 +92,12 @@ qr:
   gatherImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/gather/qr
   bargin: https://wx.sharkmeida.cn/dist4/redirect.html?hash=2pageInfo&id=
   barginImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/bargin/qr
+  groupon: https://wx.sharkmeida.cn/dist5/redirect.html?hash=2pageInfo&id=
+  grouponImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/groupon/qr
   httpurl: https://wx.sharkmeida.cn/imgs/distribution/qr/
   httpgatherurl: https://wx.sharkmeida.cn/imgs/gather/qr/
   httpbarginurl: https://wx.sharkmeida.cn/imgs/bargin/qr/
+  httpgrouponurl: https://wx.sharkmeida.cn/imgs/groupon/qr/
 
 course:
   path: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/course/

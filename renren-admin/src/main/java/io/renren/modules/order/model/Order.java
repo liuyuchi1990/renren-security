@@ -25,6 +25,8 @@ public class Order {
 
     private String user_type;
 
+    private String groupId;
+
     private Date updateTime;
 
     private Date createTime;
@@ -127,5 +129,13 @@ public class Order {
 
     public void setUser_type(String user_type) {
         this.user_type = user_type;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

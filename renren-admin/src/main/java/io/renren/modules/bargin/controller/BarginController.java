@@ -1,5 +1,7 @@
 package io.renren.modules.bargin.controller;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -8,8 +10,15 @@ import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.bargin.entity.BarginEntity;
 
+import io.renren.modules.gather.entity.PrizeEntity;
+import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderInfo;
+import io.renren.modules.order.service.OrderService;
+import io.renren.modules.sys.entity.ReturnCodeEnum;
+import io.renren.modules.sys.entity.ReturnResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import io.renren.modules.bargin.service.BarginService;
 import io.renren.common.utils.PageUtils;
@@ -25,15 +34,18 @@ import io.renren.common.utils.R;
  * @date 2019-06-25 15:35:24
  */
 @RestController
-@RequestMapping("bargin/bargin")
+@RequestMapping("/bargin")
 public class BarginController {
     @Autowired
     private BarginService barginService;
 
+    @Autowired
+    private OrderService orderService;
+
     @Value("${qr.bargin}")
-    String qrGatherUrl;
+    String qrBarginUrl;
     @Value("${qr.barginImgPath}")
-    String qrGatherImgUrl;
+    String qrBarginImgUrl;
     @Value("${qr.httpbarginurl}")
     String httpbarginurl;
 
@@ -68,8 +80,8 @@ public class BarginController {
             bargin.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
             bargin.setPrizeLeft(bargin.getPrizeNum());
             barginService.insertAllColumn(bargin);
-            String text = qrGatherUrl.replace("id=", "id=" + bargin.getId());
-            QRCodeUtils.encode(text, null, qrGatherImgUrl, bargin.getId(), true);
+            String text = qrBarginUrl.replace("id=", "id=" + bargin.getId());
+            QRCodeUtils.encode(text, null, qrBarginImgUrl, bargin.getId(), true);
         }else{
             barginService.updateById(bargin);//全部更新
         }
@@ -87,9 +99,23 @@ public class BarginController {
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
         barginService.insertAllColumn(ga);
-        String text = qrGatherUrl.replace("id=", "id=" + ga.getId());
-        QRCodeUtils.encode(text, null, qrGatherImgUrl, ga.getId(), true);
+        String text = qrBarginUrl.replace("id=", "id=" + ga.getId());
+        QRCodeUtils.encode(text, null, qrBarginImgUrl, ga.getId(), true);
         return R.ok();
+    }
+
+    @RequestMapping(value = "/bargin", method = RequestMethod.POST)
+    @Transactional
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult bargin(@RequestBody BarginEntity bargin) throws ParseException {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        BarginEntity ba = barginService.selectById(bargin.getId());
+        Double reduct = Math.random()*(ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue())+ba.getMinReduction().doubleValue();
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrder_id(bargin.getGift());
+        orderInfo.setTotal_price(String.valueOf(reduct));
+        orderService.edit(orderInfo);
+        return result;
     }
 
     /**

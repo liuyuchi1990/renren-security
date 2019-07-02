@@ -3,7 +3,7 @@ package io.renren.modules.order.model;
 public class OrderInfo {
     private String order_id;
 
-    private String device_id;
+    private String total_price;
 
 
     private String order_status;
@@ -23,12 +23,12 @@ public class OrderInfo {
         this.order_id = order_id;
     }
 
-    public String getDevice_id() {
-        return device_id;
+    public String getTotal_price() {
+        return total_price;
     }
 
-    public void setDevice_id(String device_id) {
-        this.device_id = device_id;
+    public void setTotal_price(String total_price) {
+        this.total_price = total_price;
     }
 
     public String getOrder_status() {
