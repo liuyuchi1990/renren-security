@@ -6,10 +6,12 @@ import java.util.UUID;
 
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.groupon.entity.GrouponEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import io.renren.modules.groupon.entity.GrouponEntity;
@@ -31,6 +33,10 @@ import io.renren.common.utils.R;
 public class GrouponController {
     @Autowired
     private GrouponService grouponService;
+
+    @Autowired
+    DistributionService distributionService;
+
 
     @Value("${qr.groupon}")
     String qrGrouponUrl;
@@ -66,15 +72,19 @@ public class GrouponController {
      * 保存
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @Transactional
     public R save(@RequestBody GrouponEntity groupon) throws Exception {
         if ("".equals(groupon.getId())||groupon.getId()==null) {
             groupon.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             groupon.setQrImg(httpgrouponurl + groupon.getId() + ".jpg");
             grouponService.insertAllColumn(groupon);
+            distributionService.insertActivity(groupon);
             String text = qrGrouponUrl.replace("id=", "id=" + groupon.getId());
             QRCodeUtils.encode(text, null, qrGrouponImgUrl, groupon.getId(), true);
         }else{
             grouponService.updateById(groupon);//全部更新
+            distributionService.updateActivity(groupon);
+
         }
         return R.ok().put("groupon", groupon);
     }
@@ -83,6 +93,7 @@ public class GrouponController {
      * 保存
      */
     @RequestMapping(value = "/copy", method = RequestMethod.POST)
+    @Transactional
     //@RequiresPermissions("sys:distribution:save")
     @ResponseBody
     public R copy(@RequestBody GrouponEntity groupon) throws Exception {
@@ -90,6 +101,7 @@ public class GrouponController {
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpgrouponurl + groupon.getId() + ".jpg");
         grouponService.insertAllColumn(ga);
+        distributionService.insertActivity(ga);
         String text = qrGrouponUrl.replace("id=", "id=" + ga.getId());
         QRCodeUtils.encode(text, null, qrGrouponImgUrl, ga.getId(), true);
         return R.ok();

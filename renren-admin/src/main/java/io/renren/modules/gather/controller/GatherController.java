@@ -11,6 +11,7 @@ import java.util.*;
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.distribution.entity.Distribution;
+import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.gather.entity.GatherEntity;
 import io.renren.modules.gather.entity.PrizeEntity;
 import io.renren.modules.gather.service.GatherService;
@@ -45,6 +46,9 @@ public class GatherController {
 
     @Autowired
     SysUserService sysUserService;
+
+    @Autowired
+    DistributionService distributionService;
 
 
     @Value("${qr.gather}")
@@ -97,10 +101,12 @@ public class GatherController {
             gather.setQrImg(httpgatherurl + gather.getId() + ".jpg");
             gather.setPrizeLeft(gather.getPriceNum());
             gatherService.insertAllColumn(gather);
+            distributionService.insertActivity(gather);
             String text = qrGatherUrl.replace("id=", "id=" + gather.getId());
             QRCodeUtils.encode(text, null, qrGatherImgUrl, gather.getId(), true);
         }else{
             gatherService.updateById(gather);//全部更新
+            distributionService.updateActivity(gather);
         }
         return R.ok().put("gather", gather);
     }
@@ -116,6 +122,7 @@ public class GatherController {
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpgatherurl + gather.getId() + ".jpg");
         gatherService.insertAllColumn(ga);
+        distributionService.insertActivity(ga);
         String text = qrGatherUrl.replace("id=", "id=" + ga.getId());
         QRCodeUtils.encode(text, null, qrGatherImgUrl, ga.getId(), true);
         return R.ok();

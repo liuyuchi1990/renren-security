@@ -3,6 +3,7 @@ package io.renren.modules.bargin.controller;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,12 +11,14 @@ import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.bargin.entity.BarginEntity;
 
+import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.gather.entity.PrizeEntity;
 import io.renren.modules.order.model.Order;
 import io.renren.modules.order.model.OrderInfo;
 import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +44,9 @@ public class BarginController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private DistributionService distributionService;
 
     @Value("${qr.bargin}")
     String qrBarginUrl;
@@ -74,16 +80,19 @@ public class BarginController {
      * 保存
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @Transactional
     public R save(@RequestBody BarginEntity bargin) throws Exception {
         if ("".equals(bargin.getId())||bargin.getId()==null) {
             bargin.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             bargin.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
             bargin.setPrizeLeft(bargin.getPrizeNum());
             barginService.insertAllColumn(bargin);
+            distributionService.insertActivity(bargin);
             String text = qrBarginUrl.replace("id=", "id=" + bargin.getId());
             QRCodeUtils.encode(text, null, qrBarginImgUrl, bargin.getId(), true);
         }else{
             barginService.updateById(bargin);//全部更新
+            distributionService.updateActivity(bargin);
         }
         return R.ok().put("bargin", bargin);
     }
@@ -99,6 +108,7 @@ public class BarginController {
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
         barginService.insertAllColumn(ga);
+        distributionService.insertActivity(ga);
         String text = qrBarginUrl.replace("id=", "id=" + ga.getId());
         QRCodeUtils.encode(text, null, qrBarginImgUrl, ga.getId(), true);
         return R.ok();
@@ -107,14 +117,30 @@ public class BarginController {
     @RequestMapping(value = "/bargin", method = RequestMethod.POST)
     @Transactional
     //@RequiresPermissions("sys:distribution:delete")
-    public ReturnResult bargin(@RequestBody BarginEntity bargin) throws ParseException {
+    public ReturnResult bargin(@RequestBody Order order) throws ParseException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
-        BarginEntity ba = barginService.selectById(bargin.getId());
+        BarginEntity ba = barginService.selectById(order.getActivityId());
         Double reduct = Math.random()*(ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue())+ba.getMinReduction().doubleValue();
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setOrder_id(bargin.getGift());
+        orderInfo.setOrder_id(order.getOrderId());
         orderInfo.setTotal_price(String.valueOf(reduct));
-        orderService.edit(orderInfo);
+        orderService.edit(orderInfo);//modify price
+        orderInfo.setUser_id(order.getUser_id());
+        order.setTotal_price(String.valueOf(reduct));
+        barginService.insertBarginLog(order);
+        return result;
+    }
+
+    @RequestMapping(value = "/queryBarginLog", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult queryBarginLog(@RequestBody Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        List<Map<String, Object>> mp = barginService.queryBarginLog(order.getOrderId());
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        map.put("data", mp);
+        result.setResult(map);
         return result;
     }
 

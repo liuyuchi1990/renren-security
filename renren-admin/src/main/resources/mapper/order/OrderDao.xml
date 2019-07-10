@@ -3,7 +3,7 @@
 
 <mapper namespace="io.renren.modules.order.dao.OrderDao">
 
-    <insert id="insert" parameterType="io.renren.modules.order.model.OrdIer">
+    <insert id="insert" parameterType="io.renren.modules.order.model.Order">
         insert into tb_order (order_id,activity_id,user_id,from_user,red_packets, create_time,total_price,group_id,order_status)
         value(
           #{orderId,jdbcType=VARCHAR},
@@ -48,10 +48,10 @@
 
 	<update id="edit" parameterType="io.renren.modules.order.model.OrderInfo">
 		update tb_order
-		<if test="total_price != null">
-			total_price = #{total_price,jdbcType=VARCHAR},
-		</if>
 		<set>
+			<if test="total_price != null">
+				total_price = #{total_price,jdbcType=VARCHAR},
+			</if>
 			<if test="order_status != null">
 				order_status = #{order_status,jdbcType=VARCHAR},
 			</if>

@@ -1,6 +1,10 @@
 package io.renren.modules.bargin.service.impl;
 
+import io.renren.modules.order.model.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -15,6 +19,8 @@ import io.renren.modules.bargin.service.BarginService;
 
 @Service("barginService")
 public class BarginServiceImpl extends ServiceImpl<BarginDao, BarginEntity> implements BarginService {
+    @Autowired
+    private BarginDao barginDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -26,4 +32,11 @@ public class BarginServiceImpl extends ServiceImpl<BarginDao, BarginEntity> impl
         return new PageUtils(page);
     }
 
+    public int  insertBarginLog(Order order){
+        return barginDao.insertBarginLog(order);
+    }
+
+    public List<Map<String, Object>> queryBarginLog (String id){
+        return barginDao.queryBarginLog(id);
+    }
 }

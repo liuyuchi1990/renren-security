@@ -78,6 +78,51 @@ VALUES
 		SYSDATE()
 	)
     </insert>
+
+	<insert id="insertActivity" parameterType="io.renren.modules.sys.entity.ActivityEntity">
+		INSERT INTO tb_activity(id,
+ activity_name,
+ activity_type,
+ thumbnail,
+ start_time,
+ end_time,
+ create_user,
+ create_time,
+ activity_state)
+	VALUES(
+		#{id,jdbcType=VARCHAR},
+		#{activityName,jdbcType=VARCHAR},
+		#{activityType,jdbcType=VARCHAR},
+		#{thumbnail,jdbcType=VARCHAR},
+		#{startTime,jdbcType=VARCHAR},
+		#{endTime,jdbcType=VARCHAR},
+		#{createUser,jdbcType=VARCHAR},
+		SYSDATE(),
+		#{activityState,jdbcType=VARCHAR})
+	</insert>
+
+
+	<update id="updateActivity" parameterType="io.renren.modules.sys.entity.ActivityEntity">
+		update tb_activity
+		<set>
+			<if test="activityName!= null">
+				activity_name =  activityName,
+			</if>
+			<if test="thumbnail!= null">
+				thumbnail =  thumbnail,
+			</if>
+			<if test="startTime!= null">
+				start_time =  startTime,
+			</if>
+			<if test="endTime!= null">
+				end_time =  endTime,
+			</if>
+				create_time =  SYSDATE()
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+
+	</update>
+
     <select id="queryById" parameterType="java.lang.String"
             resultType="io.renren.modules.distribution.entity.Distribution">
 		select * from tb_distribution where id = #{id}

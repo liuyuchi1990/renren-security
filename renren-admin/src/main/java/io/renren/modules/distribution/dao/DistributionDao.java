@@ -2,7 +2,11 @@ package io.renren.modules.distribution.dao;
 
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import io.renren.modules.bargin.entity.BarginEntity;
 import io.renren.modules.distribution.entity.Distribution;
+import io.renren.modules.gather.entity.GatherEntity;
+import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.sys.entity.ActivityEntity;
 import org.apache.ibatis.annotations.Param;
 import org.mapstruct.Mapper;
 
@@ -32,6 +36,9 @@ public interface DistributionDao extends BaseMapper<Distribution> {
 
     int rollback(String id);
 
+    int insertActivity (ActivityEntity activityEntity);
+
+    int updateActivity (ActivityEntity activityEntity);
 
     int addWatcher (Distribution insertDistribution);
 }

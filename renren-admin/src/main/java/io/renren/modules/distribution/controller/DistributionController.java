@@ -146,11 +146,13 @@ public class DistributionController {
             distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
             distributionService.insertDistribution(distribution);
+            distributionService.insertActivity(distribution);
             String text = qrDistributionUrl.replace("id=", "id=" + distribution.getId());
             QRCodeUtils.encode(text, null, qrDistributionImgUrl, distribution.getId(), true);
         } else {
             ValidatorUtils.validateEntity(distribution);
             distributionService.updateById(distribution);//全部更新
+            distributionService.updateActivity(distribution);
         }
         return R.ok();
     }
@@ -166,6 +168,7 @@ public class DistributionController {
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
         distributionService.insertDistribution(ds);
+        distributionService.insertActivity(ds);
         String text = qrDistributionUrl.replace("id=", "id=" + ds.getId());
         QRCodeUtils.encode(text, null, qrDistributionImgUrl, ds.getId(), true);
         return R.ok();

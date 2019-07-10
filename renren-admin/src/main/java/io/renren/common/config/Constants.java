@@ -82,4 +82,15 @@ public class Constants {
     public static final String EN_CODING_GBK = "gbk";
 
     public static final String FILE_NAME = "fileName";
+
+    public static final String DISTRIBUTION = "1";
+
+    public static final String GATHER = "2";
+
+    public static final String BARGIN = "3";
+
+    public static final String GROUPON = "4";
+
+    public static final String ROLL = "5";
+
 }

@@ -1,8 +1,13 @@
 package io.renren.modules.distribution.service.impl;
 
+import io.renren.common.config.Constants;
+import io.renren.modules.bargin.entity.BarginEntity;
 import io.renren.modules.distribution.dao.DistributionDao;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
+import io.renren.modules.gather.entity.GatherEntity;
+import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.sys.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +19,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
+
+import javax.swing.*;
 
 
 @Service("distributionService")
@@ -47,6 +54,104 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
 
     public int insertDistribution(Distribution distribution) {
         return distributionDao.insertDistribution(distribution);
+    }
+
+    public int insertActivity(Distribution distribution) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(distribution.getId());
+        activityEntity.setActivityName(distribution.getActivityName());
+        activityEntity.setActivityState(distribution.getActivityState().toString());
+        activityEntity.setThumbnail(distribution.getThumbnail());
+        activityEntity.setEndTime(distribution.getEndTime());
+        activityEntity.setStartTime(distribution.getStartTime());
+        activityEntity.setActivityType(Constants.DISTRIBUTION);
+        return distributionDao.insertActivity(activityEntity);
+    }
+
+
+    public int updateActivity(Distribution distribution) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(distribution.getId());
+        activityEntity.setActivityName(distribution.getActivityName());
+        activityEntity.setActivityState(distribution.getActivityState().toString());
+        activityEntity.setThumbnail(distribution.getThumbnail());
+        activityEntity.setEndTime(distribution.getEndTime());
+        activityEntity.setStartTime(distribution.getStartTime());
+        activityEntity.setActivityType(Constants.DISTRIBUTION);
+        return distributionDao.updateActivity(activityEntity);
+    }
+
+
+    public int insertActivity(GatherEntity gatherEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(gatherEntity.getId());
+        activityEntity.setActivityName(gatherEntity.getActivityName());
+
+        activityEntity.setThumbnail(gatherEntity.getThumbnail());
+        activityEntity.setEndTime(gatherEntity.getEndTime());
+        activityEntity.setStartTime(gatherEntity.getStartTime());
+        activityEntity.setActivityType(Constants.GATHER);
+        return distributionDao.insertActivity(activityEntity);
+    }
+
+    public int updateActivity(GatherEntity gatherEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(gatherEntity.getId());
+        activityEntity.setActivityName(gatherEntity.getActivityName());
+
+        activityEntity.setThumbnail(gatherEntity.getThumbnail());
+        activityEntity.setEndTime(gatherEntity.getEndTime());
+        activityEntity.setStartTime(gatherEntity.getStartTime());
+        activityEntity.setActivityType(Constants.GATHER);
+        return distributionDao.updateActivity(activityEntity);
+    }
+
+
+
+    public int insertActivity(BarginEntity barginEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(barginEntity.getId());
+        activityEntity.setActivityName(barginEntity.getActivityName());
+        activityEntity.setThumbnail(barginEntity.getThumbnail());
+        activityEntity.setEndTime(barginEntity.getEndTime());
+        activityEntity.setStartTime(barginEntity.getStartTime());
+        activityEntity.setActivityType(Constants.BARGIN);
+        return distributionDao.insertActivity(activityEntity);
+    }
+
+    public int updateActivity(BarginEntity barginEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(barginEntity.getId());
+        activityEntity.setActivityName(barginEntity.getActivityName());
+        activityEntity.setThumbnail(barginEntity.getThumbnail());
+        activityEntity.setEndTime(barginEntity.getEndTime());
+        activityEntity.setStartTime(barginEntity.getStartTime());
+        activityEntity.setActivityType(Constants.BARGIN);
+        return distributionDao.updateActivity(activityEntity);
+    }
+
+
+
+    public int insertActivity(GrouponEntity grouponEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(grouponEntity.getId());
+        activityEntity.setActivityName(grouponEntity.getActivityName());
+        activityEntity.setThumbnail(grouponEntity.getThumbnail());
+        activityEntity.setEndTime(grouponEntity.getEndTime());
+        activityEntity.setStartTime(grouponEntity.getStartTime());
+        activityEntity.setActivityType(Constants.GROUPON);
+        return distributionDao.insertActivity(activityEntity);
+    }
+
+    public int updateActivity(GrouponEntity grouponEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(grouponEntity.getId());
+        activityEntity.setActivityName(grouponEntity.getActivityName());
+        activityEntity.setThumbnail(grouponEntity.getThumbnail());
+        activityEntity.setEndTime(grouponEntity.getEndTime());
+        activityEntity.setStartTime(grouponEntity.getStartTime());
+        activityEntity.setActivityType(Constants.GROUPON);
+        return distributionDao.updateActivity(activityEntity);
     }
 
     public int release(String id) {

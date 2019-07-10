@@ -2,6 +2,10 @@ package io.renren.modules.bargin.dao;
 
 import io.renren.modules.bargin.entity.BarginEntity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import io.renren.modules.order.model.Order;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -11,5 +15,9 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @date 2019-06-25 15:35:24
  */
 public interface BarginDao extends BaseMapper<BarginEntity> {
+
+    int insertBarginLog(Order order);
+
+    List<Map<String, Object>> queryBarginLog (String id);
 	
 }

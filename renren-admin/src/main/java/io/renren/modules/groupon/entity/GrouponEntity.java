@@ -27,11 +27,11 @@ public class GrouponEntity implements Serializable {
 	/**
 	 * 活动开始时间
 	 */
-	private Date startTime;
+	private String startTime;
 	/**
 	 * 活动结束时间
 	 */
-	private Date endTime;
+	private String endTime;
 	/**
 	 * 商品描述
 	 */
@@ -112,25 +112,25 @@ public class GrouponEntity implements Serializable {
 	/**
 	 * 设置：活动开始时间
 	 */
-	public void setStartTime(Date startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 	/**
 	 * 获取：活动开始时间
 	 */
-	public Date getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 	/**
 	 * 设置：活动结束时间
 	 */
-	public void setEndTime(Date endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 	/**
 	 * 获取：活动结束时间
 	 */
-	public Date getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 	/**
