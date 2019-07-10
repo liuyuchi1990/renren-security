@@ -9,6 +9,8 @@ public class Order {
 
     private String orderId;
 
+    private String orderType;
+
     private String activityId;
 
     private String user_id;
@@ -137,5 +139,13 @@ public class Order {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
     }
 }

@@ -1,6 +1,8 @@
 package io.renren.modules.order.controller;
 
 import com.alibaba.fastjson.JSON;
+import io.renren.common.config.Constants;
+import io.renren.common.utils.Constant;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.order.model.Order;
@@ -109,6 +111,7 @@ public class OrderController {
         if (ds.getTargetQuantity() != 0) {
             Map<String, Object> map = new HashMap<>();
             order.setOrderStatus("1");
+            order.setOrderType(Constants.DISTRIBUTION);
             order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
             //order.setTotal_price(order.getCargo_lane().split(",").length * Constants.PRICE);
             user.setUserId(order.getUser_id());
@@ -182,7 +185,9 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         order.setOrderStatus("1");
         order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
-        //order.setTotal_price(order.getCargo_lane().split(",").length * Constants.PRICE);
+        if(Constants.GROUPON.equals(order.getOrderType())&&(order.getGroupId()!=null)&&(!"".equals(order.getGroupId()))){
+            order.setGroupId(UUID.randomUUID().toString().replaceAll("-", ""));
+        }
         user.setUserId(order.getUser_id());
         user.setMobile(order.getMobile());
         user.setUsername(order.getUser_name());
@@ -190,7 +195,7 @@ public class OrderController {
         sysUserService.updateUser(user);
         if (rs > 0) {
             map.put("status", "成功");
-            map.put("orderId", order.getOrderId());
+            map.put("order", order);
             result.setResult(map);
         } else {
             result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
