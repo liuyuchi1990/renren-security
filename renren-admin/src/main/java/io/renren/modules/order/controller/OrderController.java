@@ -30,7 +30,7 @@ import java.util.concurrent.Executors;
 @RequestMapping("/api/order")
 public class OrderController {
 
-//    @Autowired
+    //    @Autowired
 //    BreadcrumbUtil breadcrumbUtil;
     @Autowired
     OrderService orderService;
@@ -89,6 +89,7 @@ public class OrderController {
 //        return JSON.toJSONString(tp);
 //    }
 //
+
     /**
      * 订单生成
      *
@@ -105,7 +106,7 @@ public class OrderController {
         SysUserEntity user = new SysUserEntity();
         Distribution ds = distributionService.queryById(order.getActivityId());
         //判断是否活动还有名额
-        if (ds.getTargetQuantity()!=0) {
+        if (ds.getTargetQuantity() != 0) {
             Map<String, Object> map = new HashMap<>();
             order.setOrderStatus("1");
             order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -165,7 +166,42 @@ public class OrderController {
 
         return result;
     }
-//
+
+    /**
+     * 订单生成
+     *
+     * @param order
+     * @return
+     */
+    @RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public ReturnResult saveOrder(@ApiParam @RequestBody Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        SysUserEntity user = new SysUserEntity();
+        Map<String, Object> map = new HashMap<>();
+        order.setOrderStatus("1");
+        order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
+        //order.setTotal_price(order.getCargo_lane().split(",").length * Constants.PRICE);
+        user.setUserId(order.getUser_id());
+        user.setMobile(order.getMobile());
+        user.setUsername(order.getUser_name());
+        int rs = orderService.insert(order);
+        sysUserService.updateUser(user);
+        if (rs > 0) {
+            map.put("status", "成功");
+            map.put("orderId", order.getOrderId());
+            result.setResult(map);
+        } else {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return result;
+    }
+
+    //
 //    @RequestMapping(value = "/delete", method = RequestMethod.GET)
 //    @ResponseBody
 //    @Transactional(rollbackFor = Exception.class)
