@@ -45,6 +45,10 @@ public class OrderService {
         return orderDao.queryByActivtyId(activityId);
     }
 
+    public List<Map<String, Object>> queryByGroupId(String groupId) {
+        return orderDao.queryByGroupId(groupId);
+    }
+
     public List<Map<String, Object>> getOrderByUserId(Order order) {
         return orderDao.getOrderByUserId(order);
     }

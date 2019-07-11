@@ -25,8 +25,15 @@
 	<select id="queryByActivtyId" parameterType="java.lang.String" resultType="java.util.HashMap">
 		select tb.*,u.username,u.headimgurl,u.mobile,td.activity_name from tb_order tb
   left join sys_user u on u.user_id=tb.user_id
-  left join tb_distribution td on tb.activity_id = td.id
+  left join tb_activity td on tb.activity_id = td.id
   where tb.activity_id = #{activityId}
+	</select>
+
+	<select id="queryByGroupId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select tb.*,u.username,u.headimgurl,u.mobile,td.activity_name from tb_order tb
+		left join sys_user u on u.user_id=tb.user_id
+		left join tb_activity td on tb.activity_id = td.id
+		where tb.group_id = #{groupId}
 	</select>
 
 
