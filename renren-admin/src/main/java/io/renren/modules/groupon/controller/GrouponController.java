@@ -1,6 +1,7 @@
 package io.renren.modules.groupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.order.service.OrderService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +39,8 @@ public class GrouponController {
     @Autowired
     DistributionService distributionService;
 
-
+    @Autowired
+    private OrderService orderService;
     @Value("${qr.groupon}")
     String qrGrouponUrl;
     @Value("${qr.grouponImgPath}")
@@ -64,8 +67,8 @@ public class GrouponController {
     @RequiresPermissions("groupon:groupon:info")
     public R info(@PathVariable("id") String id){
         GrouponEntity groupon = grouponService.selectById(id);
-
-        return R.ok().put("groupon", groupon);
+        List<Map<String, Object>> orders = orderService.queryByActivtyId(id);
+        return R.ok().put("groupon", groupon).put("order", orders);
     }
 
     /**

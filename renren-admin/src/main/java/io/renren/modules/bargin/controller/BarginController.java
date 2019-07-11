@@ -72,8 +72,8 @@ public class BarginController {
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") String id){
         BarginEntity bargin = barginService.selectById(id);
-
-        return R.ok().put("bargin", bargin);
+        List<Map<String, Object>> orders = orderService.queryByActivtyId(id);
+        return R.ok().put("bargin", bargin).put("order", orders);
     }
 
     /**
