@@ -76,14 +76,16 @@ public class WxPayController {
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         boolean result = true;
         String info = "";
-
+        Order od = orderService.queryById(orderId);
         log.error("\n======================================================");
         log.error("code: " + user_id);
 
-        SysUserEntity user = sysUserService.queryById(user_id);
-
+        SysUserEntity user = sysUserService.queryById(od.getUser_id());
+        if(total_fee==null) {
+            total_fee = Double.valueOf(od.getTotal_price());
+        }
         String openId = user.getOpenId();
-        Order od = orderService.queryById(orderId);
+
         //判断订单状态是否正常
         if (StringUtils.isBlank(openId)||("5".equals(od.getOrderStatus()))) {
             result = false;

@@ -53,7 +53,7 @@ public class GrouponEntity implements Serializable {
 	 */
 	private String discount;
 	/**
-	 * 显示/隐藏 欢迎页
+	 *
 	 */
 	private String latitude;
 	/**
