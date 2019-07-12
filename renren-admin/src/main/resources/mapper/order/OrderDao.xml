@@ -14,7 +14,7 @@
           #{red_packets,jdbcType=VARCHAR},
            SYSDATE(),
           #{total_price,jdbcType=VARCHAR},
-          #{groupd,jdbcType=VARCHAR},
+          #{groupId,jdbcType=VARCHAR},
           #{orderStatus,jdbcType=VARCHAR}
           )
     </insert>
