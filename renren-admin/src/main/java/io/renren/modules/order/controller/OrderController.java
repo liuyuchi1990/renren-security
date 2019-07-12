@@ -226,4 +226,22 @@ public class OrderController {
         }
         return result;
     }
+
+    @RequestMapping(value = "/getOrderByOrderId", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult getOrderByOrderId(@RequestBody(required = false) Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Order od = orderService.queryById(order.getOrderId());
+            map.put("data", od);
+            result.setResult(map);
+        } catch (Exception e) {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return result;
+    }
 }

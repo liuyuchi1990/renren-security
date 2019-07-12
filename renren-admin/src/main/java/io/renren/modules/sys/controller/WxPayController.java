@@ -72,7 +72,6 @@ public class WxPayController {
 
         String content = null;
         Map map = new HashMap();
-        ObjectMapper mapper = new ObjectMapper();
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         boolean result = true;
         String info = "";
