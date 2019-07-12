@@ -233,7 +233,7 @@ public class OrderController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashMap<>();
         try {
-            Order od = orderService.queryById(order.getOrderId());
+            Map<String, Object> od = orderService.queryByOrderId(order.getOrderId());
             map.put("data", od);
             result.setResult(map);
         } catch (Exception e) {

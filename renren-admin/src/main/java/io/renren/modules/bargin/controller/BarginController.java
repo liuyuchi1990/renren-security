@@ -119,15 +119,19 @@ public class BarginController {
     //@RequiresPermissions("sys:distribution:delete")
     public ReturnResult bargin(@RequestBody Order order) throws ParseException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
         BarginEntity ba = barginService.selectById(order.getActivityId());
         Double reduct = Math.random()*(ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue())+ba.getMinReduction().doubleValue();
+        Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrder_id(order.getOrderId());
-        orderInfo.setTotal_price(String.valueOf(reduct));
+        orderInfo.setTotal_price(String.valueOf(price_left));
         orderService.edit(orderInfo);//modify price
         orderInfo.setUser_id(order.getUser_id());
         order.setTotal_price(String.valueOf(reduct));
         barginService.insertBarginLog(order);
+        map.put("data",order);
+        result.setResult(map);
         return result;
     }
 

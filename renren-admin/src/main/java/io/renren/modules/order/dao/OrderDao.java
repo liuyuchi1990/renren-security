@@ -20,6 +20,8 @@ public interface OrderDao {
 
     Order queryById(@Param("order_id") String order_id);
 
+    Map<String, Object> queryByOrderId(String order_id);
+
     int updateUserIntegral(Order order);
 
     int minusUserIntegral(Order order);

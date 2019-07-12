@@ -22,6 +22,10 @@
 		select * from tb_order where order_id = #{order_id}
 	</select>
 
+	<select id="queryByOrderId" parameterType="java.lang.String" resultType="java.util.HashMap">
+		select * from tb_order where order_id = #{order_id}
+	</select>
+
 	<select id="queryByActivtyId" parameterType="java.lang.String" resultType="java.util.HashMap">
 		select tb.*,u.username,u.headimgurl,u.mobile,td.activity_name from tb_order tb
   left join sys_user u on u.user_id=tb.user_id
