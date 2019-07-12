@@ -35,7 +35,7 @@
     </resultMap>
 
     <insert id="insertBarginLog" parameterType="io.renren.modules.order.model.Order">
-        INSERT INTO tb_prize_log(id,
+        INSERT INTO tb_bargin_log(id,
         bargin_price
         user_id,
         create_time)

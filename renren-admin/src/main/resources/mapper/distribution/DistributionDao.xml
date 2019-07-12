@@ -106,16 +106,16 @@ VALUES
 		update tb_activity
 		<set>
 			<if test="activityName!= null">
-				activity_name =  activityName,
+				activity_name =  #{activityName,jdbcType=VARCHAR},
 			</if>
 			<if test="thumbnail!= null">
-				thumbnail =  thumbnail,
+				thumbnail =  #{thumbnail,jdbcType=VARCHAR},
 			</if>
 			<if test="startTime!= null">
-				start_time =  startTime,
+				start_time =  #{startTime,jdbcType=VARCHAR},
 			</if>
 			<if test="endTime!= null">
-				end_time =  endTime,
+				end_time =  #{endTime,jdbcType=VARCHAR},
 			</if>
 				create_time =  SYSDATE()
 		</set>
