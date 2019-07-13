@@ -79,7 +79,7 @@ public class WxPayController {
         log.error("\n======================================================");
         log.error("code: " + user_id);
 
-        SysUserEntity user = sysUserService.queryById(od.getUser_id());
+        SysUserEntity user = sysUserService.queryById(user_id);
         if(total_fee==null) {
             total_fee = Double.valueOf(od.getTotal_price());
         }
