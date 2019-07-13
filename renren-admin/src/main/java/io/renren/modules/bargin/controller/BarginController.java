@@ -1,6 +1,7 @@
 package io.renren.modules.bargin.controller;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -121,14 +122,15 @@ public class BarginController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         BarginEntity ba = barginService.selectById(order.getActivityId());
+        DecimalFormat df = new DecimalFormat( "0.00");
         Double reduct = Math.random()*(ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue())+ba.getMinReduction().doubleValue();
         Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrder_id(order.getOrderId());
-        orderInfo.setTotal_price(String.valueOf(price_left));
+        orderInfo.setTotal_price(df.format(price_left));
         orderService.edit(orderInfo);//modify price
         orderInfo.setUser_id(order.getUser_id());
-        order.setTotal_price(String.valueOf(reduct));
+        order.setTotal_price(df.format(reduct));
         barginService.insertBarginLog(order);
         map.put("data",order);
         result.setResult(map);
