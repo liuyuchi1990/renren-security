@@ -159,6 +159,19 @@ public class GrouponController {
         return result;
     }
 
+    @RequestMapping(value = "/queryGrouponId", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult queryGrouponId(@RequestBody Order order) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        List<Map<String, Object>> mp = orderService.queryByGroupId(order.getGroupId());
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        map.put("data", mp);
+        result.setResult(map);
+        return result;
+    }
+
     /**
      * 修改
      */
