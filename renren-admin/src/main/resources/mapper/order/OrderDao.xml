@@ -68,6 +68,13 @@
 				order_status = #{order_status,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where order_id = #{order_id,jdbcType=VARCHAR}
+		where
+		<if test="order_id != null">
+			order_id = #{order_id,jdbcType=VARCHAR}
+		</if>
+		<if test="group_id != null">
+			group_id = #{group_id,jdbcType=VARCHAR}
+		</if>
+
 	</update>
 </mapper>

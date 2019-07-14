@@ -1,15 +1,27 @@
 package io.renren.modules.groupon.controller;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSONArray;
+import io.renren.common.config.Constants;
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.bargin.entity.BarginEntity;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderInfo;
 import io.renren.modules.order.service.OrderService;
+import io.renren.modules.sys.entity.ReturnCodeEnum;
+import io.renren.modules.sys.entity.ReturnResult;
+import io.renren.modules.sys.entity.SysUserEntity;
+import io.renren.modules.sys.service.SysUserService;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +50,9 @@ public class GrouponController {
 
     @Autowired
     DistributionService distributionService;
+
+    @Autowired
+    SysUserService sysUserService;
 
     @Autowired
     private OrderService orderService;
@@ -108,6 +123,40 @@ public class GrouponController {
         String text = qrGrouponUrl.replace("id=", "id=" + ga.getId());
         QRCodeUtils.encode(text, null, qrGrouponImgUrl, ga.getId(), true);
         return R.ok();
+    }
+
+
+    @RequestMapping(value = "/gourpon", method = RequestMethod.POST)
+    @Transactional
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult gourpon(@RequestBody Order order) throws ParseException {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> mp = new HashedMap();
+        SysUserEntity user = new SysUserEntity();
+        GrouponEntity ge = grouponService.selectById(order.getActivityId());
+        List<Map<String,Object>> groupList = orderService.queryByGroupId(order.getGroupId());
+        List<Map<String,String>> disList = JSONArray.parseObject(ge.getDiscount(),List.class);
+        OrderInfo orderInfo = new OrderInfo();
+        for(Map<String,String> map:disList){
+            if(groupList.size()>=Integer.parseInt(map.get("num").toString()) ){
+                orderInfo.setTotal_price(map.get("price").toString());//modify price
+            }
+        }
+        orderInfo.setGroup_id(order.getGroupId());
+        orderService.edit(orderInfo);
+        orderInfo.setUser_id(order.getUser_id());
+        order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
+        order.setTotal_price(orderInfo.getTotal_price());
+        order.setOrderType(Constants.GROUPON);
+        orderService.insert(order);
+
+        user.setUserId(order.getUser_id());
+        user.setMobile(order.getMobile());
+        user.setUsername(order.getUser_name());
+        sysUserService.updateUser(user);
+        mp.put("data",order);
+        result.setResult(mp);
+        return result;
     }
 
     /**

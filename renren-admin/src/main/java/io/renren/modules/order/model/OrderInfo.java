@@ -3,6 +3,8 @@ package io.renren.modules.order.model;
 public class OrderInfo {
     private String order_id;
 
+    private String group_id;
+
     private String total_price;
 
 
@@ -61,5 +63,13 @@ public class OrderInfo {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
     }
 }
