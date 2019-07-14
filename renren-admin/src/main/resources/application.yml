@@ -90,9 +90,9 @@ qr:
   distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/distribution/qr
   gather: https://wx.sharkmeida.cn/dist/redirect.html?hash=2pageInfo&id=
   gatherImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/gather/qr
-  bargin: https://wx.sharkmeida.cn/dist4/redirect.html?hash=2pageInfo&id=
+  bargin: https://wx.sharkmeida.cn/dist/redirect.html?hash=3pageInfo&id=
   barginImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/bargin/qr
-  groupon: https://wx.sharkmeida.cn/dist5/redirect.html?hash=2pageInfo&id=
+  groupon: https://wx.sharkmeida.cn/dist/redirect.html?hash=4pageInfo&id=
   grouponImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/groupon/qr
   httpurl: https://wx.sharkmeida.cn/imgs/distribution/qr/
   httpgatherurl: https://wx.sharkmeida.cn/imgs/gather/qr/
