@@ -79,7 +79,6 @@ public class GrouponController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("groupon:groupon:info")
     public R info(@PathVariable("id") String id){
         GrouponEntity groupon = grouponService.selectById(id);
         List<Map<String, Object>> orders = orderService.queryByActivtyId(id);
