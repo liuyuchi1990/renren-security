@@ -41,6 +41,6 @@ public class BarginServiceImpl extends ServiceImpl<BarginDao, BarginEntity> impl
     }
 
     public List<Map<String, Object>> queryList (String id){
-        return barginDao.queryBarginLog(id);
+        return barginDao.queryList(id);
     }
 }
