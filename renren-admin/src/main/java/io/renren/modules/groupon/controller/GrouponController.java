@@ -195,4 +195,15 @@ public class GrouponController {
         return R.ok();
     }
 
+    @RequestMapping("/queryAll")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryAll(@RequestBody GrouponEntity params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> mp = new HashedMap();
+        List<Map<String, Object>> activityLst = grouponService.queryList(params.getId());
+        mp.put("data",activityLst);
+        result.setResult(mp);
+        return result;
+    }
+
 }

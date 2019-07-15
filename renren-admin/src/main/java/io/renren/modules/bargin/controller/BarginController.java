@@ -12,6 +12,7 @@ import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.bargin.entity.BarginEntity;
 
+import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.gather.entity.PrizeEntity;
 import io.renren.modules.order.model.Order;
@@ -64,6 +65,20 @@ public class BarginController {
         PageUtils page = barginService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/queryAll")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryAll(@RequestBody BarginEntity params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Map<String, Object>> activityLst = barginService.queryList(params.getId());
+        Map<String, Object> map = new HashedMap();
+        map.put("data",activityLst);
+        result.setResult(map);
+        return result;
     }
 
 
