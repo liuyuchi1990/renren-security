@@ -67,7 +67,7 @@ public class GrouponController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("groupon:groupon:list")
+    //@RequiresPermissions("groupon:groupon:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = grouponService.queryPage(params);
 
@@ -187,7 +187,7 @@ public class GrouponController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("groupon:groupon:delete")
+    //@RequiresPermissions("groupon:groupon:delete")
     public R delete(@RequestBody String[] ids){
         grouponService.deleteBatchIds(Arrays.asList(ids));
 
