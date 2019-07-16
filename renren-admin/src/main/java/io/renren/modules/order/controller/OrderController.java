@@ -134,7 +134,7 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         order.setOrderStatus("1");
         order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
-        if (Constants.GROUPON.equals(order.getOrderType()) && ((order.getGroupId() == null) || ("".equals(order.getGroupId())))) {
+        if (Constants.GROUPON.equals(order.getOrderType()) && (order.getGroupId() != null) && (!"".equals(order.getGroupId()))) {
             order.setGroupId(UUID.randomUUID().toString().replaceAll("-", ""));
         }
         user.setUserId(order.getUser_id());
