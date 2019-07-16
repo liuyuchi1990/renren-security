@@ -56,9 +56,10 @@
     </select>
 
     <select id="queryBarginLog" parameterType="java.lang.String" resultType="java.util.Map">
-        select tb.*,u.headimgurl,u.username from tb_order t
-        left join tb_bargin_log  tb on tb.id = t.id
-        left join sys_user u on u.user_id=tb.user_id
-        where order_id = #{id,jdbcType=VARCHAR}
+        select tb.*,t.total_price,tba.original_price,u.headimgurl,u.username from tb_bargin_log tb
+  left join tb_order   t on tb.id = t.order_id
+  left join tb_bargin tba on tba.id = t.activity_id
+  left join sys_user u on u.user_id=t.user_id
+  where tb.id= #{id,jdbcType=VARCHAR}
     </select>
 </mapper>
