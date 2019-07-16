@@ -24,6 +24,8 @@ public class BarginEntity implements Serializable {
 	 */
 	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
+
+	private String address;
 	/**
 	 * 
 	 */
@@ -452,5 +454,13 @@ public class BarginEntity implements Serializable {
 	 */
 	public Integer getPrizeNum() {
 		return prizeNum;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }
