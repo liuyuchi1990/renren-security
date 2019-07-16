@@ -24,6 +24,8 @@ public class GrouponEntity implements Serializable {
 	 */
 	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
+
+	private String address;
 	/**
 	 * 活动开始时间
 	 */
@@ -324,5 +326,13 @@ public class GrouponEntity implements Serializable {
 	 */
 	public String getThumbnail() {
 		return thumbnail;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

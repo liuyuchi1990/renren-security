@@ -23,6 +23,8 @@ public class GatherEntity implements Serializable {
 	 */
 	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
+
+	private String address;
 	/**
 	 * 
 	 */
@@ -384,5 +386,13 @@ public class GatherEntity implements Serializable {
 
 	public void setBgImage(String bgImage) {
 		this.bgImage = bgImage;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }
