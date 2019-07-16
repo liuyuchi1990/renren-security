@@ -131,8 +131,7 @@ VALUES
 	<select id="queryList" parameterType="java.util.HashMap"
 			resultType="io.renren.modules.distribution.entity.Distribution">
 		select t.*,count(1) order_num,ifnull(sum(ord.total_price),0) total_price from tb_distribution t
-		left join tb_order ord on ord.activity_id = t.id
-		where ord.order_status=3
+		left join tb_order ord on ord.activity_id = t.id and ord.order_status = 3
 		group by t.id
 		order by t.update_time desc
 	</select>
