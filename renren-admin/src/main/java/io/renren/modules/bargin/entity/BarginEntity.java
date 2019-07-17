@@ -26,6 +26,8 @@ public class BarginEntity implements Serializable {
 	private String id;
 
 	private String address;
+
+	private Integer barginNum;
 	/**
 	 * 
 	 */
@@ -462,5 +464,13 @@ public class BarginEntity implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Integer getBarginNum() {
+		return barginNum;
+	}
+
+	public void setBarginNum(Integer barginNum) {
+		this.barginNum = barginNum;
 	}
 }

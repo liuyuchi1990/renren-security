@@ -3,6 +3,8 @@ package io.renren.modules.bargin.controller;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +32,7 @@ import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
 
 
-
 /**
- * 
- *
  * @author chenshun
  * @email sunlightcs@gmail.com
  * @date 2019-06-25 15:35:24
@@ -61,7 +60,7 @@ public class BarginController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = barginService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -76,7 +75,7 @@ public class BarginController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         List<Map<String, Object>> activityLst = barginService.queryList(params.getId());
         Map<String, Object> map = new HashedMap();
-        map.put("data",activityLst);
+        map.put("data", activityLst);
         result.setResult(map);
         return result;
     }
@@ -86,7 +85,7 @@ public class BarginController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") String id){
+    public R info(@PathVariable("id") String id) {
         BarginEntity bargin = barginService.selectById(id);
         List<Map<String, Object>> orders = orderService.queryByActivtyId(id);
         return R.ok().put("bargin", bargin).put("order", orders);
@@ -98,7 +97,7 @@ public class BarginController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @Transactional
     public R save(@RequestBody BarginEntity bargin) throws Exception {
-        if ("".equals(bargin.getId())||bargin.getId()==null) {
+        if ("".equals(bargin.getId()) || bargin.getId() == null) {
             bargin.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             bargin.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
             bargin.setPrizeLeft(bargin.getPrizeNum());
@@ -106,7 +105,7 @@ public class BarginController {
             distributionService.insertActivity(bargin);
             String text = qrBarginUrl.replace("id=", "id=" + bargin.getId());
             QRCodeUtils.encode(text, null, qrBarginImgUrl, bargin.getId(), true);
-        }else{
+        } else {
             barginService.updateById(bargin);//全部更新
             distributionService.updateActivity(bargin);
         }
@@ -136,18 +135,26 @@ public class BarginController {
     public ReturnResult bargin(@RequestBody Order order) throws ParseException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DecimalFormat dfn = new DecimalFormat("0.00");
+        LocalDateTime toDate = LocalDateTime.now();
         BarginEntity ba = barginService.selectById(order.getActivityId());
-        DecimalFormat df = new DecimalFormat( "0.00");
-        Double reduct = Math.random()*(ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue())+ba.getMinReduction().doubleValue();
+        List<Map<String, Object>> mp = barginService.queryBarginLog(order.getOrderId());
+        //String create_time = mp.get("create_time")==null?null: mp.get("create_time").toString().replace(".0","");
+        if (mp != null && (mp.size() > ba.getBarginNum())) {//是否超过砍价人数
+            //if()
+
+        }
+        Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
         Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrder_id(order.getOrderId());
-        orderInfo.setTotal_price(df.format(price_left));
+        orderInfo.setTotal_price(dfn.format(price_left));
         orderService.edit(orderInfo);//modify price
         orderInfo.setUser_id(order.getUser_id());
-        order.setTotal_price(df.format(reduct));
+        order.setTotal_price(dfn.format(reduct));
         barginService.insertBarginLog(order);
-        map.put("data",order);
+        map.put("data", order);
         result.setResult(map);
         return result;
     }
@@ -169,10 +176,10 @@ public class BarginController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody BarginEntity bargin){
+    public R update(@RequestBody BarginEntity bargin) {
         ValidatorUtils.validateEntity(bargin);
         barginService.updateAllColumnById(bargin);//全部更新
-        
+
         return R.ok();
     }
 
@@ -180,7 +187,7 @@ public class BarginController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody String[] ids){
+    public R delete(@RequestBody String[] ids) {
         barginService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
