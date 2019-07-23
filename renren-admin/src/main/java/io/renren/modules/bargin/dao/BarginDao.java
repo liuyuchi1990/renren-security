@@ -21,5 +21,7 @@ public interface BarginDao extends BaseMapper<BarginEntity> {
     List<Map<String, Object>> queryBarginLog (String id);
 
     List<Map<String, Object>> queryList (String id);
+
+    Map<String, Object> queryMaxTime(Order order);
 	
 }

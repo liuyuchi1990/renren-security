@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +133,7 @@ public class BarginController {
     @RequestMapping(value = "/bargin", method = RequestMethod.POST)
     @Transactional
     //@RequiresPermissions("sys:distribution:delete")
-    public ReturnResult bargin(@RequestBody Order order) throws ParseException {
+    public ReturnResult bargin(@RequestBody Order order) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -141,21 +142,34 @@ public class BarginController {
         BarginEntity ba = barginService.selectById(order.getActivityId());
         List<Map<String, Object>> mp = barginService.queryBarginLog(order.getOrderId());
         //String create_time = mp.get("create_time")==null?null: mp.get("create_time").toString().replace(".0","");
-        if (mp != null && (mp.size() > ba.getBarginNum())) {//是否超过砍价人数
-            //if()
-
+        if (mp == null || (mp.size() < ba.getBarginNum())) {//是否超过砍价人数
+            Map<String, Object> resMap = barginService.queryMaxTime(order);
+            long hours = 0;
+            Long restrictTime = Long.parseLong(ba.getRestrictTime().toString());
+            String create_time = resMap.get("create_time") == null ? null : resMap.get("create_time").toString().replace(".0", "");
+            LocalDateTime ldt = LocalDateTime.parse(create_time, df);
+            hours = ChronoUnit.HOURS.between(ldt, toDate);
+            if (restrictTime < hours) {//是否超过投票间隔时间
+                Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
+                Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
+                OrderInfo orderInfo = new OrderInfo();
+                orderInfo.setOrder_id(order.getOrderId());
+                orderInfo.setTotal_price(dfn.format(price_left));
+                orderService.edit(orderInfo);//modify price
+                orderInfo.setUser_id(order.getUser_id());
+                order.setTotal_price(dfn.format(reduct));
+                barginService.insertBarginLog(order);
+                map.put("data", order);
+                result.setResult(map);
+            } else {
+                map.put("data", "您已投票请在规定时间后再次投票");
+                result.setResult(map);
+            }
+        } else {
+            map.put("data", "超出砍价人数");
+            result.setResult(map);
         }
-        Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
-        Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setOrder_id(order.getOrderId());
-        orderInfo.setTotal_price(dfn.format(price_left));
-        orderService.edit(orderInfo);//modify price
-        orderInfo.setUser_id(order.getUser_id());
-        order.setTotal_price(dfn.format(reduct));
-        barginService.insertBarginLog(order);
-        map.put("data", order);
-        result.setResult(map);
+
         return result;
     }
 

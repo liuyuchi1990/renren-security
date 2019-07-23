@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -32,15 +33,19 @@ public class BarginServiceImpl extends ServiceImpl<BarginDao, BarginEntity> impl
         return new PageUtils(page);
     }
 
-    public int  insertBarginLog(Order order){
+    public int insertBarginLog(Order order) {
         return barginDao.insertBarginLog(order);
     }
 
-    public List<Map<String, Object>> queryBarginLog (String id){
+    public List<Map<String, Object>> queryBarginLog(String id) {
         return barginDao.queryBarginLog(id);
     }
 
-    public List<Map<String, Object>> queryList (String id){
+    public List<Map<String, Object>> queryList(String id) {
         return barginDao.queryList(id);
+    }
+
+    public Map<String, Object> queryMaxTime(Order order) {
+        return barginDao.queryMaxTime(order);
     }
 }

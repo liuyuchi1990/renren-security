@@ -24,5 +24,7 @@ public interface BarginService extends IService<BarginEntity> {
     List<Map<String, Object>> queryBarginLog (String id);
 
     List<Map<String, Object>> queryList (String id);
+
+    Map<String, Object> queryMaxTime(Order order);
 }
 

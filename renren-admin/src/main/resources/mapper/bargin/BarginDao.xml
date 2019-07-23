@@ -61,4 +61,9 @@
   left join sys_user u on u.user_id=t.user_id
   where tb.id= #{id,jdbcType=VARCHAR}
     </select>
+
+    <select id="queryMaxTime" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
+        select max(tb.create_time) max_time, tb.* from tb_bargin_log tb
+        where tb.id= #{id,jdbcType=VARCHAR} and tb.user_id = #{user_id,jdbcType=VARCHAR}
+    </select>
 </mapper>
