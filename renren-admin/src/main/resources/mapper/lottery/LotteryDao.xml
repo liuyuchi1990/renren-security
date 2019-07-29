@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.LotteryDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.lottery.entity.LotteryEntity" id="lotteryMap">
+        <result property="id" column="id"/>
+        <result property="activityRule" column="activity_rule"/>
+        <result property="companyDescription" column="company_description"/>
+        <result property="phone" column="phone"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="activityName" column="activity_name"/>
+        <result property="footImage" column="foot_image"/>
+        <result property="bgImage" column="bg_image"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="headImage" column="head_image"/>
+        <result property="createTime" column="create_time"/>
+        <result property="qrImg" column="qr_img"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="address" column="address"/>
+        <result property="showNum" column="show_num"/>
+        <result property="maxWin" column="max_win"/>
+        <result property="interval" column="interval"/>
+        <result property="maxTime" column="max_time"/>
+        <result property="music" column="music"/>
+        <result property="prizeRule" column="prize_rule"/>
+        <result property="prizeInfo" column="prize_info"/>
+    </resultMap>
+
+    <insert id="insertLottery" parameterMap="io.renren.modules.lottery.entity.LotteryEntity">
+        INSERT INTO tb_lottery(id,
+activity_rule,
+company_description,
+phone,
+latitude,
+longitude,
+activity_name,
+foot_image,
+bg_image,
+update_user,
+update_time,
+head_image,
+prize_info,
+qr_img,
+thumbnail,
+address,
+show_num,
+max_win,
+interval,
+max_time,
+music,
+prize_rule,
+create_time)
+	VALUES(
+	#{id,jdbcType=VARCHAR},
+#{activityRule,jdbcType=VARCHAR},
+#{companyDescription,jdbcType=VARCHAR},
+#{phone,jdbcType=VARCHAR},
+#{latitude,jdbcType=VARCHAR},
+#{longitude,jdbcType=VARCHAR},
+#{activityName,jdbcType=VARCHAR},
+#{footImage,jdbcType=VARCHAR},
+#{bgImage,jdbcType=VARCHAR},
+#{updateUser,jdbcType=VARCHAR},
+#{updateTime,jdbcType=VARCHAR},
+#{headImage,jdbcType=VARCHAR},
+#{prizeInfo,jdbcType=VARCHAR},
+#{qrImg,jdbcType=VARCHAR},
+#{thumbnail,jdbcType=VARCHAR},
+#{address,jdbcType=VARCHAR},
+#{showNum,jdbcType=Integer},
+#{maxWin,jdbcType=Integer},
+#{interval,jdbcType=Integer},
+#{maxTime,jdbcType=Integer},
+#{music,jdbcType=VARCHAR},
+#{prizeRule,jdbcType=VARCHAR},
+SYSDATE()
+)
+    </insert>
+
+    <update id="updateLottery" parameterType="io.renren.modules.lottery.entity.LotteryEntity">
+        UPDATE tb_lottery
+        <set>
+        <if test="activityRule!= null">
+        activity_rule=#{activityRule,jdbcType=VARCHAR},
+        </if>
+
+        <if test="companyDescription!= null">
+
+            company_description=#{companyDescription,jdbcType=VARCHAR},</if>
+
+        <if test="phone!= null">
+
+            phone=#{phone,jdbcType=VARCHAR},</if>
+
+        <if test="latitude!= null">
+
+            latitude=#{latitude,jdbcType=VARCHAR},</if>
+
+        <if test="longitude!= null">
+
+            longitude=#{longitude,jdbcType=VARCHAR},</if>
+
+        <if test="activityName!= null">
+
+            activity_name=#{activityName,jdbcType=VARCHAR},</if>
+
+        <if test="footImage!= null">
+
+            foot_image=#{footImage,jdbcType=VARCHAR},</if>
+
+        <if test="bgImage!= null">
+
+            bg_image=#{bgImage,jdbcType=VARCHAR},</if>
+
+        <if test="updateUser!= null">
+
+            update_user=#{updateUser,jdbcType=VARCHAR},</if>
+
+        <if test="headImage!= null">
+
+            head_image=#{headImage,jdbcType=VARCHAR},</if>
+
+        <if test="qrImg!= null">
+
+
+            qr_img=#{qrImg,jdbcType=VARCHAR},</if>
+
+        <if test="thumbnail!= null">
+
+            thumbnail=#{thumbnail,jdbcType=VARCHAR},</if>
+
+        <if test="address!= null">
+
+            address=#{address,jdbcType=VARCHAR},</if>
+
+        <if test="showNum!= null">
+
+            show_num=#{showNum,jdbcType=Integer},</if>
+
+        <if test="v!= null">
+
+            max_win=#{maxWin,jdbcType=Integer},</if>
+
+        <if test="interval!= null">
+
+            interval=#{interval,jdbcType=Integer},</if>
+
+        <if test="maxTime!= null">
+
+            max_time=#{maxTime,jdbcType=Integer},</if>
+
+        <if test="music!= null">
+
+
+            music=#{music,jdbcType=VARCHAR},</if>
+
+        <if test="prizeRule!= null">
+
+            prize_rule=#{prizeRule,jdbcType=VARCHAR},</if>
+
+        <if test="prizeInfo!= null">
+
+            prize_info=#{prizeInfo,jdbcType=VARCHAR},</if>
+
+
+        update_time=SYSDATE()
+
+        </set>
+        WHERE id = 	#{id,jdbcType=VARCHAR}
+
+    </update>
+
+    <select id="queryLotteryLogByUserId" parameterType="io.renren.modules.order.model.Order"
+            resultType="io.renren.modules.lottery.entity.LotteryEntity">
+select tl.*,count(tll.id) roll_num,max(tll.create_time) max_times from tb_lottery tl
+left join tb_lottery_log tll on tl.id = tll.activity_id and to_days(now())= to_days(str_to_date(tll.create_time,'%Y-%m-%d'))
+where tl.id = #{activityId,jdbcType=VARCHAR} and tll.user_id = tl.id = #{user_id,jdbcType=VARCHAR}
+    </select>
+
+</mapper>
