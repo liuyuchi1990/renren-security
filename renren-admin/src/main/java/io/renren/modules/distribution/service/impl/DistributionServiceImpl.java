@@ -70,7 +70,7 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         ActivityEntity activityEntity = new ActivityEntity();
         activityEntity.setId(distribution.getId());
         activityEntity.setActivityName(distribution.getActivityName());
-        activityEntity.setActivityState(distribution.getActivityState().toString());
+        activityEntity.setActivityState("1");
         activityEntity.setThumbnail(distribution.getThumbnail());
         activityEntity.setEndTime(distribution.getEndTime());
         activityEntity.setStartTime(distribution.getStartTime());

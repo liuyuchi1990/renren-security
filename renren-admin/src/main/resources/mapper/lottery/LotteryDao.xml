@@ -30,7 +30,7 @@
         <result property="prizeInfo" column="prize_info"/>
     </resultMap>
 
-    <insert id="insertLottery" parameterMap="io.renren.modules.lottery.entity.LotteryEntity">
+    <insert id="insertLottery" parameterType="io.renren.modules.lottery.entity.LotteryEntity">
         INSERT INTO tb_lottery(id,
 activity_rule,
 company_description,
@@ -71,10 +71,10 @@ create_time)
 #{qrImg,jdbcType=VARCHAR},
 #{thumbnail,jdbcType=VARCHAR},
 #{address,jdbcType=VARCHAR},
-#{showNum,jdbcType=Integer},
-#{maxWin,jdbcType=Integer},
-#{interval,jdbcType=Integer},
-#{maxTime,jdbcType=Integer},
+#{showNum,jdbcType=INTEGER},
+#{maxWin,jdbcType=INTEGER},
+#{interval,jdbcType=INTEGER},
+#{maxTime,jdbcType=INTEGER},
 #{music,jdbcType=VARCHAR},
 #{prizeRule,jdbcType=VARCHAR},
 SYSDATE()
@@ -139,19 +139,19 @@ SYSDATE()
 
         <if test="showNum!= null">
 
-            show_num=#{showNum,jdbcType=Integer},</if>
+            show_num=#{showNum,jdbcType=INTEGER},</if>
 
         <if test="v!= null">
 
-            max_win=#{maxWin,jdbcType=Integer},</if>
+            max_win=#{maxWin,jdbcType=INTEGER},</if>
 
         <if test="interval!= null">
 
-            interval=#{interval,jdbcType=Integer},</if>
+            interval=#{interval,jdbcType=INTEGER},</if>
 
         <if test="maxTime!= null">
 
-            max_time=#{maxTime,jdbcType=Integer},</if>
+            max_time=#{maxTime,jdbcType=INTEGER},</if>
 
         <if test="music!= null">
 

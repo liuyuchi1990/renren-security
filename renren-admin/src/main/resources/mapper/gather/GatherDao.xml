@@ -82,7 +82,7 @@
     </select>
 
     <select id="queryList" parameterType="java.util.Map" resultType="java.util.Map">
-        select tg.*,count(1) from tb_gather tg
+        select tg.*,count(tp.activity_id) from tb_gather tg
         left join tb_prize_log tp on tg.id=tp.activity_id
         group by tg.id
     </select>
