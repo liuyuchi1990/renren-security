@@ -97,7 +97,7 @@
         select max(t.create_time) create_time,tl.prize_time from tb_prize_log tl
         left join tb_like_log  t on t.id = tl.id
         left join sys_user u on u.user_id=tl.user_id
-        where t.user_id = #{likes,jdbcType=VARCHAR} and tl.id = #{id,jdbcType=VARCHAR}
+        where t.user_id = #{likes,jdbcType=VARCHAR} and tl.activity_id = #{activity_id,jdbcType=VARCHAR}
     </select>
 
     <update id="releasePrize" parameterType="java.lang.String">
