@@ -24,27 +24,27 @@ public class LotteryEntity implements Serializable {
 	@TableId(value = "id",type = IdType.INPUT)
 	private String id;
 	/**
-	 * 
+	 * 活动规则
 	 */
 	private String activityRule;
 	/**
-	 * 几人团
+	 * 机构介绍
 	 */
 	private String companyDescription;
 	/**
-	 * 团长奖励
+	 * 电话
 	 */
 	private String phone;
 	/**
-	 * 显示/隐藏 欢迎页
+	 * 经度
 	 */
 	private String latitude;
 	/**
-	 * 
+	 * 纬度
 	 */
 	private String longitude;
 	/**
-	 * 
+	 * 活动名称
 	 */
 	private String activityName;
 	/**
@@ -88,7 +88,7 @@ public class LotteryEntity implements Serializable {
 	 */
 	private Integer showNum;
 	/**
-	 * 
+	 * 最多中奖次数
 	 */
 	private Integer maxWin;
 	/**
@@ -96,7 +96,7 @@ public class LotteryEntity implements Serializable {
 	 */
 	private Integer interval;
 	/**
-	 * 
+	 * 最多抽奖次数
 	 */
 	private Integer maxTime;
 	/**
@@ -104,11 +104,11 @@ public class LotteryEntity implements Serializable {
 	 */
 	private String music;
 	/**
-	 * 
+	 * 奖项设置
 	 */
 	private String prizeRule;
 	/**
-	 * 
+	 * 兑奖信息
 	 */
 	private String prizeInfo;
 
