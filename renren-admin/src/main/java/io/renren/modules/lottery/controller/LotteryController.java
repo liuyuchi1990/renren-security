@@ -1,13 +1,17 @@
 package io.renren.modules.lottery.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSONArray;
 import io.renren.common.utils.LotteryUtil;
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.lottery.entity.Gift;
 import io.renren.modules.order.model.Order;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
@@ -85,18 +89,33 @@ public class LotteryController {
 
     @RequestMapping(value = "/lottery", method = RequestMethod.POST)
     @Transactional
-    public ReturnResult lottery(@RequestBody Order order){
+    public ReturnResult lottery(@RequestBody Order order) throws InvocationTargetException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         LotteryEntity lottery = lotteryService.queryLotteryLogByUserId(order);
-        String maxTimes = lottery.getMaxTimes();
         Map<String, Object> map = new HashedMap();
-        if(lottery.getRollNum() < lottery.getMaxTime() ){
+        if(lottery.getRollNum() < lottery.getMaxTime()||(lottery.getFriend()>0&&lottery.getRollNum()<(lottery.getMaxTime()+lottery.getInterval())) ){
+            List<Map> disList = JSONArray.parseObject(lottery.getPrizeRule(),List.class);
             //LotteryUtil.lottery()
-
+            List<Gift> giftList = LotteryUtil.convertMapListToBeanList(disList,Gift.class);
+            Gift gift = LotteryUtil.lottery(giftList);
+            //lotteryService.in
+            map.put("data",gift);
         }else{
             map.put("data","您今日抽奖已经达到限制次数，请改日试试手气");
             result.setResult(map);
         }
+        return result;
+    }
+
+    @RequestMapping(value = "/friend", method = RequestMethod.POST)
+    @Transactional
+    public ReturnResult friend(@RequestBody Order order){
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
+        lotteryService.insertFriend(order);
+        map.put("data",order);
+        result.setResult(map);
         return result;
     }
 

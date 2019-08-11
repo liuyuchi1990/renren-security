@@ -36,6 +36,10 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
         return lotteryDao.updateLottery(lottery);
     }
 
+    public int insertFriend(Order order){
+        return lotteryDao.insertFriend(order);
+    }
+
     public LotteryEntity  queryLotteryLogByUserId(Order order){
         return lotteryDao.queryLotteryLogByUserId(order);
     }

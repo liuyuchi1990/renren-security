@@ -2,6 +2,8 @@ package io.renren.common.utils;
 
 import io.renren.modules.lottery.entity.Gift;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -61,28 +63,36 @@ public class LotteryUtil {
 
         List<Double> orignalRates = new ArrayList<Double>(gifts.size());
         System.out.println(LotteryUtil.lottery(gifts));
-//        for (Gift gift : gifts) {
-//            double probability = gift.getProbability();
-//            if (probability < 0) {
-//                probability = 0;
-//            }
-//            orignalRates.add(probability);
-//        }
-//
-//        // statistics
-//        Map<Integer, Integer> count = new HashMap<Integer, Integer>();
-//        double num = 10000000;
-//       //for (int i = 0; i < num; i++) {
-//            int orignalIndex = LotteryUtil.lottery(orignalRates);
-//
-//            Integer value = count.get(orignalIndex);
-//            count.put(orignalIndex, value == null ? 1 : value + 1);
-//        //}
-//
-//        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
-//            System.out.println(gifts.get(entry.getKey()) + ", count=" + entry.getValue() + ", probability="
-//                    + entry.getValue() / num);
-//        }
+
     }
 
+    /**
+     * 将一个map组成的list转成实体类bean组成的list
+     * @param mapList 存了map对象的list
+     * @param clazz 需要将这些map转成哪个实体类对象
+     * @return
+     */
+    public static <T> List<T> convertMapListToBeanList(List<Map> mapList,Class<T> clazz) throws InvocationTargetException {
+        List<T> list = new ArrayList<T>();
+        for (Map map : mapList) {
+            try {
+                T obj = clazz.newInstance();//创建bean的实例对象
+                for (Object o : map.keySet()) {//遍历map的key
+                    for (Method m : clazz.getMethods()) {//遍历bean的类中的方法，找到set方法进行赋值
+                        if (m.getName().toLowerCase().equals("set" + o.toString().toLowerCase())) {
+                            m.invoke(obj, map.get(o));
+                        }
+                    }
+                }
+                list.add(obj);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+		return list;
+    }
 }

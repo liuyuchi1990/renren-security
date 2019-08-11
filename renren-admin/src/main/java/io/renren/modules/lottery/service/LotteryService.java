@@ -22,6 +22,8 @@ public interface LotteryService extends IService<LotteryEntity> {
 
     int updateLottery (LotteryEntity lottery);
 
+    int insertFriend(Order order);
+
     LotteryEntity queryLotteryLogByUserId(Order order);
 }
 

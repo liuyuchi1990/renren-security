@@ -17,6 +17,8 @@ import java.util.Map;
 public interface LotteryDao extends BaseMapper<LotteryEntity> {
 	int insertLottery (LotteryEntity lottery);
 
+	int insertFriend(Order order);
+
 	int updateLottery (LotteryEntity lottery);
 
 	LotteryEntity queryLotteryLogByUserId(Order order);

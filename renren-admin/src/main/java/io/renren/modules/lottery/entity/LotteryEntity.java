@@ -103,6 +103,11 @@ public class LotteryEntity implements Serializable {
 	 * 
 	 */
 	private String music;
+
+	/**
+	 * 额外抽奖次数
+	 */
+	private String extraNum;
 	/**
 	 * 奖项设置
 	 */
@@ -111,10 +116,14 @@ public class LotteryEntity implements Serializable {
 	 * 兑奖信息
 	 */
 	private String prizeInfo;
-
+	/**
+	 * 最近抽奖时间信息
+	 */
 	private String maxTimes;
 
 	private Integer rollNum;
+
+	private Integer friend;
 
 	/**
 	 * 设置：
@@ -407,5 +416,13 @@ public class LotteryEntity implements Serializable {
 
 	public void setRollNum(Integer rollNum) {
 		this.rollNum = rollNum;
+	}
+
+	public Integer getFriend() {
+		return friend;
+	}
+
+	public void setFriend(Integer friend) {
+		this.friend = friend;
 	}
 }

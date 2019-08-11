@@ -176,9 +176,20 @@ SYSDATE()
 
     <select id="queryLotteryLogByUserId" parameterType="io.renren.modules.order.model.Order"
             resultType="io.renren.modules.lottery.entity.LotteryEntity">
-select tl.*,count(tll.id) roll_num,max(tll.create_time) max_times from tb_lottery tl
-left join tb_lottery_log tll on tl.id = tll.activity_id and to_days(now())= to_days(str_to_date(tll.create_time,'%Y-%m-%d'))
-where tl.id = #{activityId,jdbcType=VARCHAR} and tll.user_id = tl.id = #{user_id,jdbcType=VARCHAR}
+select tl.*,count(tll.id) roll_num,max(tll.create_time) max_times,count(tz.id) friend from tb_lottery tl
+left join tb_lottery_log tll on tl.id = tll.activity_id and to_days(now())= to_days(str_to_date(tll.create_time,'%Y-%m-%d')) and tll.user_id #{user_id,jdbcType=VARCHAR}
+left join tb_friend_zone tz on tl.id = tz.activity_id and to_days(now())= to_days(tz.create_time) and tz.user_id #{user_id,jdbcType=VARCHAR}
+where tl.id = #{activityId,jdbcType=VARCHAR}
     </select>
+
+    <insert id="insertFriend" parameterType="io.renren.modules.order.model.Order">
+        insert into tb_friend_zone (id,user_id,activity_id,create_time)
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{user_id,jdbcType=VARCHAR},
+        #{activityId,jdbcType=VARCHAR},
+        SYSDATE()
+        )
+    </insert>
 
 </mapper>
