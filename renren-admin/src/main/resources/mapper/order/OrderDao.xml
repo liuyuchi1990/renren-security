@@ -31,6 +31,7 @@
   left join sys_user u on u.user_id=tb.user_id
   left join tb_activity td on tb.activity_id = td.id
   where tb.activity_id = #{activityId}
+  order by tb.create_time desc
 	</select>
 
 	<select id="queryByGroupId" parameterType="java.lang.String" resultType="java.util.HashMap">
