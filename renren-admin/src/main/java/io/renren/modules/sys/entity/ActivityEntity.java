@@ -21,6 +21,14 @@ public class ActivityEntity {
     private String activityType;
     private String createUser;
     private String createTime;
+    /**
+     *
+     */
+    private Integer prizeLeft;
+    /**
+     *
+     */
+    private Integer prizeNum;
 
     public String getId() {
         return id;
@@ -92,5 +100,21 @@ public class ActivityEntity {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getPrizeLeft() {
+        return prizeLeft;
+    }
+
+    public void setPrizeLeft(Integer prizeLeft) {
+        this.prizeLeft = prizeLeft;
+    }
+
+    public Integer getPrizeNum() {
+        return prizeNum;
+    }
+
+    public void setPrizeNum(Integer prizeNum) {
+        this.prizeNum = prizeNum;
     }
 }

@@ -99,6 +99,10 @@ public class GrouponEntity implements Serializable {
 	 */
 	private String thumbnail;
 
+	private String prizeInfo;
+
+	private String activityRule;
+
 	/**
 	 * 设置：
 	 */
@@ -334,5 +338,21 @@ public class GrouponEntity implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getPrizeInfo() {
+		return prizeInfo;
+	}
+
+	public void setPrizeInfo(String prizeInfo) {
+		this.prizeInfo = prizeInfo;
+	}
+
+	public String getActivityRule() {
+		return activityRule;
+	}
+
+	public void setActivityRule(String activityRule) {
+		this.activityRule = activityRule;
 	}
 }

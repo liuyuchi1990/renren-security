@@ -146,10 +146,9 @@ public class BarginController {
             Map<String, Object> resMap = barginService.queryMaxTime(order);
             long hours = 0;
             Long restrictTime = Long.parseLong(ba.getRestrictTime().toString());
-            String create_time = resMap.get("create_time") == null ? null : resMap.get("create_time").toString().replace(".0", "");
-            LocalDateTime ldt = LocalDateTime.parse(create_time, df);
-            hours = ChronoUnit.HOURS.between(ldt, toDate);
-            if (restrictTime < hours) {//是否超过投票间隔时间
+            LocalDateTime create_time = resMap == null ? toDate : LocalDateTime.parse(resMap.get("create_time").toString().replace(".0", ""), df);
+            hours = ChronoUnit.HOURS.between(create_time, toDate);
+            if (restrictTime < hours || hours == 0) {//是否超过投票间隔时间
                 Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
                 Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
                 OrderInfo orderInfo = new OrderInfo();
