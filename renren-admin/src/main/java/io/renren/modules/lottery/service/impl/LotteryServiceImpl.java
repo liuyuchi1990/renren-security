@@ -3,6 +3,8 @@ package io.renren.modules.lottery.service.impl;
 import io.renren.modules.order.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -38,6 +40,10 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
 
     public int insertFriend(Order order){
         return lotteryDao.insertFriend(order);
+    }
+
+    public List<Map<String,Object>> queryById(String id){
+        return lotteryDao.queryById(id);
     }
 
     public LotteryEntity  queryLotteryLogByUserId(Order order){

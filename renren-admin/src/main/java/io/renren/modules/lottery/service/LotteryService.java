@@ -5,6 +5,7 @@ import io.renren.common.utils.PageUtils;
 import io.renren.modules.lottery.entity.LotteryEntity;
 import io.renren.modules.order.model.Order;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ public interface LotteryService extends IService<LotteryEntity> {
     int updateLottery (LotteryEntity lottery);
 
     int insertFriend(Order order);
+
+    List<Map<String,Object>> queryById(String id);
 
     LotteryEntity queryLotteryLogByUserId(Order order);
 }

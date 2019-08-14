@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import io.renren.modules.order.model.Order;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +19,8 @@ public interface LotteryDao extends BaseMapper<LotteryEntity> {
 	int insertLottery (LotteryEntity lottery);
 
 	int insertFriend(Order order);
+
+	List<Map<String,Object>> queryById(String id);
 
 	int updateLottery (LotteryEntity lottery);
 

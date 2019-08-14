@@ -1,5 +1,6 @@
 package io.renren.modules.sys.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -293,12 +294,12 @@ public class WxPayController {
 
     @RequestMapping("/saveUserInfo")
     public ReturnResult saveUserInfo(@RequestParam(name="code",required=false)String code,
-                                    @RequestParam(name="state")String state) {
+                                    @RequestParam(name="userinfo")String userinfo) {
 
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Map<String, Object> ret = new HashedMap();
-        System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + state);
+        System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + userinfo);
         SysUserEntity user = new SysUserEntity();
 
         //通过code换取网页授权web_access_token
@@ -307,45 +308,34 @@ public class WxPayController {
             String WebAccessToken = "";
             String openId = "";
             //替换字符串，获得请求URL
-            String token = UserInfoUtil.getWebAccess(Constants.PTAPPID, Constants.PSERCRET, CODE);
-            System.out.println("----------------------------token为：" + token);
+            Map<String, Object> mp = WxUtil.getSessionKeyOropenid(CODE);
+            System.out.println("----------------------------sessionKeyOropenid：" + mp);
             //通过https方式请求获得web_access_token
-            JSONObject jsonObject = WxUtil.httpRequest(token, "GET", null);
-            System.out.println("jsonObject------" + jsonObject);
-            if (null != jsonObject) {
+            if (null != mp) {
                 try {
 
-                    WebAccessToken = jsonObject.getString("access_token");
-                    openId = jsonObject.getString("openid");
+                    WebAccessToken = WxUtil.getWxAppAccessToken();
+                    openId = mp.get("openid").toString();
                     System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
-
-                    //-----------------------拉取用户信息...替换字符串，获得请求URL
-                    String userMessage = UserInfoUtil.getUserMessage(WebAccessToken, openId);
-                    System.out.println(" userMessage===" + userMessage);
-                    //通过https方式请求获得用户信息响应
-                    JSONObject userMessageJsonObject = WxUtil.httpRequest(userMessage, "GET", null);
-
-                    System.out.println("userMessagejsonObject------" + userMessageJsonObject);
-
-                    if (userMessageJsonObject != null) {
+                    user = JSON.parseObject(userinfo,SysUserEntity.class);
+                    if (userinfo != null) {
                         try {
                             //用户昵称
-                            SysUserEntity utmp = sysUserService.queryByOpenId(userMessageJsonObject.getString("openid"));
+                            SysUserEntity utmp = sysUserService.queryByOpenId(openId);
                             //获取成果，存入数据库
                             if(utmp==null){
-                                user.setUsername(userMessageJsonObject.getString("nickname"));
-                                user.setNickname(userMessageJsonObject.getString("nickname"));
+                                user.setUsername(user.getNickname());
+                                user.setNickname(user.getNickname());
                                 //用户性别
                                 user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
-                                user.setSex(Integer.parseInt(userMessageJsonObject.getString("sex")));
-                                user.setProvince(userMessageJsonObject.getString("province"));
-                                user.setSubscribetime(userMessageJsonObject.getString("subscribetime"));
-                                user.setCity(userMessageJsonObject.getString("city"));
-                                user.setHeadimgurl(userMessageJsonObject.getString("headimgurl"));
+                                user.setSex(user.getSex());
+                                user.setProvince(user.getProvince());
+                                user.setCity(user.getCity());
+                                user.setHeadimgurl(user.getPassword());
                                 user.setPassword("123456");
                                 //用户唯一标识
-                                user.setOpenId(userMessageJsonObject.getString("openid"));
-                                user.setUnionid(userMessageJsonObject.getString("unionid"));
+                                user.setOpenId(openId);
+                                user.setUnionid(mp.get("unionid").toString());
                                 sysUserService.insertUser(user);
                             }else{
                                 user = utmp;
