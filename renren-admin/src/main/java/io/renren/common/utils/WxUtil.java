@@ -85,6 +85,19 @@ public class WxUtil {
         return map;
     }
 
+    public static JSONObject getJsonByCode(String wxCode) {
+        Map<String, String> requestUrlParam = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
+        requestUrlParam.put("appid", Constants.APPID);  //开发者设置中的appId
+        requestUrlParam.put("secret", Constants.SERCRET); //开发者设置中的appSecret
+        requestUrlParam.put("js_code", wxCode); //小程序调用wx.login返回的code
+        requestUrlParam.put("grant_type", "client_credential");    //默认参数
+
+        //发送post请求读取调用微信 https://api.weixin.qq.com/sns/jscode2session 接口获取openid用户唯一标识
+        JSONObject jsonObject = JSON.parseObject(HttpUtil.sendPost("https://api.weixin.qq.com/sns/jscode2session", requestUrlParam));
+        return jsonObject;
+    }
+
     /**
      * StringUtils工具类方法
      * 获取一定长度的随机字符串，范围0-9，a-z

@@ -5,6 +5,8 @@ public class Gift {
     private int index;
     private String gitfId;
     private String giftName;
+    private String giftDescription;
+    private int num;
     private double probability;
 
     public Gift(int index, String gitfId, String giftName, double probability) {
@@ -44,6 +46,14 @@ public class Gift {
 
     public void setProbability(double probability) {
         this.probability = probability;
+    }
+
+    public String getGiftDescription() {
+        return giftDescription;
+    }
+
+    public void setGiftDescription(String giftDescription) {
+        this.giftDescription = giftDescription;
     }
 
     @Override

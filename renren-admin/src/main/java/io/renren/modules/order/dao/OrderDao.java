@@ -32,6 +32,8 @@ public interface OrderDao {
 
     List<Map<String, Object>> queryByActivtyId(String activityId);
 
+    List<Map<String, Object>> getOrderByUserIdAndActivityType(Order order);
+
     List<Map<String, Object>> queryByGroupId(String groupId);
 
     Map<String, Object> queryByDeviceId(String device_id);

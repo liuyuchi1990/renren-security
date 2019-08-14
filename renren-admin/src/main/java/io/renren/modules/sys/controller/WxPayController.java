@@ -290,4 +290,85 @@ public class WxPayController {
         rs.setResult(map);
         return rs;
     }
+
+    @RequestMapping("/saveUserInfo")
+    public ReturnResult saveUserInfo(@RequestParam(name="code",required=false)String code,
+                                    @RequestParam(name="state")String state) {
+
+        ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        Map<String, Object> ret = new HashedMap();
+        System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + state);
+        SysUserEntity user = new SysUserEntity();
+
+        //通过code换取网页授权web_access_token
+        if (code != null || !(code.equals(""))) {
+            String CODE = code;
+            String WebAccessToken = "";
+            String openId = "";
+            //替换字符串，获得请求URL
+            String token = UserInfoUtil.getWebAccess(Constants.PTAPPID, Constants.PSERCRET, CODE);
+            System.out.println("----------------------------token为：" + token);
+            //通过https方式请求获得web_access_token
+            JSONObject jsonObject = WxUtil.httpRequest(token, "GET", null);
+            System.out.println("jsonObject------" + jsonObject);
+            if (null != jsonObject) {
+                try {
+
+                    WebAccessToken = jsonObject.getString("access_token");
+                    openId = jsonObject.getString("openid");
+                    System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
+
+                    //-----------------------拉取用户信息...替换字符串，获得请求URL
+                    String userMessage = UserInfoUtil.getUserMessage(WebAccessToken, openId);
+                    System.out.println(" userMessage===" + userMessage);
+                    //通过https方式请求获得用户信息响应
+                    JSONObject userMessageJsonObject = WxUtil.httpRequest(userMessage, "GET", null);
+
+                    System.out.println("userMessagejsonObject------" + userMessageJsonObject);
+
+                    if (userMessageJsonObject != null) {
+                        try {
+                            //用户昵称
+                            SysUserEntity utmp = sysUserService.queryByOpenId(userMessageJsonObject.getString("openid"));
+                            //获取成果，存入数据库
+                            if(utmp==null){
+                                user.setUsername(userMessageJsonObject.getString("nickname"));
+                                user.setNickname(userMessageJsonObject.getString("nickname"));
+                                //用户性别
+                                user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
+                                user.setSex(Integer.parseInt(userMessageJsonObject.getString("sex")));
+                                user.setProvince(userMessageJsonObject.getString("province"));
+                                user.setSubscribetime(userMessageJsonObject.getString("subscribetime"));
+                                user.setCity(userMessageJsonObject.getString("city"));
+                                user.setHeadimgurl(userMessageJsonObject.getString("headimgurl"));
+                                user.setPassword("123456");
+                                //用户唯一标识
+                                user.setOpenId(userMessageJsonObject.getString("openid"));
+                                user.setUnionid(userMessageJsonObject.getString("unionid"));
+                                sysUserService.insertUser(user);
+                            }else{
+                                user = utmp;
+                            }
+
+                        } catch (JSONException e) {
+                            System.out.println("获取userName失败");
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    WebAccessToken = null;// 获取code失败
+                    System.out.println("获取WebAccessToken失败");
+                }
+            }
+        }
+        ret.put("user",user);
+        ret.put("code",code);
+        map.put("data",ret);
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        rs.setResult(map);
+        return rs;
+    }
 }

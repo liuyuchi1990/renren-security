@@ -59,6 +59,15 @@
 		where t.from_user = #{from_user,jdbcType=VARCHAR} and t.activity_id=#{activityId,jdbcType=VARCHAR}
 	</select>
 
+	<select id="getOrderByUserIdAndActivityType" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
+		select
+		t.*,u.headimgurl,ta.*
+		from tb_order t
+		left join sys_user u on u.user_id=t.from_user
+		left join tb_activity ta on ta.id = t.activity_id
+		where t.from_user = #{from_user,jdbcType=VARCHAR} and t.order_type=#{orderType,jdbcType=VARCHAR}
+	</select>
+
 	<update id="edit" parameterType="io.renren.modules.order.model.OrderInfo">
 		update tb_order
 		<set>

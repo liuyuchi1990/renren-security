@@ -94,7 +94,7 @@ public class LotteryEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private Integer interval;
+	private Integer intervals;
 	/**
 	 * 最多抽奖次数
 	 */
@@ -104,10 +104,6 @@ public class LotteryEntity implements Serializable {
 	 */
 	private String music;
 
-	/**
-	 * 额外抽奖次数
-	 */
-	private String extraNum;
 	/**
 	 * 奖项设置
 	 */
@@ -344,14 +340,14 @@ public class LotteryEntity implements Serializable {
 	/**
 	 * 设置：
 	 */
-	public void setInterval(Integer interval) {
-		this.interval = interval;
+	public void setIntervals(Integer intervals) {
+		this.intervals = intervals;
 	}
 	/**
 	 * 获取：
 	 */
-	public Integer getInterval() {
-		return interval;
+	public Integer getIntervals() {
+		return intervals;
 	}
 	/**
 	 * 设置：

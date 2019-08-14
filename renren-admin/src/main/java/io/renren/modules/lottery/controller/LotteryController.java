@@ -93,7 +93,7 @@ public class LotteryController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         LotteryEntity lottery = lotteryService.queryLotteryLogByUserId(order);
         Map<String, Object> map = new HashedMap();
-        if(lottery.getRollNum() < lottery.getMaxTime()||(lottery.getFriend()>0&&lottery.getRollNum()<(lottery.getMaxTime()+lottery.getInterval())) ){
+        if(lottery.getRollNum() < lottery.getMaxTime()||(lottery.getFriend()>0&&lottery.getRollNum()<(lottery.getMaxTime()+lottery.getIntervals())) ){
             List<Map> disList = JSONArray.parseObject(lottery.getPrizeRule(),List.class);
             //LotteryUtil.lottery()
             List<Gift> giftList = LotteryUtil.convertMapListToBeanList(disList,Gift.class);

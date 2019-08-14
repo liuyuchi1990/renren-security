@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="io.renren.modules.sys.dao.LotteryDao">
+<mapper namespace="io.renren.modules.lottery.dao.LotteryDao">
 
     <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="io.renren.modules.lottery.entity.LotteryEntity" id="lotteryMap">
@@ -23,7 +23,7 @@
         <result property="address" column="address"/>
         <result property="showNum" column="show_num"/>
         <result property="maxWin" column="max_win"/>
-        <result property="interval" column="interval"/>
+        <result property="intervals" column="intervals"/>
         <result property="maxTime" column="max_time"/>
         <result property="music" column="music"/>
         <result property="prizeRule" column="prize_rule"/>
@@ -49,7 +49,7 @@ thumbnail,
 address,
 show_num,
 max_win,
-interval,
+intervals,
 max_time,
 music,
 prize_rule,
@@ -73,7 +73,7 @@ create_time)
 #{address,jdbcType=VARCHAR},
 #{showNum,jdbcType=INTEGER},
 #{maxWin,jdbcType=INTEGER},
-#{interval,jdbcType=INTEGER},
+#{intervals,jdbcType=INTEGER},
 #{maxTime,jdbcType=INTEGER},
 #{music,jdbcType=VARCHAR},
 #{prizeRule,jdbcType=VARCHAR},
@@ -145,9 +145,9 @@ SYSDATE()
 
             max_win=#{maxWin,jdbcType=INTEGER},</if>
 
-        <if test="interval!= null">
+        <if test="intervals!= null">
 
-            interval=#{interval,jdbcType=INTEGER},</if>
+            intervals=#{intervals,jdbcType=INTEGER},</if>
 
         <if test="maxTime!= null">
 
