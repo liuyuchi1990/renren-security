@@ -27,6 +27,10 @@
 		select * from sys_user where open_id = #{id}
 	</select>
 
+	<select id="queryByAppOpenId" parameterType="java.lang.String" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		select * from sys_user where app_open_id = #{id}
+	</select>
+
 	<insert id="insertUser" parameterType="io.renren.modules.sys.entity.SysUserEntity">
 		INSERT INTO sys_user (
 user_id,

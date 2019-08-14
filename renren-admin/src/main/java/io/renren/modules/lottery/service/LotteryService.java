@@ -25,7 +25,7 @@ public interface LotteryService extends IService<LotteryEntity> {
 
     int insertFriend(Order order);
 
-    List<Map<String,Object>> queryById(String id);
+    Map<String,Object> queryById(String id);
 
     LotteryEntity queryLotteryLogByUserId(Order order);
 }

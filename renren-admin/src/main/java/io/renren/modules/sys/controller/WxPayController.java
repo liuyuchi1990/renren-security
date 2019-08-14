@@ -301,12 +301,14 @@ public class WxPayController {
         Map<String, Object> ret = new HashedMap();
         System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + userinfo);
         SysUserEntity user = new SysUserEntity();
-
+        String openId = "";
+        String session_key = "";
+        String WebAccessToken = "";
         //通过code换取网页授权web_access_token
         if (code != null || !(code.equals(""))) {
             String CODE = code;
-            String WebAccessToken = "";
-            String openId = "";
+
+
             //替换字符串，获得请求URL
             Map<String, Object> mp = WxUtil.getSessionKeyOropenid(CODE);
             System.out.println("----------------------------sessionKeyOropenid：" + mp);
@@ -316,14 +318,15 @@ public class WxPayController {
 
                     WebAccessToken = WxUtil.getWxAppAccessToken();
                     openId = mp.get("openid").toString();
+                    session_key = mp.get("session_key").toString();
                     System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
                     user = JSON.parseObject(userinfo,SysUserEntity.class);
                     if (userinfo != null) {
                         try {
                             //用户昵称
-                            SysUserEntity utmp = sysUserService.queryByOpenId(openId);
+                            SysUserEntity utmp = sysUserService.queryByAppOpenId(openId);
                             //获取成果，存入数据库
-                            if(utmp==null){
+                            if(utmp==null&&user.getMobile()!=null){
                                 user.setUsername(user.getNickname());
                                 user.setNickname(user.getNickname());
                                 //用户性别
@@ -335,10 +338,13 @@ public class WxPayController {
                                 user.setPassword("123456");
                                 //用户唯一标识
                                 user.setOpenId(openId);
-                                user.setUnionid(mp.get("unionid").toString());
+                                //user.setUnionid(mp.get("unionid").toString());
                                 sysUserService.insertUser(user);
                             }else{
-                                user = utmp;
+                                user.setOpenId(openId);
+                                if(utmp!=null){
+                                    user = utmp;
+                                }
                             }
 
                         } catch (JSONException e) {
@@ -354,7 +360,9 @@ public class WxPayController {
             }
         }
         ret.put("user",user);
-        ret.put("code",code);
+        ret.put("WebAccessToken",WebAccessToken);
+        ret.put("session_key",session_key);
+        ret.put("openid",openId);
         map.put("data",ret);
         map.put("status", "success");
         map.put("msg", "send ok");

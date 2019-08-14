@@ -65,7 +65,7 @@ public class LotteryController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") String id){
-        List<Map<String,Object>>  lottery = lotteryService.queryById(id);
+        Map<String,Object> lottery = lotteryService.queryById(id);
 
         return R.ok().put("lottery", lottery);
     }
