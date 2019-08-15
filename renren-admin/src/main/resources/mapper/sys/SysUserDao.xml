@@ -49,6 +49,7 @@ subscribetime,
 city,
 sex,
 unionid,
+app_open_id,
 create_time
 )
 VALUES
@@ -69,6 +70,7 @@ VALUES
 #{city,jdbcType=VARCHAR},
 #{sex,jdbcType=VARCHAR},
 #{unionid,jdbcType=VARCHAR},
+#{appOpenId,jdbcType=VARCHAR},
 		SYSDATE()
 		)
 	</insert>

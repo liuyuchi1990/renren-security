@@ -13,6 +13,9 @@ import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -23,7 +26,11 @@ import java.net.ConnectException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.text.DecimalFormat;
+import org.apache.commons.codec.binary.Base64;
+import sun.misc.BASE64Decoder;
+
 import java.util.*;
 
 public class WxUtil {
@@ -441,6 +448,38 @@ public class WxUtil {
         String result = formatter.toString();
         formatter.close();
         return result;
+    }
+
+    public static String decrypt(String sessionKey,String ivData, String encrypData) throws Exception {
+        byte[] encData = Base64.decodeBase64(encrypData);
+        byte[] iv = Base64.decodeBase64(ivData);
+        byte[] key = Base64.decodeBase64(sessionKey);
+        AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        //解析解密后的字符串
+        return new String(cipher.doFinal(encData), "UTF-8");
+    }
+
+    /**
+     * 解密工具直接放进去即可
+     */
+    public static String decryptS5(String sSrc, String encodingFormat, String sKey, String ivParameter) throws Exception {
+        try {
+            BASE64Decoder decoder = new BASE64Decoder();
+            byte[] raw = decoder.decodeBuffer(sKey);
+            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+            IvParameterSpec iv = new IvParameterSpec(decoder.decodeBuffer(ivParameter));
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+            byte[] myendicod = decoder.decodeBuffer(sSrc);
+            byte[] original = cipher.doFinal(myendicod);
+            String originalString = new String(original, encodingFormat);
+            return originalString;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     private static String create_nonce_str() {

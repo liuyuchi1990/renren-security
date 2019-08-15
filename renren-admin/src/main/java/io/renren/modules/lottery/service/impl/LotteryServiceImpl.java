@@ -42,7 +42,7 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
         return lotteryDao.insertFriend(order);
     }
 
-    public Map<String,Object> queryById(String id){
+    public LotteryEntity queryById(String id){
         return lotteryDao.queryById(id);
     }
 

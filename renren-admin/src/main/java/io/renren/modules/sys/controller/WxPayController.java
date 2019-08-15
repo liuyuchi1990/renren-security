@@ -14,6 +14,8 @@ import io.renren.modules.sys.entity.ReturnCodeEnum;
 import io.renren.modules.sys.entity.ReturnResult;
 import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.service.SysUserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -320,6 +322,7 @@ public class WxPayController {
                     session_key = mp.get("session_key").toString();
                     System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
                     user = JSON.parseObject(result.getMsg(),SysUserEntity.class);
+                    JSONObject jsonObject = JSON.parseObject(result.getMsg());
                     if (result.getMsg() != null) {
                         try {
                             //用户昵称
@@ -330,17 +333,19 @@ public class WxPayController {
                                 user.setNickname(user.getNickname());
                                 //用户性别
                                 user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
-                                user.setSex(user.getSex());
+                                user.setSex(Integer.parseInt(jsonObject.getString("gender")));
                                 user.setProvince(user.getProvince());
                                 user.setCity(user.getCity());
-                                user.setHeadimgurl(user.getPassword());
+                                user.setHeadimgurl(jsonObject.getString("avatarUrl"));
                                 user.setPassword("123456");
                                 //用户唯一标识
-                                user.setOpenId(openId);
+                                user.setAppOpenId(openId);
                                 //user.setUnionid(mp.get("unionid").toString());
                                 sysUserService.insertUser(user);
                             }else{
-                                user.setOpenId(openId);
+                                user.setAppOpenId(openId);
+                                user.setHeadimgurl(jsonObject.getString("avatarUrl"));
+                                user.setSex(Integer.parseInt(jsonObject.getString("gender")));
                                 if(utmp!=null){
                                     user = utmp;
                                 }
@@ -363,6 +368,21 @@ public class WxPayController {
         ret.put("session_key",session_key);
         ret.put("openid",openId);
         map.put("data",ret);
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        rs.setResult(map);
+        return rs;
+    }
+
+    @RequestMapping("/decryptPhone")
+    public ReturnResult decryptTel(@ApiParam("微信小程序授权之后获取电话（加密字符串，json对象）") @RequestParam("encryptedData") String encryptedData,
+                               @RequestParam("iv") String iv ,@RequestParam("code") String code) throws Exception {
+        ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        Map<String, Object> mp = WxUtil.getSessionKeyOropenid(code);
+        String sessionKey = mp.get("session_key").toString();
+        String phone = WxUtil.decryptS5(encryptedData,"UTF-8",sessionKey,iv);
+        map.put("data",phone);
         map.put("status", "success");
         map.put("msg", "send ok");
         rs.setResult(map);

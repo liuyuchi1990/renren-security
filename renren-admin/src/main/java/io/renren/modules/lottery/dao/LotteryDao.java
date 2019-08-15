@@ -20,7 +20,7 @@ public interface LotteryDao extends BaseMapper<LotteryEntity> {
 
 	int insertFriend(Order order);
 
-	Map<String,Object> queryById(String id);
+	LotteryEntity queryById(String id);
 
 	int updateLottery (LotteryEntity lottery);
 
