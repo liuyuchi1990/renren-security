@@ -293,20 +293,19 @@ public class WxPayController {
     }
 
     @RequestMapping("/saveUserInfo")
-    public ReturnResult saveUserInfo(@RequestParam(name="code",required=false)String code,
-                                    @RequestParam(name="userinfo")String userinfo) {
+    public ReturnResult saveUserInfo(@RequestBody ReturnResult result) {
 
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Map<String, Object> ret = new HashedMap();
-        System.out.println("-----------------------------收到请求，请求数据为：" + code + "-----------------------" + userinfo);
+        System.out.println("-----------------------------收到请求，请求数据为：" + result.getCode() + "-----------------------" + result.getMsg());
         SysUserEntity user = new SysUserEntity();
         String openId = "";
         String session_key = "";
         String WebAccessToken = "";
         //通过code换取网页授权web_access_token
-        if (code != null || !(code.equals(""))) {
-            String CODE = code;
+        if (result.getCode() != null || !(result.getCode().equals(""))) {
+            String CODE = result.getCode();
 
 
             //替换字符串，获得请求URL
@@ -320,8 +319,8 @@ public class WxPayController {
                     openId = mp.get("openid").toString();
                     session_key = mp.get("session_key").toString();
                     System.out.println("获取access_token成功-------------------------" + WebAccessToken + "----------------" + openId);
-                    user = JSON.parseObject(userinfo,SysUserEntity.class);
-                    if (userinfo != null) {
+                    user = JSON.parseObject(result.getMsg(),SysUserEntity.class);
+                    if (result.getMsg() != null) {
                         try {
                             //用户昵称
                             SysUserEntity utmp = sysUserService.queryByAppOpenId(openId);
