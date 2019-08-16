@@ -121,6 +121,8 @@ public class LotteryEntity implements Serializable {
 
 	private Integer friend;
 
+	private Integer prizeLeft;
+
 	/**
 	 * 设置：
 	 */
@@ -420,5 +422,13 @@ public class LotteryEntity implements Serializable {
 
 	public void setFriend(Integer friend) {
 		this.friend = friend;
+	}
+
+	public Integer getPrizeLeft() {
+		return prizeLeft;
+	}
+
+	public void setPrizeLeft(Integer prizeLeft) {
+		this.prizeLeft = prizeLeft;
 	}
 }

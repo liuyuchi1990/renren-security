@@ -34,6 +34,10 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
         return lotteryDao.insertLottery(lottery);
     }
 
+    public int insertLotteryLog (Order order){
+        return lotteryDao.insertLotteryLog(order);
+    }
+
     public int updateLottery (LotteryEntity lottery){
         return lotteryDao.updateLottery(lottery);
     }
@@ -42,8 +46,8 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
         return lotteryDao.insertFriend(order);
     }
 
-    public LotteryEntity queryById(String id){
-        return lotteryDao.queryById(id);
+    public LotteryEntity queryById(Order order){
+        return lotteryDao.queryById(order);
     }
 
     public LotteryEntity  queryLotteryLogByUserId(Order order){

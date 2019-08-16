@@ -178,24 +178,47 @@ SYSDATE()
             resultType="io.renren.modules.lottery.entity.LotteryEntity">
 select tl.*,count(tll.id) roll_num,max(tll.create_time) max_times,count(tz.id) friend from tb_lottery tl
 left join tb_lottery_log tll on tl.id = tll.activity_id and to_days(now())= to_days(str_to_date(tll.create_time,'%Y-%m-%d')) and tll.user_id = #{user_id,jdbcType=VARCHAR}
-left join tb_friend_zone tz on tl.id = tz.activity_id and to_days(now())= to_days(tz.create_time) and tz.user_id #{user_id,jdbcType=VARCHAR}
+left join tb_friend_zone tz on tl.id = tz.activity_id and to_days(now())= to_days(tz.create_time) and tz.user_id = #{user_id,jdbcType=VARCHAR}
 where tl.id = #{activityId,jdbcType=VARCHAR}
     </select>
 
     <insert id="insertFriend" parameterType="io.renren.modules.order.model.Order">
         insert into tb_friend_zone (id,user_id,activity_id,create_time)
         values (
-        #{orderd,jdbcType=VARCHAR},
+        #{orderId,jdbcType=VARCHAR},
         #{user_id,jdbcType=VARCHAR},
         #{activityId,jdbcType=VARCHAR},
         SYSDATE()
         )
     </insert>
 
-    <select id="queryById" parameterType="java.lang.String"
+    <insert id="insertLotteryLog" parameterType="io.renren.modules.order.model.Order">
+        insert into tb_lottery_log (id,user_id,activity_id,create_time)
+        values (
+        #{orderId,jdbcType=VARCHAR},
+        #{user_id,jdbcType=VARCHAR},
+        #{activityId,jdbcType=VARCHAR},
+        SYSDATE()
+        )
+    </insert>
+
+    <select id="queryById" parameterType="io.renren.modules.order.model.Order"
             resultType="io.renren.modules.lottery.entity.LotteryEntity">
-        select tl.* from tb_lottery tl
-        where tl.id = #{id,jdbcType=VARCHAR}
+        select tl.*
+        <if test="user_id!= null">
+        ,if(count(tz.id>0),tl.max_time+tl.intervals-count(tll.id),tl.max_time-count(tll.id)) prize_left
+        </if>
+        from tb_lottery tl
+        left join tb_lottery_log tll on tl.id = tll.activity_id  and to_days(now())= to_days(str_to_date(tll.create_time,'%Y-%m-%d'))
+        <if test="user_id!= null">
+            and tll.user_id= #{user_id,jdbcType=VARCHAR}
+        </if>
+        left join tb_friend_zone tz on tl.id = tz.activity_id and to_days(now())= to_days(tz.create_time)
+        <if test="user_id!= null">
+            and tz.user_id = #{user_id,jdbcType=VARCHAR}
+        </if>
+        where tl.id = #{activityId,jdbcType=VARCHAR}
+        group by tl.id
     </select>
 
 </mapper>

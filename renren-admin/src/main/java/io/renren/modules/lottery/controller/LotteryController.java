@@ -63,9 +63,9 @@ public class LotteryController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") String id){
-        LotteryEntity lottery = lotteryService.queryById(id);
+    @RequestMapping("/info/")
+    public R info(@RequestBody Order order){
+        LotteryEntity lottery = lotteryService.queryById(order);
 
         return R.ok().put("lottery", lottery);
     }
@@ -96,10 +96,12 @@ public class LotteryController {
         if(lottery.getRollNum() < lottery.getMaxTime()||(lottery.getFriend()>0&&lottery.getRollNum()<(lottery.getMaxTime()+lottery.getIntervals())) ){
             List<Map> disList = JSONArray.parseObject(lottery.getPrizeRule(),List.class);
             //LotteryUtil.lottery()
-            List<Gift> giftList = LotteryUtil.convertMapListToBeanList(disList,Gift.class);
+            List<Gift> giftList = LotteryUtil.convertGiftList(disList);
             Gift gift = LotteryUtil.lottery(giftList);
+            lotteryService.insertLotteryLog(order);
             //lotteryService.in
             map.put("data",gift);
+            result.setResult(map);
         }else{
             map.put("data","您今日抽奖已经达到限制次数，请改日试试手气");
             result.setResult(map);

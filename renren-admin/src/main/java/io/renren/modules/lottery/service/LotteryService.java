@@ -21,11 +21,13 @@ public interface LotteryService extends IService<LotteryEntity> {
 
     int insertLottery (LotteryEntity lottery);
 
+    int insertLotteryLog (Order order);
+
     int updateLottery (LotteryEntity lottery);
 
     int insertFriend(Order order);
 
-    LotteryEntity queryById(String id);
+    LotteryEntity queryById(Order order);
 
     LotteryEntity queryLotteryLogByUserId(Order order);
 }

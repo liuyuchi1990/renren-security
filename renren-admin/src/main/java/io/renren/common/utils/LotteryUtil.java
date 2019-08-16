@@ -1,5 +1,6 @@
 package io.renren.common.utils;
 
+import com.alibaba.fastjson.JSON;
 import io.renren.modules.lottery.entity.Gift;
 
 import java.lang.reflect.InvocationTargetException;
@@ -52,13 +53,13 @@ public class LotteryUtil {
 
         List<Gift> gifts = new ArrayList<Gift>();
         // 序号==物品Id==物品名称==概率
-        gifts.add(new Gift(1, "P1", "物品1", 0.2d));
-        gifts.add(new Gift(2, "P2", "物品2", 0.2d));
-        gifts.add(new Gift(3, "P3", "物品3", 0.4d));
-        gifts.add(new Gift(4, "P4", "物品4", 0.3d));
-        gifts.add(new Gift(5, "P5", "物品5", 0d));
-        gifts.add(new Gift(6, "P6", "物品6", -0.1d));
-        gifts.add(new Gift(7, "P7", "物品7", 0.008d));
+//        gifts.add(new Gift(1, "P1", "物品1", 0.2d));
+//        gifts.add(new Gift(2, "P2", "物品2", 0.2d));
+//        gifts.add(new Gift(3, "P3", "物品3", 0.4d));
+//        gifts.add(new Gift(4, "P4", "物品4", 0.3d));
+//        gifts.add(new Gift(5, "P5", "物品5", 0d));
+//        gifts.add(new Gift(6, "P6", "物品6", -0.1d));
+//        gifts.add(new Gift(7, "P7", "物品7", 0.008d));
 
 
         List<Double> orignalRates = new ArrayList<Double>(gifts.size());
@@ -94,5 +95,17 @@ public class LotteryUtil {
             }
         }
 		return list;
+    }
+
+    public static  List<Gift> convertGiftList(List<Map> mapList) {
+        List<Gift> list = new ArrayList<Gift>();
+
+        for(Map map:mapList){
+            Gift gift = new Gift(Integer.parseInt(map.get("index").toString()),map.get("gitfId").toString(),map.get("giftName").toString(),
+                    Double.valueOf(map.get("probability").toString()),map.get("url").toString(),Integer.parseInt(map.get("num").toString()),
+                    map.get("giftDescription").toString());
+            list.add(gift);
+        }
+        return list;
     }
 }
