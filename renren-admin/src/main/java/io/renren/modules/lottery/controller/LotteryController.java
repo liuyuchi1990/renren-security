@@ -63,7 +63,7 @@ public class LotteryController {
     /**
      * 信息
      */
-    @RequestMapping("/info/")
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
     public R info(@RequestBody Order order){
         LotteryEntity lottery = lotteryService.queryById(order);
 
