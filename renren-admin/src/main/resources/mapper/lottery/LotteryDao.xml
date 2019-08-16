@@ -193,7 +193,7 @@ where tl.id = #{activityId,jdbcType=VARCHAR}
     </insert>
 
     <insert id="insertLotteryLog" parameterType="io.renren.modules.order.model.Order">
-        insert into tb_lottery_log (id,user_id,activity_id,create_time)
+        insert into tb_lottery_log (id,user_id,activity_id,prize_id,prize_name,create_time)
         values (
         #{orderId,jdbcType=VARCHAR},
         #{user_id,jdbcType=VARCHAR},

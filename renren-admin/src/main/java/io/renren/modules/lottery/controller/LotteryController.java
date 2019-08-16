@@ -98,6 +98,9 @@ public class LotteryController {
             //LotteryUtil.lottery()
             List<Gift> giftList = LotteryUtil.convertGiftList(disList);
             Gift gift = LotteryUtil.lottery(giftList);
+            order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
+            order.setOrderType(gift.getGiftName());//插入中奖名称
+            order.setOrderStatus(gift.getGitfId());//插入中奖id
             lotteryService.insertLotteryLog(order);
             //lotteryService.in
             map.put("data",gift);
