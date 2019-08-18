@@ -59,6 +59,28 @@ public class LotteryController {
         return R.ok().put("page", page);
     }
 
+    @RequestMapping("/queryAll")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryAll(@RequestBody LotteryEntity params) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Map<String, Object>> activityLst = lotteryService.queryList();
+        Map<String, Object> map = new HashedMap();
+        map.put("data", activityLst);
+        result.setResult(map);
+        return result;
+    }
+
+
+    @RequestMapping("/queryLotteryLogById")
+    //@RequiresPermissions("sys:distribution:list")
+    public ReturnResult queryLotteryLogById(@RequestBody LotteryEntity lotteryEntity) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Map<String, Object>> activityLst = lotteryService.queryLotteryLogById(lotteryEntity);
+        Map<String, Object> map = new HashedMap();
+        map.put("data", activityLst);
+        result.setResult(map);
+        return result;
+    }
 
     /**
      * 信息

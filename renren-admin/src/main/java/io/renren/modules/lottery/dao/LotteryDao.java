@@ -24,6 +24,12 @@ public interface LotteryDao extends BaseMapper<LotteryEntity> {
 
 	LotteryEntity queryById(Order order);
 
+	List<Map<String,Object>> queryLotteryByMobile(Order order);
+
+	List<Map<String,Object>> queryLotteryLogById(LotteryEntity lottery);
+
+	List<Map<String,Object>> queryList();
+
 	int updateLottery (LotteryEntity lottery);
 
 	LotteryEntity queryLotteryLogByUserId(Order order);

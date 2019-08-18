@@ -91,6 +91,6 @@ public class Constants {
 
     public static final String GROUPON = "4";
 
-    public static final String ROLL = "5";
+    public static final String Lottery = "5";
 
 }

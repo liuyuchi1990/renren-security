@@ -221,4 +221,25 @@ where tl.id = #{activityId,jdbcType=VARCHAR}
         group by tl.id
     </select>
 
+    <select id="queryLotteryByMobile" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
+        select
+        t.*,u.headimgurl,ta.*
+        from tb_lottery_log t
+        left join sys_user u on u.user_id=t.user_id
+        left join tb_activity ta on ta.id = t.activity_id
+        where u.mobile = #{mobile,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryList" parameterType="java.lang.String" resultType="java.util.Map">
+        select t.*,count(ord.user_id) user_num from tb_lottery t
+        left join tb_lottery_log ord on ord.activity_id = t.id
+        group by t.id,ord.user_id
+        order by t.create_time desc
+    </select>
+
+    <select id="queryLotteryLogById" parameterType="io.renren.modules.lottery.entity.LotteryEntity" resultType="java.util.Map">
+        select t.* from tb_lottery_log t
+        where t.activity_id = #{activityId,jdbcType=VARCHAR}
+        order by t.create_time desc
+    </select>
 </mapper>

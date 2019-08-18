@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import io.renren.common.utils.PageUtils;
 import io.renren.modules.gather.entity.GatherEntity;
 import io.renren.modules.gather.entity.PrizeEntity;
+import io.renren.modules.order.model.Order;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ public interface GatherService extends IService<GatherEntity> {
     int updatePrizeLog(PrizeEntity pz);
 
     List<Map<String, Object>> queryLike(String id);
+
+    List<Map<String, Object>> queryGatherByMobileAndActivityId(Order order);
 
     Map<String, Object> queryPrizeLog(String id);
 

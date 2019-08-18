@@ -10,6 +10,7 @@ import io.renren.modules.gather.dao.GatherDao;
 import io.renren.modules.gather.entity.GatherEntity;
 import io.renren.modules.gather.entity.PrizeEntity;
 import io.renren.modules.gather.service.GatherService;
+import io.renren.modules.order.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,10 @@ public class GatherServiceImpl extends ServiceImpl<GatherDao, GatherEntity> impl
 
     public List<Map<String, Object>> queryLike(String id) {
         return gatherDao.queryLike(id);
+    }
+
+    public List<Map<String, Object>> queryGatherByMobileAndActivityId( Order order) {
+        return gatherDao.queryGatherByMobileAndActivityId(order);
     }
 
     public Map<String, Object> queryPrizeLog(String id) {

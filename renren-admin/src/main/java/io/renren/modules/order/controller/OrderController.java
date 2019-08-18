@@ -5,6 +5,8 @@ import io.renren.common.config.Constants;
 
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
+import io.renren.modules.gather.service.GatherService;
+import io.renren.modules.lottery.service.LotteryService;
 import io.renren.modules.order.model.Order;
 import io.renren.modules.order.model.OrderInfo;
 import io.renren.modules.order.model.OrderMessage;
@@ -41,6 +43,11 @@ public class OrderController {
     @Autowired
     DistributionService distributionService;
 
+    @Autowired
+    GatherService gatherService;
+
+    @Autowired
+    LotteryService lotteryService;
     /**
      * 订单生成
      *
@@ -250,8 +257,15 @@ public class OrderController {
     public ReturnResult getOrderByUserIdAndActivityType(@RequestBody(required = false) Order order) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> res = new ArrayList<>();
         try {
-            List<Map<String, Object>> res = orderService.getOrderByUserIdAndActivityType(order);
+            if(Constants.GATHER.equals(order.getOrderType())){
+                 res = gatherService.queryGatherByMobileAndActivityId(order);
+            }else if(Constants.Lottery.equals(order.getOrderType())){
+                 res = lotteryService.queryLotteryByMobile(order);
+            }else{
+                res = orderService.getOrderByUserIdAndActivityType(order);
+            }
             map.put("data", res);
             result.setResult(map);
         } catch (Exception e) {

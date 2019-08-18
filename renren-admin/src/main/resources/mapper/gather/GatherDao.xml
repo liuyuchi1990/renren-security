@@ -100,6 +100,15 @@
         where   tl.activity_id = #{activityId,jdbcType=VARCHAR}
     </select>
 
+    <select id="queryGatherByMobileAndActivityId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
+		select
+		t.*,u.headimgurl,ta.*
+		from tb_prize_log t
+		left join sys_user u on u.user_id=t.user_id
+		left join tb_activity ta on ta.id = t.activity_id
+		where u.mobile = #{mobile,jdbcType=VARCHAR}
+    </select>
+
     <update id="releasePrize" parameterType="java.lang.String">
         update tb_gather
         <set>
