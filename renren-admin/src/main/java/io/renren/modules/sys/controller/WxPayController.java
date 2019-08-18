@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.renren.common.config.Constants;
 import io.renren.common.utils.*;
 import io.renren.modules.order.model.Order;
+import io.renren.modules.order.model.OrderEntity;
 import io.renren.modules.order.model.OrderInfo;
 import io.renren.modules.order.service.OrderService;
 import io.renren.modules.sys.entity.PayInfo;
@@ -78,13 +79,14 @@ public class WxPayController {
         ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         boolean result = true;
         String info = "";
-        Order od = orderService.queryById(orderId);
+        Map<String, Object> objectMap = orderService.queryByOrderId(orderId);
+        OrderEntity od = JSON.parseObject(JSON.toJSONString(objectMap), OrderEntity.class);
         log.error("\n======================================================");
         log.error("code: " + user_id);
 
         SysUserEntity user = sysUserService.queryById(user_id);
         if(total_fee==null) {
-            total_fee = Double.valueOf(od.getTotal_price());
+            total_fee = Double.valueOf(od.getTotalPrice());
         }
         String openId = user.getOpenId();
 
@@ -102,7 +104,7 @@ public class WxPayController {
             log.error("openId: " + openId + ", clientIP: " + clientIP);
 
             String randomNonceStr = RandomUtils.generateMixString(32);
-            String prepayId = WxUtil.unifiedOrder(openId, clientIP, randomNonceStr, orderId,total_fee);
+            String prepayId = WxUtil.unifiedOrder(openId, clientIP, randomNonceStr, orderId,total_fee,false);
 
             log.error("prepayId: " + prepayId);
 
@@ -116,6 +118,70 @@ public class WxPayController {
                 map.put("nonceStr", randomNonceStr);
                 map.put("timestamp",System.currentTimeMillis()/1000+"");
                 map.put("paySign",WxUtil.getSecondSign(prepayId,System.currentTimeMillis()/1000+"",randomNonceStr));
+            }
+        }
+
+        try {
+            map.put("result", result);
+            map.put("info", info);
+            //content = mapper.writeValueAsString(map);
+        } catch (Exception e) {
+            rs.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            rs.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            rs.setResult(map);
+            e.printStackTrace();
+            return rs;
+        }
+        rs.setResult(map);
+        return rs;
+    }
+
+    @RequestMapping(value = "/prepayApp", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult prepayApp(@RequestBody Order order,
+                                  HttpServletRequest request)throws Exception {
+
+        String content = null;
+        Map map = new HashMap();
+        String openId = order.getUser_id();
+        ReturnResult rs = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        boolean result = true;
+        String info = "";
+        Map<String, Object> objectMap = orderService.queryByOrderId(order.getOrderId());
+        OrderEntity od = JSON.parseObject(JSON.toJSONString(objectMap), OrderEntity.class);
+        log.error("\n======================================================");
+        log.error("code: " + order.getUser_id());
+
+        Double total_fee = Double.valueOf(od.getTotalPrice());
+
+        //判断订单状态是否正常
+        if (StringUtils.isBlank(openId)||("5".equals(od.getOrderStatus()))) {
+            result = false;
+            info = "订单超时";
+        } else {
+            openId = openId.replace("\"", "").trim();
+
+            String clientIP = CommonUtil.getClientIp(request);
+
+            //clientIP = "222.12.47.12";
+
+            log.error("openId: " + openId + ", clientIP: " + clientIP);
+
+            String randomNonceStr = RandomUtils.generateMixString(32);
+            String prepayId = WxUtil.unifiedOrder(openId, clientIP, randomNonceStr, order.getOrderId(),total_fee,true);
+
+            log.error("prepayId: " + prepayId);
+
+            if (StringUtils.isBlank(prepayId)) {
+                rs.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+                rs.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+                result = false;
+                info = "出错了，未获取到小程序prepayId";
+            } else {
+                map.put("package", "prepay_id="+prepayId);
+                map.put("nonceStr", randomNonceStr);
+                map.put("timestamp",System.currentTimeMillis()/1000+"");
+                map.put("paySign",WxUtil.getSecondSignApp(prepayId,System.currentTimeMillis()/1000+"",randomNonceStr));
             }
         }
 

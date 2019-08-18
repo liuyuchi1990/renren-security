@@ -288,13 +288,13 @@ public class WxUtil {
      *
      * @param openId
      */
-    public static String unifiedOrder(String openId, String clientIP, String randomNonceStr, String orderId,double total_fee) {
+    public static String unifiedOrder(String openId, String clientIP, String randomNonceStr, String orderId,double total_fee,boolean ifApp) {
 
         try {
 
             String url = Constants.URL_UNIFIED_ORDER;
 
-            PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr,orderId,total_fee);
+            PayInfo payInfo = createPayInfo(openId, clientIP, randomNonceStr,orderId,total_fee,ifApp);
             String md5 = getSign(payInfo);
             payInfo.setSign(md5);
             log.error("md5 value: " + md5);
@@ -331,7 +331,7 @@ public class WxUtil {
         return "";
     }
 
-    public static PayInfo createPayInfo(String openId, String clientIP, String randomNonceStr,String orderId,double total_fee) {
+    public static PayInfo createPayInfo(String openId, String clientIP, String randomNonceStr,String orderId,double total_fee,boolean ifAppp) {
         Date date = new Date();
         String timeStart = TimeUtils.getFormatTime(date, Constants.TIME_FORMAT);
         String timeExpire = TimeUtils.getFormatTime(TimeUtils.addDay(date, Constants.TIME_EXPIRE), Constants.TIME_FORMAT);
@@ -339,8 +339,13 @@ public class WxUtil {
         String randomOrderId = CommonUtil.getRandomOrderId();
 
         PayInfo payInfo = new PayInfo();
-        payInfo.setAppid(Constants.PTAPPID);
-        payInfo.setMch_id(Constants.PMCH_ID);
+        if(ifAppp){
+            payInfo.setAppid(Constants.APPID);
+            payInfo.setMch_id(Constants.PMCH_ID);
+        }else{
+            payInfo.setAppid(Constants.PTAPPID);
+            payInfo.setMch_id(Constants.PMCH_ID);
+        }
         payInfo.setDevice_info("WEB");
         payInfo.setNonce_str(randomNonceStr);
         payInfo.setSign_type("MD5");  //默认即为MD5
@@ -394,6 +399,21 @@ public class WxUtil {
     public static String getSecondSign(String prepay_id,String time,String noncestr) throws Exception {
         StringBuffer sb = new StringBuffer();
         sb.append("appId=" + Constants.PTAPPID)
+                .append("&nonceStr=" + noncestr)
+                .append("&package=prepay_id=" + prepay_id)
+                .append("&signType=MD5&timeStamp=" + time)
+                .append("&key=" + Constants.PSIGN);
+        log.error("排序后的拼接参数：" + sb.toString());
+
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        md5.reset();
+        md5.update(sb.toString().toString().getBytes("UTF-8"));
+        return byteToStr(md5.digest()).toUpperCase();
+    }
+
+    public static String getSecondSignApp(String prepay_id,String time,String noncestr) throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append("appId=" + Constants.APPID)
                 .append("&nonceStr=" + noncestr)
                 .append("&package=prepay_id=" + prepay_id)
                 .append("&signType=MD5&timeStamp=" + time)
