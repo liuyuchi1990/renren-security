@@ -7,6 +7,7 @@ import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.gather.entity.GatherEntity;
 import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.lottery.entity.LotteryEntity;
 import io.renren.modules.sys.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -148,6 +149,24 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         activityEntity.setEndTime(grouponEntity.getEndTime());
         activityEntity.setStartTime(grouponEntity.getStartTime());
         activityEntity.setActivityType(Constants.GROUPON);
+        return distributionDao.updateActivity(activityEntity);
+    }
+
+    public int insertActivity(LotteryEntity lotteryEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(lotteryEntity.getId());
+        activityEntity.setActivityName(lotteryEntity.getActivityName());
+        activityEntity.setThumbnail(lotteryEntity.getThumbnail());
+        activityEntity.setActivityType(Constants.Lottery);
+        return distributionDao.insertActivity(activityEntity);
+    }
+
+    public int updateActivity(LotteryEntity lotteryEntity) {
+        ActivityEntity activityEntity = new ActivityEntity();
+        activityEntity.setId(lotteryEntity.getId());
+        activityEntity.setActivityName(lotteryEntity.getActivityName());
+        activityEntity.setThumbnail(lotteryEntity.getThumbnail());
+        activityEntity.setActivityType(Constants.Lottery);
         return distributionDao.updateActivity(activityEntity);
     }
 

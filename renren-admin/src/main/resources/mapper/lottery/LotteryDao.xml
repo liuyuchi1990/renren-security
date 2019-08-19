@@ -221,12 +221,12 @@ where tl.id = #{activityId,jdbcType=VARCHAR}
         group by tl.id
     </select>
 
-    <select id="queryLotteryByMobile" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
+    <select id="queryLotteryByMobile" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
         select
-        t.*,u.headimgurl,ta.*
+        t.*,u.headimgurl,u.username,ta.*
         from tb_lottery_log t
         left join sys_user u on u.user_id=t.user_id
-        left join tb_activity ta on ta.id = t.activity_id
+        left join tb_lottery ta on ta.id = t.activity_id
         where u.mobile = #{mobile,jdbcType=VARCHAR}
     </select>
 

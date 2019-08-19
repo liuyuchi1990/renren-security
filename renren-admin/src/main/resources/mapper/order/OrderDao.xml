@@ -61,7 +61,7 @@
 
 	<select id="getOrderByUserIdAndActivityType" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
 		select
-		t.*,u.headimgurl,ta.*
+		t.*,u.headimgurl,u.username,ta.*
 		from tb_order t
 		left join sys_user u on u.user_id=t.user_id
 		left join tb_activity ta on ta.id = t.activity_id

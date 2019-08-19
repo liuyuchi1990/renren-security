@@ -102,10 +102,10 @@
 
     <select id="queryGatherByMobileAndActivityId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
 		select
-		t.*,u.headimgurl,ta.activity_name,ta.thumbnail,count(tp.id) like_num
+		t.*,u.headimgurl,u.username,ta.activity_name,ta.thumbnail,ta.target_num,count(tp.id) like_num
 		from tb_prize_log t
 		left join sys_user u on u.user_id=t.user_id
-		left join tb_activity ta on ta.id = t.activity_id
+		left join tb_gather ta on ta.id = t.activity_id
 		left join tb_like_log tp on tp.id = t.id
         where u.mobile = #{mobile,jdbcType=VARCHAR}
 		group by t.id

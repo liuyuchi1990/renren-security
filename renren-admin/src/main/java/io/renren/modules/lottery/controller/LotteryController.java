@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import io.renren.common.utils.LotteryUtil;
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
+import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.lottery.entity.Gift;
 import io.renren.modules.order.model.Order;
 import io.renren.modules.sys.entity.ReturnCodeEnum;
@@ -48,6 +49,9 @@ public class LotteryController {
     String qrLotteryImgUrl;
     @Value("${qr.httplotteryurl}")
     String httplotteryurl;
+
+    @Autowired
+    private DistributionService distributionService;
     /**
      * 列表
      */
@@ -101,10 +105,12 @@ public class LotteryController {
             lottery.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             lottery.setQrImg(httplotteryurl + lottery.getId() + ".jpg");
             lotteryService.insertLottery(lottery);
+            distributionService.insertActivity(lottery);
             String text = qrLotteryUrl.replace("id=", "id=" + lottery.getId());
             QRCodeUtils.encode(text, null, qrLotteryImgUrl, lottery.getId(), true);
         }else{
             lotteryService.updateLottery(lottery);//全部更新
+            distributionService.updateActivity(lottery);
         }
         return R.ok().put("lottery", lottery);
     }

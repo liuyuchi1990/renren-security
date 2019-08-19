@@ -8,6 +8,7 @@ import io.renren.modules.distribution.dao.DistributionDao;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.gather.entity.GatherEntity;
 import io.renren.modules.groupon.entity.GrouponEntity;
+import io.renren.modules.lottery.entity.LotteryEntity;
 import io.renren.modules.sys.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public interface DistributionService extends IService<Distribution> {
 
     int insertActivity (GrouponEntity grouponEntity);
 
+    int insertActivity (LotteryEntity lotteryEntity);
+
     int updateActivity (Distribution distribution);
 
     int updateActivity (BarginEntity barginEntity);
@@ -50,6 +53,8 @@ public interface DistributionService extends IService<Distribution> {
     int updateActivity (GatherEntity gatherEntity);
 
     int updateActivity (GrouponEntity grouponEntity);
+
+    int updateActivity (LotteryEntity lotteryEntity);
 
     int release(String id);
 
