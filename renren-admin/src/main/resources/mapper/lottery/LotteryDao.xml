@@ -237,7 +237,7 @@ where tl.id = #{activityId,jdbcType=VARCHAR}
         order by t.create_time desc
     </select>
 
-    <select id="queryLotteryLogById" parameterType="io.renren.modules.lottery.entity.LotteryEntity" resultType="java.util.Map">
+    <select id="queryLotteryLogById" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
         select t.* from tb_lottery_log t
         where t.activity_id = #{activityId,jdbcType=VARCHAR}
         order by t.create_time desc

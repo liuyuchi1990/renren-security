@@ -77,9 +77,9 @@ public class LotteryController {
 
     @RequestMapping("/queryLotteryLogById")
     //@RequiresPermissions("sys:distribution:list")
-    public ReturnResult queryLotteryLogById(@RequestBody LotteryEntity lotteryEntity) {
+    public ReturnResult queryLotteryLogById(@RequestBody Order order) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
-        List<Map<String, Object>> activityLst = lotteryService.queryLotteryLogById(lotteryEntity);
+        List<Map<String, Object>> activityLst = lotteryService.queryLotteryLogById(order);
         Map<String, Object> map = new HashedMap();
         map.put("data", activityLst);
         result.setResult(map);
@@ -113,6 +113,23 @@ public class LotteryController {
             distributionService.updateActivity(lottery);
         }
         return R.ok().put("lottery", lottery);
+    }
+
+    /**
+     * 保存
+     */
+    @RequestMapping(value = "/copy", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:save")
+    @ResponseBody
+    public R copy(@RequestBody LotteryEntity bargin) throws Exception {
+        LotteryEntity ga = lotteryService.selectById(bargin.getId());
+        ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        ga.setQrImg(httplotteryurl + bargin.getId() + ".jpg");
+        lotteryService.insertAllColumn(ga);
+        distributionService.insertActivity(ga);
+        String text = qrLotteryUrl.replace("id=", "id=" + ga.getId());
+        QRCodeUtils.encode(text, null, qrLotteryImgUrl, ga.getId(), true);
+        return R.ok();
     }
 
     @RequestMapping(value = "/lottery", method = RequestMethod.POST)

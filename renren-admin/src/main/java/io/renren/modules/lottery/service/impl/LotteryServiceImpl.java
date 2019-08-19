@@ -46,8 +46,8 @@ public class LotteryServiceImpl extends ServiceImpl<LotteryDao, LotteryEntity> i
         return lotteryDao.queryLotteryByMobile(order);
     }
 
-    public List<Map<String,Object>> queryLotteryLogById(LotteryEntity lottery){
-        return lotteryDao.queryLotteryLogById(lottery);
+    public List<Map<String,Object>> queryLotteryLogById(Order order){
+        return lotteryDao.queryLotteryLogById(order);
     }
 
     public List<Map<String,Object>> queryList(){
