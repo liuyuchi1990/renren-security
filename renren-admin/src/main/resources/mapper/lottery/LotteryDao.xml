@@ -238,7 +238,10 @@ where tl.id = #{activityId,jdbcType=VARCHAR}
     </select>
 
     <select id="queryLotteryLogById" parameterType="io.renren.modules.order.model.Order" resultType="java.util.Map">
-        select t.* from tb_lottery_log t
+        select t.*,u.headimgurl,u.username,ta.activity_name,ta.thumbnail
+        from tb_lottery_log t
+        left join sys_user u on u.user_id=t.user_id
+        left join tb_lottery ta on ta.id = t.activity_id
         where t.activity_id = #{activityId,jdbcType=VARCHAR}
         order by t.create_time desc
     </select>
