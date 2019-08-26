@@ -89,6 +89,8 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         activityEntity.setEndTime(gatherEntity.getEndTime());
         activityEntity.setStartTime(gatherEntity.getStartTime());
         activityEntity.setActivityType(Constants.GATHER);
+        activityEntity.setPrizeNum(gatherEntity.getPriceNum());
+        activityEntity.setPrizeLeft(gatherEntity.getPriceNum());
         return distributionDao.insertActivity(activityEntity);
     }
 
@@ -114,6 +116,8 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         activityEntity.setEndTime(barginEntity.getEndTime());
         activityEntity.setStartTime(barginEntity.getStartTime());
         activityEntity.setActivityType(Constants.BARGIN);
+        activityEntity.setPrizeNum(barginEntity.getPrizeNum());
+        activityEntity.setPrizeLeft(barginEntity.getPrizeNum());
         return distributionDao.insertActivity(activityEntity);
     }
 

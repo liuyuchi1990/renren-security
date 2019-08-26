@@ -86,6 +86,7 @@
         select tg.*,count(tp.activity_id) from tb_gather tg
         left join tb_prize_log tp on tg.id=tp.activity_id
         group by tg.id
+        order by tg.create_time desc
     </select>
 
     <select id="queryPrizeLog" parameterType="java.lang.String" resultType="java.util.Map">

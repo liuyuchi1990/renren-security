@@ -51,7 +51,7 @@
 		select t.*,count(ord.order_id) order_num,ifnull(sum(ord.total_price),0) total_price from tb_bargin t
 		left join tb_order ord on ord.activity_id = t.id and ord.order_status = 3
 		group by t.id
-		order by t.update_time desc
+		order by t.create_time desc
     </select>
 
     <select id="queryBarginLog" parameterType="java.lang.String" resultType="java.util.Map">

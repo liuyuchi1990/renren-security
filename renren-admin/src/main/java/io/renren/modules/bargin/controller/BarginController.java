@@ -6,10 +6,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import io.renren.common.utils.QRCodeUtils;
 import io.renren.common.validator.ValidatorUtils;
@@ -102,6 +99,7 @@ public class BarginController {
             bargin.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             bargin.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
             bargin.setPrizeLeft(bargin.getPrizeNum());
+            bargin.setCreateTime(new Date());
             barginService.insertAllColumn(bargin);
             distributionService.insertActivity(bargin);
             String text = qrBarginUrl.replace("id=", "id=" + bargin.getId());
@@ -141,31 +139,42 @@ public class BarginController {
         LocalDateTime toDate = LocalDateTime.now();
         BarginEntity ba = barginService.selectById(order.getActivityId());
         List<Map<String, Object>> mp = barginService.queryBarginLog(order.getOrderId());
-        //String create_time = mp.get("create_time")==null?null: mp.get("create_time").toString().replace(".0","");
         if (mp == null || (mp.size() < ba.getBarginNum())) {//是否超过砍价人数
             Map<String, Object> resMap = barginService.queryMaxTime(order);
             long hours = 0;
             Long restrictTime = Long.parseLong(ba.getRestrictTime().toString());
             LocalDateTime create_time = resMap == null ? toDate : LocalDateTime.parse(resMap.get("create_time").toString().replace(".0", ""), df);
             hours = ChronoUnit.HOURS.between(create_time, toDate);
-            if (restrictTime < hours || hours == 0) {//是否超过投票间隔时间
+            if (restrictTime < hours || mp.size() == 0) {//是否超过投票间隔时间
                 Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
                 Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
-                OrderInfo orderInfo = new OrderInfo();
-                orderInfo.setOrder_id(order.getOrderId());
-                orderInfo.setTotal_price(dfn.format(price_left));
-                orderService.edit(orderInfo);//modify price
-                orderInfo.setUser_id(order.getUser_id());
-                order.setTotal_price(dfn.format(reduct));
-                barginService.insertBarginLog(order);
-                map.put("data", order);
-                result.setResult(map);
+                if (Double.valueOf(order.getTotal_price()) == (ba.getFloorPrice().doubleValue())) {
+                    result.setCode(ReturnCodeEnum.INVOKE_VENDOR_DF_ERROR.getCode());
+                    result.setMsg("您已砍至低价！");
+                    result.setResult(map);
+                } else {
+                    OrderInfo orderInfo = new OrderInfo();
+                    orderInfo.setOrder_id(order.getOrderId());
+                    if (price_left <= ba.getFloorPrice().doubleValue()) {
+                        orderInfo.setTotal_price(dfn.format(ba.getFloorPrice().doubleValue()));
+                    } else {
+                        orderInfo.setTotal_price(dfn.format(price_left));
+                    }
+                    orderService.edit(orderInfo);//modify price
+                    orderInfo.setUser_id(order.getUser_id());
+                    order.setTotal_price(dfn.format(reduct));
+                    barginService.insertBarginLog(order);
+                    map.put("data", order);
+                    result.setResult(map);
+                }
             } else {
-                map.put("data", "您已投票请在规定时间后再次投票");
+                result.setCode(ReturnCodeEnum.INVOKE_VENDOR_DF_ERROR.getCode());
+                result.setMsg("请您休息" + (restrictTime - hours) + "小时后再次砍价");
                 result.setResult(map);
             }
         } else {
-            map.put("data", "超出砍价人数");
+            result.setCode(ReturnCodeEnum.INVOKE_VENDOR_DF_ERROR.getCode());
+            result.setMsg("超出砍价人数");
             result.setResult(map);
         }
 
