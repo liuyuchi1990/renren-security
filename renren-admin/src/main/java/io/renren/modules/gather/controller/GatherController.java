@@ -97,12 +97,14 @@ public class GatherController {
         if ("".equals(gather.getId()) || gather.getId() == null) {
             gather.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             gather.setQrImg(httpgatherurl + gather.getId() + ".jpg");
+            gather.setCreateTime(new Date());
             gather.setPrizeLeft(gather.getPriceNum());
             gatherService.insertAllColumn(gather);
             distributionService.insertActivity(gather);
             String text = qrGatherUrl.replace("id=", "id=" + gather.getId());
             QRCodeUtils.encode(text, null, qrGatherImgUrl, gather.getId(), true);
         } else {
+            gather.setUpdateTime(new Date());
             gatherService.updateById(gather);//全部更新
             distributionService.updateActivity(gather);
         }
@@ -119,6 +121,7 @@ public class GatherController {
         GatherEntity ga = gatherService.selectById(gather.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpgatherurl + gather.getId() + ".jpg");
+        ga.setCreateTime(new Date());
         gatherService.insertAllColumn(ga);
         distributionService.insertActivity(ga);
         String text = qrGatherUrl.replace("id=", "id=" + ga.getId());

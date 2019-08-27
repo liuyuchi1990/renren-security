@@ -105,6 +105,7 @@ public class BarginController {
             String text = qrBarginUrl.replace("id=", "id=" + bargin.getId());
             QRCodeUtils.encode(text, null, qrBarginImgUrl, bargin.getId(), true);
         } else {
+            bargin.setUpdateTime(new Date());
             barginService.updateById(bargin);//全部更新
             distributionService.updateActivity(bargin);
         }
@@ -121,6 +122,7 @@ public class BarginController {
         BarginEntity ga = barginService.selectById(bargin.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         ga.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
+        ga.setCreateTime(new Date());
         barginService.insertAllColumn(ga);
         distributionService.insertActivity(ga);
         String text = qrBarginUrl.replace("id=", "id=" + ga.getId());

@@ -13,8 +13,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.beans.PropertyDescriptor;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.HashMap;
@@ -193,4 +194,26 @@ public class CommonUtil {
         return true;
     }
 
+    /**
+     * 功能描述: 输出文件流<br>
+     *
+     * @param: [response, file]
+     * @return: void
+     * @author: lucasliang
+     * @date: 10/04/2018 5:08 下午
+     */
+    private static void output(HttpServletResponse response, File file) {
+        byte[] buffer = new byte[1024];
+        try (FileInputStream fis= new FileInputStream(file);
+             BufferedInputStream bis = new BufferedInputStream(fis);){
+            OutputStream os = response.getOutputStream();
+            int i = bis.read(buffer);
+            while (i != -1) {
+                os.write(buffer, 0, i);
+                i = bis.read(buffer);
+            }
+        } catch (Exception e) {
+            //logger.error(e.getMessage(), e);
+        }
+    }
 }

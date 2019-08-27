@@ -86,7 +86,7 @@ root:
     cert: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/cert
 
 qr:
-  distribution: https://wx.sharkmeida.cn/dist2/redirect.html?id=
+  distribution: https://wx.sharkmeida.cn/dist/redirect.html?id=
   distributionImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/distribution/qr
   gather: https://wx.sharkmeida.cn/dist/redirect.html?hash=2pageInfo&id=
   gatherImgPath: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/gather/qr
