@@ -145,7 +145,7 @@ public class BarginController {
             Long restrictTime = Long.parseLong(ba.getRestrictTime().toString());
             LocalDateTime create_time = resMap == null ? toDate : LocalDateTime.parse(resMap.get("create_time").toString().replace(".0", ""), df);
             hours = ChronoUnit.HOURS.between(create_time, toDate);
-            if (restrictTime < hours || mp.size() == 0) {//是否超过投票间隔时间
+            if (restrictTime < hours || mp.size() == 0||resMap==null) {//是否超过投票间隔时间
                 Double reduct = Math.random() * (ba.getMaxReduction().subtract(ba.getMinReduction()).doubleValue()) + ba.getMinReduction().doubleValue();
                 Double price_left = Double.valueOf(order.getTotal_price()) - reduct;
                 if (Double.valueOf(order.getTotal_price()) == (ba.getFloorPrice().doubleValue())) {
