@@ -1,5 +1,7 @@
 package io.renren.modules.sys.entity;
 
+import java.util.Date;
+
 public class ActivityEntity {
     private String id;
     /**
@@ -20,7 +22,8 @@ public class ActivityEntity {
     private String activityState;
     private String activityType;
     private String createUser;
-    private String createTime;
+    private Date createTime;
+    private Date updateTime;
     /**
      *
      */
@@ -94,11 +97,11 @@ public class ActivityEntity {
         this.createUser = createUser;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -116,5 +119,13 @@ public class ActivityEntity {
 
     public void setPrizeNum(Integer prizeNum) {
         this.prizeNum = prizeNum;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

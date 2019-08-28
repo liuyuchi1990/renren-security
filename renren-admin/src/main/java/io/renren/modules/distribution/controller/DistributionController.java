@@ -151,6 +151,7 @@ public class DistributionController {
             QRCodeUtils.encode(text, null, qrDistributionImgUrl, distribution.getId(), true);
         } else {
             ValidatorUtils.validateEntity(distribution);
+            distribution.setUpdateTime(new Date());
             distributionService.updateById(distribution);//全部更新
             distributionService.updateActivity(distribution);
         }

@@ -38,7 +38,7 @@
 	update_user,
 	activity_state,
 	head_image,
-	update_time
+	create_time
 )
 VALUES
 	(
@@ -127,7 +127,7 @@ VALUES
 			<if test="endTime!= null">
 				end_time =  #{endTime,jdbcType=VARCHAR},
 			</if>
-				create_time =  SYSDATE()
+				update_time =  SYSDATE()
 		</set>
 		where id = #{id,jdbcType=VARCHAR}
 

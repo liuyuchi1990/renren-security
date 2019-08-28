@@ -115,7 +115,7 @@ public class GrouponController {
     public R copy(@RequestBody GrouponEntity groupon) throws Exception {
         GrouponEntity ga = grouponService.selectById(groupon.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        ga.setQrImg(httpgrouponurl + groupon.getId() + ".jpg");
+        ga.setQrImg(httpgrouponurl + ga.getId() + ".jpg");
         ga.setCreateTime(new Date());
         grouponService.insertAllColumn(ga);
         distributionService.insertActivity(ga);
@@ -125,10 +125,10 @@ public class GrouponController {
     }
 
 
-    @RequestMapping(value = "/gourpon", method = RequestMethod.POST)
+    @RequestMapping(value = "/groupon", method = RequestMethod.POST)
     @Transactional
     //@RequiresPermissions("sys:distribution:delete")
-    public ReturnResult gourpon(@RequestBody Order order) throws ParseException {
+    public ReturnResult groupon(@RequestBody Order order) throws ParseException {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> mp = new HashedMap();
         SysUserEntity user = new SysUserEntity();
@@ -137,7 +137,7 @@ public class GrouponController {
         List<Map<String,String>> disList = JSONArray.parseObject(ge.getDiscount(),List.class);
         OrderInfo orderInfo = new OrderInfo();
         for(Map<String,String> map:disList){
-            if(groupList.size()>=Integer.parseInt(map.get("num").toString()) ){
+            if((groupList.size()+ 1) >=Integer.parseInt(map.get("num").toString()) ){
                 orderInfo.setTotal_price(map.get("price").toString());//modify price
             }
         }

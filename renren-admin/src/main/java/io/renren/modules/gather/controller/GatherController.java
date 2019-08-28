@@ -120,7 +120,7 @@ public class GatherController {
     public R copy(@RequestBody GatherEntity gather) throws Exception {
         GatherEntity ga = gatherService.selectById(gather.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        ga.setQrImg(httpgatherurl + gather.getId() + ".jpg");
+        ga.setQrImg(httpgatherurl + ga.getId() + ".jpg");
         ga.setCreateTime(new Date());
         gatherService.insertAllColumn(ga);
         distributionService.insertActivity(ga);

@@ -151,6 +151,8 @@ public class Distribution implements Serializable {
      *
      */
     private Date updateTime;
+
+    private Date createTime;
     /**
      *
      */
@@ -600,5 +602,13 @@ public class Distribution implements Serializable {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

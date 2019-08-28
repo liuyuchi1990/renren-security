@@ -124,7 +124,7 @@ public class LotteryController {
     public R copy(@RequestBody LotteryEntity bargin) throws Exception {
         LotteryEntity ga = lotteryService.selectById(bargin.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        ga.setQrImg(httplotteryurl + bargin.getId() + ".jpg");
+        ga.setQrImg(httplotteryurl + ga.getId() + ".jpg");
         lotteryService.insertAllColumn(ga);
         distributionService.insertActivity(ga);
         String text = qrLotteryUrl.replace("id=", "id=" + ga.getId());

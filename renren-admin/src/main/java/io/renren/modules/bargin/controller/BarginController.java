@@ -121,7 +121,7 @@ public class BarginController {
     public R copy(@RequestBody BarginEntity bargin) throws Exception {
         BarginEntity ga = barginService.selectById(bargin.getId());
         ga.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        ga.setQrImg(httpbarginurl + bargin.getId() + ".jpg");
+        ga.setQrImg(httpbarginurl + ga.getId() + ".jpg");
         ga.setCreateTime(new Date());
         barginService.insertAllColumn(ga);
         distributionService.insertActivity(ga);
