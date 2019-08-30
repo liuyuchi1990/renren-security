@@ -46,18 +46,22 @@
 
 	<select id="getOrderByUserId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
 		select
-		t.*,u.headimgurl
+        t.order_id, t.create_time, t.update_time, t.user_id, sd.value order_status, t.activity_id,  t.total_price, t.from_user, t.red_packets, t.user_type, t.group_id, t.order_type
+		,u.headimgurl
 		from tb_order t
 		left join sys_user u on u.user_id=t.user_id
+		left join sys_dict sd on sd.code = t.order_status and sd.type='wxpay'
 		where t.user_id = #{user_id,jdbcType=VARCHAR} and t.activity_id=#{activityId,jdbcType=VARCHAR}
 	</select>
 
 
 	<select id="getOrderByFromUserId" parameterType="io.renren.modules.order.model.Order" resultType="java.util.HashMap">
 		select
-		t.*,u.headimgurl
+        t.order_id, t.create_time, t.update_time, t.user_id, sd.value order_status, t.activity_id,  t.total_price, t.from_user, t.red_packets, t.user_type, t.group_id, t.order_type
+		,u.headimgurl
 		from tb_order t
 		left join sys_user u on u.user_id=t.from_user
+		left join sys_dict sd on sd.code = t.order_status and sd.type='wxpay'
 		where t.from_user = #{from_user,jdbcType=VARCHAR} and t.activity_id=#{activityId,jdbcType=VARCHAR}
 	</select>
 

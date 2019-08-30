@@ -218,6 +218,13 @@ public class DistributionController {
     public ReturnResult addWatcher(@RequestBody Distribution distribution) {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
+        Distribution ds = distributionService.queryById(distribution.getId());
+        if(ds.getWatcher().contains(distribution.getWatcher())){
+            distribution.setWatcher(null);
+            distributionService.addWatcher(distribution);
+        }else{
+            distributionService.addWatcher(distribution);
+        }
         int mp = distributionService.addWatcher(distribution);
         map.put("status", "success");
         map.put("msg", "send ok");
