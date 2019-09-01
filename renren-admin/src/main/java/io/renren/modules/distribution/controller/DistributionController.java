@@ -155,7 +155,7 @@ public class DistributionController {
             distributionService.updateById(distribution);//全部更新
             distributionService.updateActivity(distribution);
         }
-        return R.ok();
+        return R.ok().put("distribution",distribution);
     }
 
     /**
@@ -167,7 +167,7 @@ public class DistributionController {
     public R copy(@RequestBody Distribution distribution) throws Exception {
         Distribution ds = distributionService.queryById(distribution.getId());
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
+        distribution.setQrImg(httpurl + ds.getId() + ".jpg");
         distributionService.insertDistribution(ds);
         distributionService.insertActivity(ds);
         String text = qrDistributionUrl.replace("id=", "id=" + ds.getId());
