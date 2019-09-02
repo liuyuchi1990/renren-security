@@ -76,7 +76,8 @@
     </update>
 
     <select id="queryLike" parameterType="java.lang.String" resultType="java.util.Map">
-        select t.*,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username,ta.activity_name,IF(t.complete_time is not null,'已完成','未完成') if_completed  from tb_prize_log t
+        select t.id, t.activity_id, t.create_time, t.likes, t.user_id, t.complete_time, t.state, t.prize_num, t.prize_time
+	,round(length(t.likes)/33,0) likeNum,u.headimgurl,u.username,ta.activity_name,IF(t.complete_time is not null,'已完成','未完成') update_time  from tb_prize_log t
 		left join sys_user u on u.user_id=t.user_id
 		left join tb_activity ta on ta.id = t.activity_id
         where activity_id = #{id,jdbcType=VARCHAR}
@@ -84,7 +85,7 @@
     </select>
 
     <select id="queryList" parameterType="java.util.Map" resultType="java.util.Map">
-        select tg.*,count(tp.activity_id) from tb_gather tg
+        select tg.*,count(tp.activity_id) people_num from tb_gather tg
         left join tb_prize_log tp on tg.id=tp.activity_id
         group by tg.id
         order by tg.create_time desc

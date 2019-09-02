@@ -146,6 +146,7 @@ public class GatherController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Map<String, Object> pList = gatherService.queryLikeTime(pz);
+        GatherEntity gz = gatherService.selectById(pz.getActivityId());
         long hours = 0;
         Long prize_time = Long.parseLong(pList.get("prize_time").toString());
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -157,12 +158,12 @@ public class GatherController {
         }
 
         if (create_time == null || prize_time < hours) {
-            pz.setCompleteTime(new Date());
+            pz.setUpdateTime(new Date());
             int mp = gatherService.updatePrizeLog(pz);
             int mp2 = gatherService.insertLikeLog(pz);
             Map<String, Object> p = gatherService.queryPrizeLog(pz.getId());
             int arr = p.get("likes") == null ? 0 : p.get("likes").toString().split(",").length;
-            if (create_time != null && arr == Integer.parseInt(pz.getPrizeNum())) {
+            if (create_time != null && arr == gz.getTargetNum()) {
                 pz.setCompleteTime(new Date());
                 gatherService.updatePrizeLog(pz);
                 gatherService.releasePrize(pz.getActivityId());
