@@ -213,6 +213,19 @@ public class GatherController {
         return result;
     }
 
+    @RequestMapping(value = "/queryLikeLog", method = RequestMethod.POST)
+    //@RequiresPermissions("sys:distribution:delete")
+    public ReturnResult queryLikeLog(@RequestBody PrizeEntity pz) {
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        Map<String, Object> map = new HashedMap();
+        List<Map<String, Object>> mp = gatherService.queryLikeLog(pz.getId());
+        map.put("status", "success");
+        map.put("msg", "send ok");
+        map.put("data", mp);
+        result.setResult(map);
+        return result;
+    }
+
     @RequestMapping(value = "/queryPrizeLog", method = RequestMethod.POST)
     //@RequiresPermissions("sys:distribution:delete")
     public ReturnResult queryPrizeLog(@RequestBody PrizeEntity pz) {

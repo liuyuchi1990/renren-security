@@ -84,6 +84,13 @@
         order by likeNum desc
     </select>
 
+    <select id="queryLikeLog" parameterType="java.lang.String" resultType="java.util.Map">
+select t.*,u.headimgurl,u.username from tb_like_log t
+left join sys_user u on u.user_id = t.user_id
+where t.id =#{id,jdbcType=VARCHAR}
+order by create_time
+    </select>
+
     <select id="queryList" parameterType="java.util.Map" resultType="java.util.Map">
         select tg.*,count(tp.activity_id) people_num from tb_gather tg
         left join tb_prize_log tp on tg.id=tp.activity_id
