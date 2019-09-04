@@ -1,8 +1,11 @@
 package io.renren.modules.order.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Preconditions;
 import io.renren.common.config.Constants;
 
+import io.renren.common.utils.CommonUtil;
+import io.renren.common.utils.Excelutil;
 import io.renren.modules.distribution.entity.Distribution;
 import io.renren.modules.distribution.service.DistributionService;
 import io.renren.modules.gather.service.GatherService;
@@ -17,13 +20,21 @@ import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.DelayQueue;
@@ -33,6 +44,9 @@ import java.util.concurrent.Executors;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
+
+    @Value("${export.path}")
+    String exportPath;
 
     @Autowired
     OrderService orderService;
@@ -48,6 +62,7 @@ public class OrderController {
 
     @Autowired
     LotteryService lotteryService;
+
     /**
      * 订单生成
      *
@@ -259,11 +274,11 @@ public class OrderController {
         Map<String, Object> map = new HashMap<>();
         List<Map<String, Object>> res = new ArrayList<>();
         try {
-            if(Constants.GATHER.equals(order.getOrderType())){
-                 res = gatherService.queryGatherByMobileAndActivityId(order);
-            }else if(Constants.Lottery.equals(order.getOrderType())){
-                 res = lotteryService.queryLotteryByMobile(order);
-            }else{
+            if (Constants.GATHER.equals(order.getOrderType())) {
+                res = gatherService.queryGatherByMobileAndActivityId(order);
+            } else if (Constants.Lottery.equals(order.getOrderType())) {
+                res = lotteryService.queryLotteryByMobile(order);
+            } else {
                 res = orderService.getOrderByUserIdAndActivityType(order);
             }
             map.put("data", res);
@@ -275,5 +290,104 @@ public class OrderController {
             result.setResult(map);
         }
         return result;
+    }
+
+    /**
+     * 导出报表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/export", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnResult export(HttpServletRequest request, HttpServletResponse response, @RequestBody(required = false) Order order) throws Exception {
+        //获取数据
+        Map<String, Object> map = new HashMap<>();
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
+        List<Map<String, Object>> res = orderService.queryByActivtyId(order.getActivityId());
+        if (res.size()!=0) {
+            //excel标题
+            String[] title = {"订单号", "活动名", "姓名", "金额", "电话","时间","订单状态"};
+
+            String fileName = res.get(0).get("activity_name").toString() + System.currentTimeMillis() + ".xlsx";
+            File excel = new File(exportPath + fileName);
+            String sheetName = res.get(0).get("activity_name").toString();
+            String[][] content = new String[res.size()][];
+            for (int i = 0; i < res.size(); i++) {
+                content[i] = new String[title.length];
+                Map<String, Object> obj = res.get(i);
+                content[i][0] = obj.get("order_id").toString();
+                content[i][1] = obj.get("activity_name").toString();
+                content[i][2] = obj.get("username").toString();
+                content[i][3] = obj.get("total_price").toString();
+                content[i][4] = obj.get("mobile").toString();
+                content[i][5] = obj.get("create_time").toString();
+                content[i][6] = obj.get("value").toString();
+            }
+
+            //创建HSSFWorkbook
+            XSSFWorkbook wb = Excelutil.getWorkbook(sheetName, title, content);
+
+            try (FileOutputStream fos = new FileOutputStream(excel)) {
+                wb.write(fos);
+            } catch (Exception e) {
+
+            }
+            map.put("fileName", fileName);
+            result.setResult(map);
+        } else {
+            result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+            result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+            map.put("status", "失败");
+            result.setResult(map);
+        }
+        return  result;
+    }
+
+    /**
+     * @param @param   request
+     * @param @param   response
+     * @param @return  设定文件
+     * @param response
+     * @return
+     * @throws @param                       request
+     * @throws UnsupportedEncodingException
+     * @Title: downloadFailDetail
+     * @Description:
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/downloadExcel", method = RequestMethod.GET)
+    @ResponseBody
+    public void downloadFailDetail(HttpServletRequest request, HttpServletResponse response,
+                                   @RequestParam(Constants.FILE_NAME) String fileName) throws IOException {
+        // 入参校验
+        Preconditions.checkArgument(fileName.length() > 0, "%s 不能为空！", Constants.FILE_NAME);
+        String userAgent = request.getHeader("User-Agent");
+        String fileNameDecode = URLDecoder.decode(fileName, Constants.EN_CODING);
+        File file = new File(exportPath, fileNameDecode);
+        if (file.exists()) {
+            // 设置强制下载不打开
+            response.setContentType("application/force-download");
+            // 针对IE或者以IE为内核的浏览器：
+            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+                try {
+                    response.setHeader(Constants.CONTENT_DISPOSITION, String.format(Constants.ATTACHMENT_FILENAME,
+                            new String(fileName.getBytes(Constants.EN_CODING_GBK), Constants.EN_CODING_ISO)));
+                } catch (UnsupportedEncodingException e) {
+                    response.setHeader(Constants.CONTENT_DISPOSITION,
+                            String.format(Constants.ATTACHMENT_FILENAME, fileNameDecode));
+                }
+            } else {
+                // 非IE浏览器的处理：
+                fileNameDecode = new String(fileNameDecode.getBytes(Constants.EN_CODING), Constants.EN_CODING_ISO);
+                response.setHeader(Constants.CONTENT_DISPOSITION, String.format(Constants.ATTACHMENT_FILENAME, fileNameDecode));
+            }
+            Map<String, Object> logData = new HashMap<>();
+            logData.put(Constants.FILE_NAME, fileName);
+            CommonUtil.output(response, file);
+            //删除服务器文件
+            if (file.exists() && file.isFile() && Files.deleteIfExists(file.toPath())) {
+                logData.put("operate", "导出成功后删除文件");
+            }
+        }
     }
 }

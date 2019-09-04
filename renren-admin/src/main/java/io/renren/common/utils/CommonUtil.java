@@ -202,7 +202,7 @@ public class CommonUtil {
      * @author: lucasliang
      * @date: 10/04/2018 5:08 下午
      */
-    private static void output(HttpServletResponse response, File file) {
+    public static void output(HttpServletResponse response, File file) {
         byte[] buffer = new byte[1024];
         try (FileInputStream fis= new FileInputStream(file);
              BufferedInputStream bis = new BufferedInputStream(fis);){

@@ -28,10 +28,11 @@
 
 	<select id="queryByActivtyId" parameterType="java.lang.String" resultType="java.util.HashMap">
 		select tb.order_id, tb.create_time, tb.update_time, tb.user_id, tb.order_status, tb.activity_id,  if(cast(tb.total_price as DECIMAL)=tba.floor_price,'已砍至底价',tb.total_price) total_price, tb.from_user, tb.red_packets, tb.user_type, tb.group_id, tb.order_type
-	,u.username,u.headimgurl,u.mobile,td.activity_name from tb_order tb
+	,u.username,u.headimgurl,u.mobile,td.activity_name,sd.value from tb_order tb
   left join sys_user u on u.user_id=tb.user_id
   left join tb_activity td on tb.activity_id = td.id
   left join tb_bargin tba on tba.id = tb.activity_id
+  left join sys_dict sd on sd.code = tb.order_status and sd.type='wxpay'
   where tb.activity_id = #{activityId}
   order by tb.create_time desc
 	</select>

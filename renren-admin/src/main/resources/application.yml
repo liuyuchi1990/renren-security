@@ -104,3 +104,6 @@ qr:
 
 course:
   path: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/imgs/course/
+
+export:
+  path: /usr/local/tomcat/apache-tomcat-8.0.53/webapps/excel/
