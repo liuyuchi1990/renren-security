@@ -1,6 +1,7 @@
 package io.renren.common.utils;
 
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 
@@ -19,7 +20,7 @@ public class Excelutil {
     public static String readXlsx(String filePath) throws Exception {
         InputStream is = new FileInputStream(filePath);
         //List<List<String>> result;
-        String result ;
+        String result;
         try (XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is)) {
             //result = new ArrayList<>();
             result = "";
@@ -41,17 +42,17 @@ public class Excelutil {
                         if (cell == null) {
                             continue;
                         }
-                        if(colIx == minColIx){
-                            rowList  = cell.getStringCellValue();
-                        }else{
-                            rowList  = rowList + "','" + cell.toString();
+                        if (colIx == minColIx) {
+                            rowList = cell.getStringCellValue();
+                        } else {
+                            rowList = rowList + "','" + cell.toString();
                         }
                     }
-                    if(!rowList.equals("','")){
-                        if(rowNum == 1){
-                            result= result +"('"+ rowList+"')";
-                        }else{
-                            result= result +",('"+ rowList+"')";
+                    if (!rowList.equals("','")) {
+                        if (rowNum == 1) {
+                            result = result + "('" + rowList + "')";
+                        } else {
+                            result = result + ",('" + rowList + "')";
                         }
                     }
                 }
@@ -61,7 +62,7 @@ public class Excelutil {
     }
 
     public static void alterStringToCreateNewFile(String path, String oldString,
-                                                   String newString){
+                                                  String newString) {
         try {
             File file = new File(path);
             long start = System.currentTimeMillis(); //开始时间
@@ -101,21 +102,22 @@ public class Excelutil {
             file.delete(); //删除源文件
             newFile.renameTo(new File(filePath)); //将新文件更名为源文件
             time = System.currentTimeMillis() - start;
-            System.out.println(sum+"个"+oldString+"替换成"+newString+"耗费时间:"+time);
-        } catch(Exception e){
+            System.out.println(sum + "个" + oldString + "替换成" + newString + "耗费时间:" + time);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     /**
      * 导出Excel
+     *
      * @param sheetName sheet名称
-     * @param title 标题
-     * @param values 内容
-     * @param wb HSSFWorkbook对象
+     * @param title     标题
+     * @param values    内容
+     * @param wb        HSSFWorkbook对象
      * @return
      */
-    public static XSSFWorkbook getWorkbook (String sheetname, String[] title, String[][] content) {
+    public static XSSFWorkbook getWorkbook(String sheetname, String[] title, String[][] content) {
         //新建文档实例
         XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -124,12 +126,15 @@ public class Excelutil {
 
         //创建单元格格式，并设置居中
         XSSFCellStyle style = workbook.createCellStyle();
+        XSSFCellStyle style2 = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
-
-        //创建第一行，用于填充标题
+        style2.setAlignment(HorizontalAlignment.CENTER);
+        XSSFFont font = workbook.createFont();
+        font.setColor(XSSFFont.COLOR_RED);//HSSFColor.VIOLET.index //字体颜色
+        style2.setFont(font);
         XSSFRow titleRow = sheet.createRow(0);
         //填充标题
-        for (int i=0 ; i<title.length ; i++) {
+        for (int i = 0; i < title.length; i++) {
             //创建单元格
             XSSFCell cell = titleRow.createCell(i);
             //设置单元格内容
@@ -139,17 +144,21 @@ public class Excelutil {
         }
 
         //填充内容
-        for (int i=0 ; i<content.length ; i++) {
+        for (int i = 0; i < content.length; i++) {
             //创建行
-            XSSFRow row = sheet.createRow(i+1);
+            XSSFRow row = sheet.createRow(i + 1);
             //遍历某一行
-            for (int j=0 ; j<content[i].length ; j++) {
+            for (int j = 0; j < content[i].length; j++) {
                 //创建单元格
                 XSSFCell cell = row.createCell(j);
                 //设置单元格内容
                 cell.setCellValue(content[i][j]);
                 //设置单元格样式
-                cell.setCellStyle(style);
+                if("支付成功".equals(content[i][content[i].length - 1])){
+                    cell.setCellStyle(style2);
+                }else {
+                    cell.setCellStyle(style);
+                }
             }
         }
 
@@ -161,9 +170,9 @@ public class Excelutil {
         String s = readXlsx("C:\\Users\\rliu9\\Desktop\\test\\C34 Change Outreach 0318.xlsx");
 
         alterStringToCreateNewFile("C:\\Users\\rliu9\\Desktop\\test\\[20190219]_CHG0030541_OutreachStrategy_BPMO.sql"
-        ,"$temp$",s);
+                , "$temp$", s);
         alterStringToCreateNewFile("C:\\Users\\rliu9\\Desktop\\test\\[20190219]_CHG0030541_OutreachStrategy_DataTeam.sql"
-                ,"$temp$",s);
+                , "$temp$", s);
 
     }
 }

@@ -309,6 +309,10 @@ public class OrderController {
             String[] title = {"订单号", "活动名", "姓名", "金额", "电话","时间","订单状态"};
 
             String fileName = res.get(0).get("activity_name").toString() + System.currentTimeMillis() + ".xlsx";
+            File file = new File(exportPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
             File excel = new File(exportPath + fileName);
             String sheetName = res.get(0).get("activity_name").toString();
             String[][] content = new String[res.size()][];
@@ -355,39 +359,27 @@ public class OrderController {
      * @Description:
      */
     @ApiIgnore
-    @RequestMapping(value = "/downloadExcel", method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteExcel", method = RequestMethod.GET)
     @ResponseBody
-    public void downloadFailDetail(HttpServletRequest request, HttpServletResponse response,
+    public ReturnResult deleteExcel(HttpServletRequest request, HttpServletResponse response,
                                    @RequestParam(Constants.FILE_NAME) String fileName) throws IOException {
         // 入参校验
         Preconditions.checkArgument(fileName.length() > 0, "%s 不能为空！", Constants.FILE_NAME);
-        String userAgent = request.getHeader("User-Agent");
+        Map<String, Object> map = new HashMap<>();
+        ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         String fileNameDecode = URLDecoder.decode(fileName, Constants.EN_CODING);
         File file = new File(exportPath, fileNameDecode);
         if (file.exists()) {
-            // 设置强制下载不打开
-            response.setContentType("application/force-download");
-            // 针对IE或者以IE为内核的浏览器：
-            if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
-                try {
-                    response.setHeader(Constants.CONTENT_DISPOSITION, String.format(Constants.ATTACHMENT_FILENAME,
-                            new String(fileName.getBytes(Constants.EN_CODING_GBK), Constants.EN_CODING_ISO)));
-                } catch (UnsupportedEncodingException e) {
-                    response.setHeader(Constants.CONTENT_DISPOSITION,
-                            String.format(Constants.ATTACHMENT_FILENAME, fileNameDecode));
-                }
-            } else {
-                // 非IE浏览器的处理：
-                fileNameDecode = new String(fileNameDecode.getBytes(Constants.EN_CODING), Constants.EN_CODING_ISO);
-                response.setHeader(Constants.CONTENT_DISPOSITION, String.format(Constants.ATTACHMENT_FILENAME, fileNameDecode));
-            }
-            Map<String, Object> logData = new HashMap<>();
-            logData.put(Constants.FILE_NAME, fileName);
-            CommonUtil.output(response, file);
             //删除服务器文件
             if (file.exists() && file.isFile() && Files.deleteIfExists(file.toPath())) {
-                logData.put("operate", "导出成功后删除文件");
+                map.put("data", "导出成功后删除文件");
+                result.setResult(map);
+            }else {
+                result.setCode(ReturnCodeEnum.SYSTEM_ERROR.getCode());
+                result.setMsg(ReturnCodeEnum.SYSTEM_ERROR.getMessage());
+                map.put("data", "删除文件失败");
             }
         }
+        return result;
     }
 }
