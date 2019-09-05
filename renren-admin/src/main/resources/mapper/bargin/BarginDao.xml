@@ -66,4 +66,12 @@
         select max(tb.create_time) max_time, tb.* from tb_bargin_log tb
         where tb.id= #{orderId,jdbcType=VARCHAR} and tb.user_id = #{user_id,jdbcType=VARCHAR}
     </select>
+
+    <update id="releaseBargin" parameterType="java.lang.String">
+        update tb_bargin
+        <set>
+            prize_left = prize_left - 1
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>

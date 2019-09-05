@@ -141,13 +141,13 @@ public class GrouponController {
                 orderInfo.setTotal_price(map.get("price").toString());//modify price
             }
         }
-        orderInfo.setOrder_status("1");
         orderInfo.setGroup_id(order.getGroupId());
         orderService.edit(orderInfo);
         orderInfo.setUser_id(order.getUser_id());
         order.setOrderId(UUID.randomUUID().toString().replaceAll("-", ""));
         order.setTotal_price(orderInfo.getTotal_price());
         order.setOrderType(Constants.GROUPON);
+        order.setOrderStatus("1");
         orderService.insert(order);
 
         user.setUserId(order.getUser_id());
