@@ -109,7 +109,7 @@ public class OrderController {
                                     OrderInfo orderInfo = new OrderInfo();
                                     orderInfo.setOrder_id(order.getOrderId());
                                     if ("1".equals(order.getOrderStatus())||"5".equals(order.getOrderStatus())) {//订单仍未支付或支付失败，释放货物
-                                        distributionService.rollback(order.getOrderId());
+                                        distributionService.rollback(order.getActivityId());
                                         orderInfo.setOrder_status("5");
                                         orderService.edit(orderInfo);
                                     } else {
