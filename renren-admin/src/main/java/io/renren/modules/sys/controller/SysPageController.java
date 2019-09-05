@@ -70,6 +70,11 @@ public class SysPageController {
 		return "dist/view/redirect";
 	}
 
+	@RequestMapping("dist/pay.html")
+	public String dispay(){
+		return "dist/view/pay";
+	}
+
 	@RequestMapping("dist2/redirect.html")
 	public String dis2Redirect(){
 		return "dist2/redirect";

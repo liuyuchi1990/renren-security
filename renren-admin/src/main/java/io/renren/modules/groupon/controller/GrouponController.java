@@ -141,6 +141,7 @@ public class GrouponController {
                 orderInfo.setTotal_price(map.get("price").toString());//modify price
             }
         }
+        orderInfo.setOrder_status("1");
         orderInfo.setGroup_id(order.getGroupId());
         orderService.edit(orderInfo);
         orderInfo.setUser_id(order.getUser_id());
