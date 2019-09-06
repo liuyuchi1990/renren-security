@@ -303,11 +303,16 @@ public class OrderController {
         //获取数据
         Map<String, Object> map = new HashMap<>();
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
-        List<Map<String, Object>> res = orderService.queryByActivtyId(order.getActivityId());
+        List<Map<String, Object>> res = new ArrayList<>();
+        String[] title = {"订单号", "活动名", "姓名", "金额", "电话","时间","订单状态"};
+        if(Constants.GATHER.equals(order.getOrderType())){
+            title[3]="赞数";
+            res = gatherService.queryLike(order.getActivityId());
+        }else {
+            res = orderService.queryByActivtyId(order.getActivityId());
+        }
         if (res.size()!=0) {
             //excel标题
-            String[] title = {"订单号", "活动名", "姓名", "金额", "电话","时间","订单状态"};
-
             String fileName = res.get(0).get("activity_name").toString() + System.currentTimeMillis() + ".xlsx";
             File file = new File(exportPath);
             if (!file.exists()) {
@@ -319,13 +324,13 @@ public class OrderController {
             for (int i = 0; i < res.size(); i++) {
                 content[i] = new String[title.length];
                 Map<String, Object> obj = res.get(i);
-                content[i][0] = obj.get("order_id").toString();
+                content[i][0] = Constants.GATHER.equals(order.getOrderType())?obj.get("id").toString():obj.get("order_id").toString();
                 content[i][1] = obj.get("activity_name").toString();
                 content[i][2] = obj.get("username").toString();
-                content[i][3] = obj.get("total_price").toString();
+                content[i][3] = Constants.GATHER.equals(order.getOrderType())?obj.get("likeNum").toString():obj.get("total_price").toString();
                 content[i][4] = obj.get("mobile").toString();
                 content[i][5] = obj.get("create_time").toString();
-                content[i][6] = obj.get("value").toString();
+                content[i][6] = Constants.GATHER.equals(order.getOrderType())?obj.get("update_time").toString():obj.get("value").toString();
             }
 
             //创建HSSFWorkbook

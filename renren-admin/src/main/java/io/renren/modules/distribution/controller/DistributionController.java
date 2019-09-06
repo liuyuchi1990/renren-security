@@ -78,7 +78,7 @@ public class DistributionController {
         List<Distribution> activityLst = distributionService.queryListByPage(params);
         Map<String, Object> mp = new HashedMap();
         List<GoodActivity> goodActitiyList = new ArrayList<>();
-        for(Distribution map: activityLst){
+        for (Distribution map : activityLst) {
             GoodActivity ga = new GoodActivity();
             ga.setId(map.getId());
             ga.setList_pic_url(map.getThumbnail());
@@ -91,7 +91,7 @@ public class DistributionController {
             ga.setQr(map.getQrImg());
             goodActitiyList.add(ga);
         }
-        mp.put("data",goodActitiyList);
+        mp.put("data", goodActitiyList);
         result.setResult(mp);
         return result;
     }
@@ -105,7 +105,7 @@ public class DistributionController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         List<Distribution> activityLst = distributionService.queryList(params);
         Map<String, Object> map = new HashedMap();
-        map.put("data",activityLst);
+        map.put("data", activityLst);
         result.setResult(map);
         return result;
     }
@@ -155,7 +155,7 @@ public class DistributionController {
             distributionService.updateById(distribution);//全部更新
             distributionService.updateActivity(distribution);
         }
-        return R.ok().put("distribution",distribution);
+        return R.ok().put("distribution", distribution);
     }
 
     /**
@@ -168,10 +168,11 @@ public class DistributionController {
         Distribution ds = distributionService.queryById(distribution.getId());
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
         distribution.setQrImg(httpurl + ds.getId() + ".jpg");
-        distributionService.insertDistribution(ds);
-        distributionService.insertActivity(ds);
         String text = qrDistributionUrl.replace("id=", "id=" + ds.getId());
         QRCodeUtils.encode(text, null, qrDistributionImgUrl, ds.getId(), true);
+        distribution.setQrImg(httpurl + ds.getId() + ".jpg");
+        distributionService.insertDistribution(ds);
+        distributionService.insertActivity(ds);
         return R.ok();
     }
 
@@ -219,10 +220,10 @@ public class DistributionController {
         ReturnResult result = new ReturnResult(ReturnCodeEnum.SUCCESS.getCode(), ReturnCodeEnum.SUCCESS.getMessage());
         Map<String, Object> map = new HashedMap();
         Distribution ds = distributionService.queryById(distribution.getId());
-        if(ds.getWatcher().contains(distribution.getWatcher())){
+        if (ds.getWatcher() != null && ds.getWatcher().contains(distribution.getWatcher())) {
             distribution.setWatcher(null);
             distributionService.addWatcher(distribution);
-        }else{
+        } else {
             distributionService.addWatcher(distribution);
         }
         int mp = distributionService.addWatcher(distribution);
