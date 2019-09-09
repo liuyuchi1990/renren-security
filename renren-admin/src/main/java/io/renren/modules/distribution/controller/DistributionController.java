@@ -145,6 +145,7 @@ public class DistributionController {
         if ("".equals(distribution.getId())) {
             distribution.setId(UUID.randomUUID().toString().replaceAll("-", ""));
             distribution.setQrImg(httpurl + distribution.getId() + ".jpg");
+            distribution.setVisits(0);
             distributionService.insertDistribution(distribution);
             distributionService.insertActivity(distribution);
             String text = qrDistributionUrl.replace("id=", "id=" + distribution.getId());
@@ -167,10 +168,10 @@ public class DistributionController {
     public R copy(@RequestBody Distribution distribution) throws Exception {
         Distribution ds = distributionService.queryById(distribution.getId());
         ds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-        distribution.setQrImg(httpurl + ds.getId() + ".jpg");
+        ds.setQrImg(httpurl + ds.getId() + ".jpg");
         String text = qrDistributionUrl.replace("id=", "id=" + ds.getId());
         QRCodeUtils.encode(text, null, qrDistributionImgUrl, ds.getId(), true);
-        distribution.setQrImg(httpurl + ds.getId() + ".jpg");
+        ds.setQrImg(httpurl + ds.getId() + ".jpg");
         distributionService.insertDistribution(ds);
         distributionService.insertActivity(ds);
         return R.ok();

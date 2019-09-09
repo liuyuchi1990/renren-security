@@ -157,17 +157,16 @@ public class GatherController {
             hours = ChronoUnit.HOURS.between(ldt, toDate);
         }
 
-        if (create_time == null || prize_time < hours) {
+        if (create_time == null || gz.getRestrictTime() < hours) {
             pz.setUpdateTime(new Date());
-            int mp = gatherService.updatePrizeLog(pz);
-            int mp2 = gatherService.insertLikeLog(pz);
+            gatherService.insertLikeLog(pz);
             Map<String, Object> p = gatherService.queryPrizeLog(pz.getId());
             int arr = p.get("likes") == null ? 0 : p.get("likes").toString().split(",").length;
-            if (create_time != null && arr == gz.getTargetNum()) {
+            if (arr == gz.getTargetNum()) {
                 pz.setCompleteTime(new Date());
-                gatherService.updatePrizeLog(pz);
                 gatherService.releasePrize(pz.getActivityId());
             }
+            int mp = gatherService.updatePrizeLog(pz);
             map.put("data", mp);
         } else {
             result.setCode(ReturnCodeEnum.INVOKE_VENDOR_DF_ERROR.getCode());
