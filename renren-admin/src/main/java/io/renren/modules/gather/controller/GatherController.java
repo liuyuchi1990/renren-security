@@ -162,7 +162,7 @@ public class GatherController {
             gatherService.insertLikeLog(pz);
             Map<String, Object> p = gatherService.queryPrizeLog(pz.getId());
             int arr = p.get("likes") == null ? 0 : p.get("likes").toString().split(",").length;
-            if (arr == gz.getTargetNum()) {
+            if (arr == (gz.getTargetNum()-1)) {
                 pz.setCompleteTime(new Date());
                 gatherService.releasePrize(pz.getActivityId());
             }
