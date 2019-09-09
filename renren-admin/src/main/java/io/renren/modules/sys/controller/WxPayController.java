@@ -124,6 +124,7 @@ public class WxPayController {
                 result = false;
                 info = "出错了，未获取到prepayId";
             } else {
+                map.put("appId",Constants.PTAPPID);
                 map.put("package", "prepay_id="+prepayId);
                 map.put("nonceStr", randomNonceStr);
                 map.put("timestamp",System.currentTimeMillis()/1000+"");
@@ -188,6 +189,7 @@ public class WxPayController {
                 result = false;
                 info = "出错了，未获取到小程序prepayId";
             } else {
+                map.put("appId",Constants.APPID);
                 map.put("package", "prepay_id="+prepayId);
                 map.put("nonceStr", randomNonceStr);
                 map.put("timestamp",System.currentTimeMillis()/1000+"");
