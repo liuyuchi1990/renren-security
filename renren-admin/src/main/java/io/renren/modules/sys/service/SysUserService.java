@@ -70,4 +70,6 @@ public interface SysUserService extends IService<SysUserEntity> {
 	SysUserEntity queryByAppOpenId(String id);
 
 	List<SysUserEntity>  queryForUsers(String[] ids);
+
+	List<SysUserEntity>  queryAllUsers();
 }

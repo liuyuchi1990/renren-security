@@ -114,15 +114,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void update(SysUserEntity user) {
-		if(StringUtils.isBlank(user.getPassword())){
-			user.setPassword(null);
-		}else{
-			user.setPassword(ShiroUtils.sha256(user.getPassword(), user.getSalt()));
-		}
+//		if(StringUtils.isBlank(user.getPassword())){
+//			user.setPassword(null);
+//		}else{
+//			user.setPassword(ShiroUtils.sha256(user.getPassword(), user.getSalt()));
+//		}
 		this.updateById(user);
 		
 		//保存用户与角色关系
-		sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
+		//sysUserRoleService.saveOrUpdate(user.getUserId(), user.getRoleIdList());
 	}
 
 	@Override
@@ -154,5 +154,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
 	public List<SysUserEntity>  queryForUsers(String[] ids){
 		return sysUserDao.queryForUsers(ids);
+	}
+
+	public List<SysUserEntity>  queryAllUsers(){
+		return sysUserDao.queryAllUsers();
 	}
 }

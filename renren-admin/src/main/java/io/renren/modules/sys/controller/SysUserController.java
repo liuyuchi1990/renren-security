@@ -124,15 +124,25 @@ public class SysUserController extends AbstractController {
 	/**
 	 * 修改用户
 	 */
-	@SysLog("修改用户")
 	@RequestMapping("/update")
-	@RequiresPermissions("sys:user:update")
 	public R update(@RequestBody SysUserEntity user){
-		ValidatorUtils.validateEntity(user, UpdateGroup.class);
+		//ValidatorUtils.validateEntity(user, UpdateGroup.class);
 
 		sysUserService.update(user);
 		
 		return R.ok();
+	}
+
+	/**
+	 * 修改用户
+	 */
+	@RequestMapping("/queryAllUsers")
+	public R queryAllUsers(@RequestBody SysUserEntity user){
+		//ValidatorUtils.validateEntity(user, UpdateGroup.class);
+
+		List<SysUserEntity> users = sysUserService.queryAllUsers();
+
+		return R.ok().put("users",users);
 	}
 	
 	/**
