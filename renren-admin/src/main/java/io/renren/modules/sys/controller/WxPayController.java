@@ -341,6 +341,7 @@ public class WxPayController {
                                 //用户性别
                                 user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
                                 user.setSex(Integer.parseInt(userMessageJsonObject.getString("sex")));
+                                user.setStatus(0);
                                 user.setProvince(userMessageJsonObject.getString("province"));
                                 user.setSubscribetime(userMessageJsonObject.getString("subscribetime"));
                                 user.setCity(userMessageJsonObject.getString("city"));
@@ -415,6 +416,7 @@ public class WxPayController {
                                 //用户性别
                                 user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
                                 user.setSex(Integer.parseInt(jsonObject.getString("gender")));
+                                user.setStatus(0);
                                 user.setProvince(user.getProvince());
                                 user.setCity(user.getCity());
                                 user.setHeadimgurl(jsonObject.getString("avatarUrl"));
