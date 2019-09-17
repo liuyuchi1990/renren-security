@@ -90,5 +90,6 @@ VALUES
         SELECT
         *
         from sys_user
+        where app_open_id is not null
     </select>
 </mapper>
