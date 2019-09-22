@@ -16,6 +16,7 @@
 
 package io.renren.modules.sys.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.renren.common.utils.Rs;
 import io.renren.modules.course.entity.CourseEntity;
@@ -207,9 +208,12 @@ public class SysLogController {
         }else{
             jsonObj.put("page1Title",params.get("name").toString());
             cs.setId(params.get("id").toString());
+            CourseEntity courseEntity = courseService.selectById(cs.getId());
+            Map maps = (Map)JSONObject.parse(courseEntity.getCourseContent());
+            maps.replace("page1Title",params.get("name").toString());
             params.replace("url",params.get("url").toString().replace("id=","id="+ params.get("id").toString()));
-            cs.setCourseContent(jsonObj.toJSONString());
-            courseService.updateAllColumnById(cs);
+            cs.setCourseContent(JSON.toJSONString(maps));
+            courseService.updateById(cs);
             sysLogService.updateApp(params);
         }
         result.setResult(params);
