@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -22,7 +23,7 @@ import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.Query;
 
 @Service("distributionService")
-public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distribution> implements DistributionService,Serializable {
+public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distribution> implements DistributionService, Serializable {
     @Autowired
     private DistributionDao distributionDao;
 
@@ -43,6 +44,10 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
 
     public List<Distribution> queryListByPage(Map<String, Object> params) {
         return distributionDao.queryListByPage(params);
+    }
+
+    public List<ActivityEntity> queryActivity(Map<String, Object> params){
+        return distributionDao.queryActivity(params);
     }
 
     public Distribution queryById(String id) {
@@ -107,7 +112,6 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
     }
 
 
-
     public int insertActivity(BarginEntity barginEntity) {
         ActivityEntity activityEntity = new ActivityEntity();
         activityEntity.setId(barginEntity.getId());
@@ -131,7 +135,6 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         activityEntity.setActivityType(Constants.BARGIN);
         return distributionDao.updateActivity(activityEntity);
     }
-
 
 
     public int insertActivity(GrouponEntity grouponEntity) {

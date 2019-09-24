@@ -32,6 +32,8 @@ public interface DistributionService extends IService<Distribution> {
 
     List<Distribution> queryListByPage(Map<String, Object> params);
 
+    List<ActivityEntity> queryActivity(Map<String, Object> params);
+
     PageUtils queryPage(Map<String, Object> params);
 
     int insertDistribution(Distribution distribution);

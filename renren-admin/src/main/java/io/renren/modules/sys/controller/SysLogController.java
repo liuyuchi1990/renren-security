@@ -81,7 +81,7 @@ public class SysLogController {
         List<Map<String, String>> channelLst = sysLogService.queryAllChannel();
         List<Map<String, String>> bannerLst = sysLogService.queryAllBanner();
         List<Map<String, String>> businessLst = sysLogService.queryAllBusiness(param);
-        List<Distribution> activityLst = distributionService.queryListByPage(param);
+        List<ActivityEntity> activityLst = distributionService.queryActivity(param);
         List<Map<String, String>> contactLst = sysLogService.queryAllContact();
         List<Map<String, String>> vedioLst = sysLogService.queryAllVedio();
         for (Map<String, String> map : channelLst) {
@@ -107,17 +107,13 @@ public class SysLogController {
             banner.setEnabled("1");
             bannerList.add(banner);
         }
-        for (Distribution map : activityLst) {
+        for (ActivityEntity map : activityLst) {
             GoodActivity ga = new GoodActivity();
             ga.setId(map.getId());
             ga.setName(map.getActivityName());
             ga.setList_pic_url(map.getThumbnail());
-            ga.setRetail_price(map.getTotalPrice());
             ga.setEnd_date(map.getEndTime());
-            ga.setOrder_num(map.getOrderNum());
             ga.setHave_pay_num("1");
-            ga.setProduct_num(map.getTargetQuantity().toString());
-            ga.setQr(map.getQrImg());
             goodActitiyList.add(ga);
         }
         for (Map<String, String> map : contactLst) {

@@ -155,6 +155,14 @@ VALUES
 		limit #{pageNum},#{pageSize}
 	</select>
 
+	<select id="queryActivity" parameterType="java.util.HashMap"
+			resultType="io.renren.modules.sys.entity.ActivityEntity">
+		select t.activity_name,t.activity_type,t.start_time,t.end_time,t.thumbnail,if(str_to_date(t.end_time, '%Y-%m-%d')>NOW(),'进行中','已结束') activity_state
+		from tb_activity t
+		order by t.update_time desc
+		limit #{pageNum},#{pageSize}
+	</select>
+
     <update id="rollback" parameterType="java.lang.String">
         update tb_distribution
         <set>
