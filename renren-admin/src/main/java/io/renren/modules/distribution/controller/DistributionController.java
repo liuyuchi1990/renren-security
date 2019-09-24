@@ -82,7 +82,7 @@ public class DistributionController {
             ga.setName(map.getActivityName());
             ga.setEnd_date(map.getEndTime());
             ga.setHave_pay_num("1");
-
+            ga.setActivityState(map.getActivityState());
             goodActitiyList.add(ga);
         }
         mp.put("data", goodActitiyList);

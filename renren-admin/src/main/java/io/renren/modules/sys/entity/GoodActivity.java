@@ -8,7 +8,7 @@ public class GoodActivity {
     private String qr;
     private String have_pay_num;
     private String end_date;
-    private String order_num;
+    private String activityState;
     private String product_num;
 
     public String getId() {
@@ -67,12 +67,12 @@ public class GoodActivity {
         this.end_date = end_date;
     }
 
-    public String getOrder_num() {
-        return order_num;
+    public String getActivityState() {
+        return activityState;
     }
 
-    public void setOrder_num(String order_num) {
-        this.order_num = order_num;
+    public void setActivityState(String activityState) {
+        this.activityState = activityState;
     }
 
     public String getProduct_num() {
