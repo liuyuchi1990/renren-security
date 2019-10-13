@@ -65,5 +65,7 @@ public interface DistributionService extends IService<Distribution> {
     int addWatcher(Distribution distributio);
 
     Distribution queryById (String id);
+
+    int deleteActivity(List<String> ids);
 }
 

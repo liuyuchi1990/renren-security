@@ -185,9 +185,10 @@ public class LotteryController {
      */
     @ApiIgnore
     @RequestMapping("/delete")
+    @Transactional
     public R delete(@RequestBody String[] ids){
         lotteryService.deleteBatchIds(Arrays.asList(ids));
-
+        distributionService.deleteActivity(Arrays.asList(ids));
         return R.ok();
     }
 

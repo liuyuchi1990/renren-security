@@ -177,6 +177,10 @@ public class DistributionServiceImpl extends ServiceImpl<DistributionDao, Distri
         return distributionDao.updateActivity(activityEntity);
     }
 
+    public int deleteActivity(List<String> ids) {
+        return distributionDao.deleteActivity(ids);
+    }
+
     public int release(String id) {
         return distributionDao.release(id);
     }

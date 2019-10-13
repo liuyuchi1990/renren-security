@@ -187,10 +187,11 @@ public class DistributionController {
      * 删除
      */
     @RequestMapping("/delete")
+    @Transactional
     //@RequiresPermissions("sys:distribution:delete")
     public R delete(@RequestBody String[] ids) {
         distributionService.deleteBatchIds(Arrays.asList(ids));
-
+        distributionService.deleteActivity(Arrays.asList(ids));
         return R.ok();
     }
 

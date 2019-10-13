@@ -188,10 +188,11 @@ public class GrouponController {
      * 删除
      */
     @RequestMapping("/delete")
+    @Transactional
     //@RequiresPermissions("groupon:groupon:delete")
     public R delete(@RequestBody String[] ids){
         grouponService.deleteBatchIds(Arrays.asList(ids));
-
+        distributionService.deleteActivity(Arrays.asList(ids));
         return R.ok();
     }
 

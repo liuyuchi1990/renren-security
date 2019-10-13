@@ -114,6 +114,7 @@ public class SysLogController {
             ga.setList_pic_url(map.getThumbnail());
             ga.setEnd_date(map.getEndTime());
             ga.setHave_pay_num("1");
+            ga.setActivityState(map.getActivityState());
             goodActitiyList.add(ga);
         }
         for (Map<String, String> map : contactLst) {

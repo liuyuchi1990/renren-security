@@ -43,4 +43,6 @@ public interface DistributionDao extends BaseMapper<Distribution> {
     int updateActivity (ActivityEntity activityEntity);
 
     int addWatcher (Distribution insertDistribution);
+
+    int deleteActivity(List<String> ids);
 }

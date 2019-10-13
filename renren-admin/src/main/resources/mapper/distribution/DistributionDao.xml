@@ -190,4 +190,11 @@ VALUES
 		</set>
 		where id = #{id,jdbcType=VARCHAR}
 	</update>
+
+	<delete id="deleteActivity"  parameterType = "java.util.List">
+	delete from tb_activity  where  id in
+	<foreach collection="list"  item="item" open="(" separator="," close=")"  >
+            #{item}
+	</foreach>
+	</delete>
 </mapper>

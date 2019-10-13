@@ -211,9 +211,10 @@ public class BarginController {
      * 删除
      */
     @RequestMapping("/delete")
+    @Transactional
     public R delete(@RequestBody String[] ids) {
         barginService.deleteBatchIds(Arrays.asList(ids));
-
+        distributionService.deleteActivity(Arrays.asList(ids));
         return R.ok();
     }
 
