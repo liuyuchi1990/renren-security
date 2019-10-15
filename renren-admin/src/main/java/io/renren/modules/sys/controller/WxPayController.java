@@ -411,8 +411,8 @@ public class WxPayController {
                             SysUserEntity utmp = sysUserService.queryByAppOpenId(openId);
                             //获取成果，存入数据库
                             if(utmp==null&&user.getMobile()!=null){
-                                user.setUsername(user.getNickname());
-                                user.setNickname(user.getNickname());
+                                user.setUsername(user.getNickname().replaceAll("[\\x{10000}-\\x{10FFFF}]", ""));
+                                user.setNickname(user.getNickname().replaceAll("[\\x{10000}-\\x{10FFFF}]", ""));
                                 //用户性别
                                 user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
                                 user.setSex(Integer.parseInt(jsonObject.getString("gender")));
